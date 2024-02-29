@@ -26,6 +26,7 @@ use App\Models\Vendor;
 use App\Models\Job;
 use App\Exports\PrsExport;
 use App\Exports\PickupLoadExport;
+use App\Exports\PrsTransactionStatusExport;
 use Auth;
 use Carbon\Carbon;
 use Config;
@@ -1435,28 +1436,14 @@ class PickupRunSheetController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = $query->with('ConsignmentDetail', 'VehicleDetail', 'DriverDetail')->whereIn('status', ['1', '0', '3'])
-                ->groupBy('hrs_no');
+            $query = $query->with(['PickupRunSheet','PickupRunSheet.Consignments','Branch'])
+            ->groupBy('transaction_id');
+            // ->whereIn('status', ['1', '0', '3'])
 
-            if ($authuser->role_id == 1) {
-                $query = $query;
-            } elseif ($authuser->role_id == 4) {
-                $query = $query
-                    ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
-                        $query->whereIn('regclient_id', $regclient);
-                    });
-            } elseif ($authuser->role_id == 6) {
-                $query = $query
-                    ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
-                        $query->whereIn('base_clients.id', $baseclient);
-                    });
-            } elseif ($authuser->role_id == 7) {
-                $query = $query
-                    ->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function ($query) use ($baseclient) {
-                        $query->whereIn('id', $regclient);
-                    });
+            if ($authuser->role_id == 2) {
+                $query = $query->where('branch_id', $cc);
             } else {
-                $query = $query->whereIn('branch_id', $cc);
+                $query = $query;
             }
 
             if (!empty($request->search)) {
@@ -1478,10 +1465,10 @@ class PickupRunSheetController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
-            $hrssheets = $query->orderBy('id', 'DESC')->paginate($peritem);
-            $hrssheets = $hrssheets->appends($request->query());
+            $prsRequests = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $prsRequests = $prsRequests->appends($request->query());
 
-            $html = view('transportation.download-drs-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
+            $html = view('prs.prs-request-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'prsRequests' => $prsRequests, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -1496,30 +1483,15 @@ class PickupRunSheetController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query->with('Branch', 'User')
+        $query = $query->with(['PickupRunSheet','PickupRunSheet.Consignments','Branch'])
             ->groupBy('transaction_id');
 
-        if ($authuser->role_id == 1) {
-            $query = $query;
-        } elseif ($authuser->role_id == 4) {
-            $query = $query
-                ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
-                    $query->whereIn('regclient_id', $regclient);
-                });
-        } elseif ($authuser->role_id == 6) {
-            $query = $query
-                ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
-                    $query->whereIn('base_clients.id', $baseclient);
-                });
-        } elseif ($authuser->role_id == 7) {
-            $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
-        } elseif ($authuser->role_id == 3) {
-            $query = $query->where('rm_id', $authuser->id);
+        if ($authuser->role_id == 2) {
+            $query = $query->where('branch_id', $cc);
         } else {
-
-            $query = $query->whereIn('branch_id', $cc);
-
+            $query = $query;
         }
+            
         $prsRequests = $query->orderBy('id', 'DESC')->paginate($peritem);
         $prsRequests = $prsRequests->appends($request->query());
         $vendors = Vendor::with('Branch')->get();
@@ -1528,6 +1500,22 @@ class PickupRunSheetController extends Controller
         return view('prs.prs-request-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'prsRequests' => $prsRequests, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes, 'branchs' => $branchs, 'vendors' => $vendors, 'vehicletype' => $vehicletype]);
 
     }
+
+    public function showPrs(Request $request)
+    {
+        $getprs = PrsPaymentRequest::with(['PickupRunSheet','PickupRunSheet.Consignments'])->select('prs_no')->where('transaction_id', $request->trans_id)->get();
+
+        $response['getprs'] = $getprs;
+        $response['success'] = true;
+        $response['success_message'] = "Prs transaction Ids";
+        return response()->json($response);
+    }
+
+    public function prsTransactionExport(Request $request)
+    {
+        return Excel::download(new PrsTransactionStatusExport($request->startdate, $request->enddate,$request->paymentstatus_id,$request->search), 'prs-transaction-status-report.csv');
+    }
+
     /// RM aprover
     public function getVendorReqDetailsPrs(Request $request)
     {
@@ -1701,16 +1689,7 @@ class PickupRunSheetController extends Controller
         return response()->json($new_response);
 
     }
-    public function showPrs(Request $request)
-    {
-        $getprs = PrsPaymentRequest::with(['PickupRunSheet','PickupRunSheet.Consignments'])->select('prs_no')->where('transaction_id', $request->trans_id)->get();
-
-        $response['getprs'] = $getprs;
-        $response['success'] = true;
-        $response['success_message'] = "Prs transaction Ids";
-        return response()->json($response);
-    }
-
+    
     public function getSecondPaymentDetailsPrs(Request $request)
     {
 

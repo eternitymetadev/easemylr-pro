@@ -475,6 +475,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('get-prs-details', [PickupRunSheetController::class, 'getPrsdetails']);
     Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
     Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
+    Route::get('prs-transaction-export', [PickupRunSheetController::class, 'prsTransactionExport']);
     Route::any('get-second-pymt-details-prs', [PickupRunSheetController::class, 'getSecondPaymentDetailsPrs']);
     Route::any('second-payment-prs', [PickupRunSheetController::class, 'createSecondPaymentRequestPrs']); 
     Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
@@ -504,6 +505,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
     Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
     Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::get('hrs-transaction-export', [HubtoHubController::class, 'hrsTransactionExport']);
     Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
     Route::any('get-second-pymt-details', [HubtoHubController::class, 'getSecondPaymentDetails']);
     Route::any('show-hrs', [HubtoHubController::class, 'showHrs']); 
@@ -687,6 +689,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('pickup-loads/export', [PickupRunSheetController::class, 'exportPickupLoad']);
     Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
     Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
+    Route::get('prs-transaction-export', [PickupRunSheetController::class, 'prsTransactionExport']);
     Route::any('get-vender-req-details-prs', [PickupRunSheetController::class, 'getVendorReqDetailsPrs']);
     Route::any('prs-rm-approver', [PickupRunSheetController::class, 'rmApproverRequest']);
     Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
@@ -715,6 +718,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
     Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
     Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::get('hrs-transaction-export', [HubtoHubController::class, 'hrsTransactionExport']);
     Route::any('get-vender-req-details-hrs', [HubtoHubController::class, 'getVendorReqDetailsHrs']);
     Route::any('rm-approver', [HubtoHubController::class, 'rmApproverRequest']);
     Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
@@ -877,6 +881,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
     Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
     Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::get('hrs-transaction-export', [HubtoHubController::class, 'hrsTransactionExport']);
     Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
     Route::any('get-second-pymt-details', [HubtoHubController::class, 'getSecondPaymentDetails']);
     Route::any('show-hrs', [HubtoHubController::class, 'showHrs']); 
@@ -901,6 +906,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::get('pickup-loads/export', [PickupRunSheetController::class, 'exportPickupLoad']);
     Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
     Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
+    Route::get('prs-transaction-export', [PickupRunSheetController::class, 'prsTransactionExport']);
     Route::any('get-vender-req-details-prs', [PickupRunSheetController::class, 'getVendorReqDetailsPrs']);
     Route::any('prs-rm-approver', [PickupRunSheetController::class, 'rmApproverRequest']);
     Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
@@ -1016,6 +1022,10 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
+
+    Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::get('hrs-transaction-export', [HubtoHubController::class, 'hrsTransactionExport']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']); 
     
     Route::get('prs-payment-report', [VendorController::class, 'prsPaymentReport']);
     Route::get('prs-payment-reportExport', [VendorController::class, 'exportPrsPaymentReport']);

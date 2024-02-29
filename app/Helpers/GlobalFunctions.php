@@ -143,7 +143,6 @@ class GlobalFunctions
     //////format 10/07/2000
     public static function ShowDayMonthYearslash($date)
     {
-
         if (!empty($date)) {
             $changeformat = date('d/m/Y', strtotime($date));
         } else {

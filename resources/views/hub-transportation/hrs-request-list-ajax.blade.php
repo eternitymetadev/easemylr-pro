@@ -1,3 +1,4 @@
+<p class="totalcount">Total Count: <span class="reportcount">{{ $hrsRequests->total() }}</span></p>
 <div class="custom-table">
     <table id="" class="table table-hover" style="width:100%">
         <thead>
@@ -17,10 +18,10 @@
             </tr>
         </thead>
         <tbody>
+            @if(count($hrsRequests)>0)
             @foreach($hrsRequests as $hrsRequest)
             <?php 
             $authuser = Auth::user();
-            
             ?>
             <tr>
                 {{-- <td>{{ Helper::ShowDayMonthYear($hrsRequest->HrsPaymentHistory->payment_date) ?? "" }}</td> --}}
@@ -138,6 +139,11 @@
 
             </tr>
             @endforeach
+            @else
+            <tr>
+                <td colspan="10" class="text-center">No Record Found </td>
+            </tr>
+            @endif
         </tbody>
     </table>
     <div class="perpage container-fluid">

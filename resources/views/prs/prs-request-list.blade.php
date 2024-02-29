@@ -81,15 +81,53 @@ input[readonly].styledInput {
         <h2 class="pageHeading">PRS Request List</h2>
     </div>
 
-    <div class="widget-content widget-content-area br-6" style="min-height: min(80vh, 600px)">
+    <div class="widget-content widget-content-area br-6">
 
-        <div class="p-3 d-flex flex-wrap justify-content-between align-items-center" style="gap: 1rem;">
+        <div class="row px-3 mx-0 mt-4 justify-content-between" style="gap: 12px; flex-wrap: wrap">
+            <div class="d-flex align-items-end" style="gap: 12px; flex-wrap: wrap">
+                <div style="width: 300px">
+                    <label>Search</label>
+                    <input type="text" class="form-control" placeholder="Transaction Id" id="search"
+                        data-action="<?php echo url()->current(); ?>">
+                </div>
 
-            <div>
-                <input class="form-control" placeholder="Vehicle Number Search" id="search"
-                    data-action="<?php echo url()->current(); ?>"
-                    style="height: 36px; max-width: 250px; width: 300px;" />
+                <div style="width: 156px">
+                    <label>From</label>
+                    <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
+                </div>
+                <div style="width: 156px">
+                    <label>To</label>
+                    <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
+                </div>
+                <div style="width: 210px">
+                    <label>Payment Status</label>
+                    <select class="form-control my-select2" id="paymentstatus_filter" name="paymentstatus_id"
+                        data-action="<?php echo url()->current(); ?>" placeholder="Search By Status">
+                        <option value="" selected disabled>--select status--</option>
+                        <option value="1">Fully Paid</option>
+                        <option value="2">Processing</option>
+                        <option value="3">Create payment</option>
+                        <option value="0">Failed</option>
+                    </select>
+                </div>
+
+                <button type="button" id="filter_reportall" class="btn btn-primary"
+                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 100px">
+                    <span class="indicator-label">Filter</span>
+                </button>
+
+                <button type="button" class="btn btn-primary reset_filter"
+                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 100px"
+                    data-action="<?php echo url()->current(); ?>">
+                    <span class="indicator-label">Reset</span>
+                </button>
             </div>
+
+            <a href="<?php echo URL::to($prefix . '/prs-transaction-export'); ?>" data-url="<?php echo URL::to($prefix . '/prs-request-list'); ?>"
+                class="consignmentReportEx btn btn-white btn-cstm"
+                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
+                data-action="<?php echo URL::to($prefix . '/prs-transaction-export'); ?>" download><span><i class="fa fa-download"></i>
+                    Export</span></a>
         </div>
 
         @csrf
@@ -323,15 +361,120 @@ $(document).on('click', '.show-prs', function() {
                         "</td></tr>");
                 });
             }
-            // $.each(data.getprs, function(index, value) {
-
-            //     $('#show_prs_table tbody').append("<tr><td>" + value.prs_no + "</td></tr>");
-
-            // });
         }
 
     });
 });
-/////////////////////////////////////////////////////////////////
+
+// payment status filter
+$('#paymentstatus_filter').change(function() {
+        var paymentstatus_id = $(this).val();
+        let url = $(this).attr('data-action');
+        $.ajax({
+            url: url,
+            type: "get",
+            cache: false,
+            data: {
+                paymentstatus_id: paymentstatus_id
+            },
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+            },
+            beforeSend: function() {
+
+            },
+            success: function(res) {
+                if (res.html) {
+                    jQuery('.main-table').html(res.html);
+                }
+            },
+        });
+        return false;
+    });
+
+    jQuery(document).on('click', '#filter_reportall', function() {
+        var startdate = $("#startdate").val();
+        var enddate = $("#enddate").val();
+        var search = jQuery('#search').val();
+        var paymentstatus_id = $("#paymentstatus_filter").val();
+        
+        jQuery.ajax({
+            type: 'get',
+            url: 'prs-request-list',
+            data: {
+                startdate: startdate,
+                enddate: enddate,
+                search: search,
+                paymentstatus_id: paymentstatus_id
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.html) {
+                    jQuery('.main-table').html(response.html);
+                }
+            }
+        });
+        return false;
+    });
+
+    jQuery(document).on('click', '.consignmentReportEx', function(event) {
+    event.preventDefault();
+
+        var totalcount = jQuery('.totalcount').text();
+        if (totalcount > 30000) {
+            jQuery('.limitmessage').show();
+            setTimeout(function() {
+                jQuery('.limitmessage').fadeOut();
+            }, 5000);
+            return false;
+        }
+
+        var geturl = jQuery(this).attr('data-action');
+        var startdate = jQuery('#startdate').val();
+        var enddate = jQuery('#enddate').val();
+        var paymentstatus_id = $("#paymentstatus_filter").val();
+        var search = jQuery('#search').val();
+
+        var url = jQuery('#search').attr('data-url');
+        if (startdate)
+            geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
+        else if (search)
+            geturl = geturl + '?search=' + search;
+        else if (paymentstatus_id)
+            geturl = geturl + '?paymentstatus_id=' + paymentstatus_id;
+
+        jQuery.ajax({
+            url: url,
+            type: 'get',
+            cache: false,
+            data: {
+                startdate: startdate,
+                enddate: enddate,
+                search: search,
+                paymentstatus_id: paymentstatus_id
+            },
+            headers: {
+                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+            },
+            processData: true,
+            beforeSend: function() {
+                //jQuery(".load-main").show();
+            },
+            complete: function() {
+                //jQuery(".load-main").hide();
+            },
+            success: function(response) {
+                // jQuery(".load-main").hide();
+                setTimeout(() => {
+                    window.location.href = geturl
+                }, 10);
+            }
+        });
+    });
+
 </script>
 @endsection 
