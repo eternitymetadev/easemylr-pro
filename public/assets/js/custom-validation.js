@@ -1379,6 +1379,22 @@ jQuery(document).ready(function () {
                     jQuery('.app_use_shadow').attr("checked", true);
                 }
 
+                if (response.newcata.stationary == '1') {
+                    jQuery('.preprint_stationary').attr("checked", true);
+                    jQuery('.plain_stationary').attr("checked", false);
+                } else {
+                    jQuery('.preprint_stationary').attr("checked", false);
+                    jQuery('.plain_stationary').attr("checked", true);
+                }
+
+                if (response.newcata.sticker == '1') {
+                    jQuery('.colored_sticker').attr("checked", true);
+                    jQuery('.plain_sticker').attr("checked", false);
+                } else {
+                    jQuery('.colored_sticker').attr("checked", false);
+                    jQuery('.plain_sticker').attr("checked", true);
+                }
+
             },
         });
     });
