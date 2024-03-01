@@ -1151,8 +1151,8 @@ class ConsignmentController extends Controller
 
                                 </td>';
                                 if($locations->stationary == '2'){
-                                $html .='<td class="a">
-                                <img src="' . $pay . '" alt="" class="" />
+                                $html .='<td>
+                                <img src="' . $pay . '" alt="" class="" style="height:50px;" />
                                 </td>';
                                 }
                                 $html .= '</tr>
