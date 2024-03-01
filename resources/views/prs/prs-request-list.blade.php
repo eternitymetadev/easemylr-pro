@@ -440,12 +440,14 @@ $('#paymentstatus_filter').change(function() {
         var search = jQuery('#search').val();
 
         var url = jQuery('#search').attr('data-url');
-        if (startdate)
-            geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
-        else if (search)
-            geturl = geturl + '?search=' + search;
-        else if (paymentstatus_id)
-            geturl = geturl + '?paymentstatus_id=' + paymentstatus_id;
+        // if (startdate)
+        //     geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
+        // else if (search)
+        //     geturl = geturl + '?search=' + search;
+        // else if (paymentstatus_id)
+        //     geturl = geturl + '?paymentstatus_id=' + paymentstatus_id;
+
+        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '?search=' + search + '&paymentstatus_id=' + paymentstatus_id;
 
         jQuery.ajax({
             url: url,

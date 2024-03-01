@@ -505,6 +505,50 @@ class GlobalFunctions
         return $disable;
     }
 
+    public static function DrsPaymentTotalQty($trans_id){
+        $totalQty= PaymentRequest::with(['TransactionDetails', 'TransactionDetails.ConsignmentDetail'])->select('drs_no')->where('transaction_id', $trans_id)->get();
+
+        $totalQuantitySum = 0;
+        $totalNetwtSum = 0;
+        $totalGrosswtSum = 0;
+
+        foreach($totalQty as $paymentvalue){
+            foreach($paymentvalue->TransactionDetails as $val){
+                $totalQuantitySum += intval($val->ConsignmentDetail->total_quantity);
+                $totalNetwtSum += intval($val->ConsignmentDetail->total_weight);
+                $totalGrosswtSum += intval($val->ConsignmentDetail->total_gross_weight);
+            }
+        }
+        
+        return [
+            'totalQuantitySum' => $totalQuantitySum,
+            'totalNetwtSum' => $totalNetwtSum,
+            'totalGrosswtSum' => $totalGrosswtSum
+        ];
+    }
+
+    public static function HrsPaymentTotalQty($trans_id){
+        $totalQty = HrsPaymentRequest::with(['HrsDetails','HrsDetails.ConsignmentDetail'])->select('hrs_no')->where('transaction_id', $request->trans_id)->get();
+
+        $totalQuantitySum = 0;
+        $totalNetwtSum = 0;
+        $totalGrosswtSum = 0;
+
+        foreach($totalQty as $paymentvalue){
+            foreach($paymentvalue->HrsDetails as $val){
+                $totalQuantitySum += intval($val->ConsignmentDetail->total_quantity);
+                $totalNetwtSum += intval($val->ConsignmentDetail->total_weight);
+                $totalGrosswtSum += intval($val->ConsignmentDetail->total_gross_weight);
+            }
+        }
+        
+        return [
+            'totalQuantitySum' => $totalQuantitySum,
+            'totalNetwtSum' => $totalNetwtSum,
+            'totalGrosswtSum' => $totalGrosswtSum
+        ];
+    }
+
     public static function PrsTotalQty($prs_id)
     {
         $driver_tasks = PrsDrivertask::whereIn('prs_id', [$prs_id])->with('ConsignerDetail:id,nick_name', 'PrsTaskItems')->get();

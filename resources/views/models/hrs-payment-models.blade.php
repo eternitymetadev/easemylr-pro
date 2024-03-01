@@ -355,8 +355,7 @@ if ($countbranch > 1) {?>
                         <div class="form-group form-group-sm col-md-4">
                             <label for="exampleFormControlSelect1">Branch Location</label>
                             <select class="form-control" id="branch_id_1" name="branch_id" tabindex="-1">
-                                <?php $countbranch = count($branchs);
-if ($countbranch > 1) {?>
+                                <?php if (count($branchs) > 1) {?>
                                 <option selected disabled>select location</option>
                                 <?php }?>
                                 @foreach($branchs as $branch)
@@ -370,8 +369,8 @@ if ($countbranch > 1) {?>
                                 <option value="" selected disabled>Select Vendor</option>
                                 @foreach($vendors as $vendor)
                                 <?php
-$bank_details = json_decode($vendor->bank_details, true);
-?>
+                                $bank_details = json_decode($vendor->bank_details, true);
+                                ?>
                                 <option value="{{$vendor->id}}">{{$vendor->name}}-{{$bank_details['account_no']}}
                                     -{{$vendor->Branch->name ?? '-'}}</option>
                                 @endforeach

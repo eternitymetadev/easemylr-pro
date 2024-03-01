@@ -47,7 +47,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->with('VendorDetails', 'Branch')
+        $query = $query->with(['TransactionDetails', 'TransactionDetails.ConsignmentDetail','VendorDetails', 'Branch'])
             ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
@@ -117,7 +117,9 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                 } else{
                     $payment_status = 'Unknown';
                 } 
-                
+
+                $DrstotalQty = Helper::DrsPaymentTotalQty($requestlist->transaction_id);
+
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
                     'date'            => Helper::ShowDayMonthYear(@$requestlist->created_at),
@@ -125,7 +127,10 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                     'branch_name'     => @$requestlist->Branch->name,
                     'branch_state'    => @$requestlist->Branch->nick_name,
                     'total_drs'       => Helper::countDrsInTransaction(@$requestlist->transaction_id),
-                    'payment_type'    => @$hrsRequest->payment_type,
+                    'total_boxes'     => @$DrstotalQty['totalQuantitySum'],
+                    'total_netwt'     => @$DrstotalQty['totalNetwtSum'],
+                    'total_grosswt'   => @$DrstotalQty['totalGrosswtSum'],
+                    'payment_type'    => @$requestlist->payment_type,
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,
                     'total_amt'       => @$requestlist->total_amount,
@@ -146,6 +151,9 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
             'Branch',
             'State',
             'Total Drs',
+            'Sum of Boxes',
+            'Sum of NetWt',
+            'Sum of GrossWt',
             'Payment Type',
             'Advanced',
             'Balance',
