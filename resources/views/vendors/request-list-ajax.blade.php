@@ -10,6 +10,7 @@
                 <th>State </th>
                 <th>Total Drs</th>
                 <th>Payment Type</th>
+                <th>Payment Date</th>
 
                 <th>Adavanced</th>
                 <th>Balance</th>
@@ -32,6 +33,7 @@
                     </td>
 
                     <td>{{$requestlist->payment_type}}</td>
+                    <td>{{ Helper::ShowDayMonthYear(@$requestlist->latestPayment->payment_date) ?? "" }}</td>
 
                     <td>{{ @$requestlist->advanced ?? "-"}}</td>
                     <td>{{ @$requestlist->balance ?? "-" }}</td>                    

@@ -11,7 +11,7 @@
                 <th>Purchase Amount</th> 
                 <th>Pickup ID</th>
                 <th>Date</th>
-                <th>Vehicle No.</th>
+                <th>Vehicle No</th>
                 <th>Driver Name </th>
             </tr>
         </thead>

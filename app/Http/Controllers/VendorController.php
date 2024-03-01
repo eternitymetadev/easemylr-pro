@@ -393,7 +393,6 @@ class VendorController extends Controller
 
         $paymentlist = $query->orderBy('id', 'DESC')->paginate($peritem);
         $paymentlist = $paymentlist->appends($request->query());
-        // $vehicles    = Vehicle::select('id', 'regn_no')->get();
         $vehicletype = VehicleType::select('id', 'name')->get();
         $vendors = Vendor::with('Branch')->get();
 
@@ -407,7 +406,6 @@ class VendorController extends Controller
 
     public function getdrsdetails(Request $request)
     {
-
         $drs = TransactionSheet::with('ConsignmentDetail')->whereIn('drs_no', $request->drs_no)->first();
 
         $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no', $request->drs_no)->get();
@@ -1103,9 +1101,9 @@ class VendorController extends Controller
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
             $cc = explode(',', $authuser->branch_id);
 
-            $query = $query->with('VendorDetails', 'Branch')
+            $query = $query->with('VendorDetails','latestPayment', 'Branch')
+            ->groupBy('transaction_id');
             // ->where('payment_status', '!=', 0)
-                ->groupBy('transaction_id');
 
             if ($authuser->role_id == 2) {
                 $query = $query->where('branch_id', $cc);
@@ -1148,7 +1146,7 @@ class VendorController extends Controller
             return response()->json(['html' => $html]);
         }
 
-        $query = $query->with('VendorDetails', 'Branch')
+        $query = $query->with('VendorDetails', 'latestPayment', 'Branch')
         // ->where('payment_status', '!=', 0)
             ->groupBy('transaction_id');
 
@@ -1164,7 +1162,7 @@ class VendorController extends Controller
 
         $requestlists = $query->orderBy('id', 'DESC')->paginate($peritem);
         $requestlists = $requestlists->appends($request->query());
-
+        
         return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype, 'branchs' => $branchs, 'peritem' => $peritem]);
     }
 

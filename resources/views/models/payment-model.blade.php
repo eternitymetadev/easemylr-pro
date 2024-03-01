@@ -2,7 +2,6 @@
 <div class="modal fade" id="edit_amt" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
             <!-- Modal Header -->
             <div class="modal-header text-center">
                 <h4 class="modal-title">update Purchase Price</h4>

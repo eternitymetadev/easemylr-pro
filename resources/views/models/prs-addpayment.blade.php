@@ -336,7 +336,7 @@ if ($countbranch > 1) {?>
                             <label for="location_name">Vehicle Type</label>
                             <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
                                 <option value="">Select vehicle type</option>
-                                @foreach($vehicletypes as $vehicle)
+                                @foreach($vehicletype as $vehicle)
                                 <option value="{{$vehicle->id}}">{{$vehicle->name}}
                                 </option>
                                 @endforeach

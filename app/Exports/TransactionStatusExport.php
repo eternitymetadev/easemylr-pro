@@ -47,7 +47,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->with(['TransactionDetails', 'TransactionDetails.ConsignmentDetail','VendorDetails', 'Branch'])
+        $query = $query->with(['latestPayment','VendorDetails', 'Branch'])
             ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
@@ -131,6 +131,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                     'total_netwt'     => @$drsTotalQty['totalNetwtSum'],
                     'total_grosswt'   => @$drsTotalQty['totalGrosswtSum'],
                     'payment_type'    => @$requestlist->payment_type,
+                    'payment_date'    => Helper::ShowDayMonthYear(@$requestlist->latestPayment->payment_date),
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,
                     'total_amt'       => @$requestlist->total_amount,
@@ -155,6 +156,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
             'Sum of NetWt',
             'Sum of GrossWt',
             'Payment Type',
+            'Payment Date',
             'Advanced',
             'Balance',
             'Total Amount',

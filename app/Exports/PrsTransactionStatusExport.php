@@ -47,7 +47,7 @@ class PrsTransactionStatusExport implements FromCollection, WithHeadings, Should
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->with(['Branch'])
+        $query = $query->with(['latestPayment','Branch'])
             ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
@@ -129,6 +129,7 @@ class PrsTransactionStatusExport implements FromCollection, WithHeadings, Should
                     'total_netwt'     => @$prsTotalQty['totalNetwtSum'],
                     'total_grosswt'   => @$prsTotalQty['totalGrosswtSum'],
                     'payment_type'    => @$requestlist->payment_type,
+                    'payment_date'    => Helper::ShowDayMonthYear(@$requestlist->latestPayment->payment_date),
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,
                     'total_amt'       => @$requestlist->total_amount,
@@ -153,6 +154,7 @@ class PrsTransactionStatusExport implements FromCollection, WithHeadings, Should
             'Sum of NetWt',
             'Sum of GrossWt',
             'Payment Type',
+            'Payment Date',
             'Advanced',
             'Balance',
             'Total Amount',

@@ -10,6 +10,7 @@
                 <th>State</th>
                 <th>Total Hrs</th>
                 <th>Payment Type</th>
+                <th>Payment Date</th>
                 <th>Advanced</th>
                 <th>Balance</th>
                 <th>Total Amount</th>
@@ -35,6 +36,7 @@
                 </td>
                 
                 <td>{{$hrsRequest->payment_type}}</td>
+                <td>{{ Helper::ShowDayMonthYear(@$hrsRequest->latestPayment->payment_date) ?? "" }}</td>
                 <td>{{$hrsRequest->advanced}}</td>
                 <td>{{$hrsRequest->balance}}</td>
                 <td>{{$hrsRequest->total_amount}}</td>

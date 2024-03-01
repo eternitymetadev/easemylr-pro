@@ -10,6 +10,7 @@
                 <th>State</th>
                 <th>Total Prs</th>
                 <th>Payment Type</th>
+                <th>Payment Date</th>
                 <th>Advanced</th>
                 <th>Balance</th>
                 <th>Total Amount</th>
@@ -33,6 +34,7 @@
                             {{ Helper::countPrsInTransaction($prsRequest->transaction_id) ?? '' }}</td>
 
                         <td>{{ $prsRequest->payment_type }}</td>
+                        <td>{{ Helper::ShowDayMonthYear(@$prsRequest->latestPayment->payment_date) ?? "" }}</td>
                         <td>{{ $prsRequest->advanced }}</td>
                         <td>{{ $prsRequest->balance }}</td>
                         <td>{{ $prsRequest->total_amount }}</td>
