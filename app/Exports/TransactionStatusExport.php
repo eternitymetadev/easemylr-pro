@@ -122,7 +122,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
 
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
-                    'date'            => Helper::ShowDayMonthYear(@$requestlist->created_at),
+                    'created_date'    => Helper::ShowDayMonthYear(@$requestlist->created_at),
                     'vendor'          => @$requestlist->VendorDetails->name,
                     'branch_name'     => @$requestlist->Branch->name,
                     'branch_state'    => @$requestlist->Branch->nick_name,
@@ -147,7 +147,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
     {
         return [
             'Transaction Id',
-            'Date',
+            'Created Date',
             'Vendor',
             'Branch',
             'State',

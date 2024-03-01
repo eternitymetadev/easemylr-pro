@@ -120,7 +120,7 @@ class PrsTransactionStatusExport implements FromCollection, WithHeadings, Should
                 
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
-                    'date'            => Helper::ShowDayMonthYear(@$requestlist->created_at),
+                    'created_date'    => Helper::ShowDayMonthYear(@$requestlist->created_at),
                     'vendor'          => @$requestlist->VendorDetails->name,
                     'branch_name'     => @$requestlist->Branch->name,
                     'branch_state'    => @$requestlist->Branch->nick_name,
