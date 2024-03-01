@@ -349,7 +349,6 @@ $(document).on('click', '.show-prs', function() {
                     
                     console.log(prsPaymentreq.pickup_run_sheet);
                     $.each(prsPaymentreq.pickup_run_sheet.consignments, function(index, prsdetail) {
-                        console.log(prsdetail.consignments);
                         totalQuantitySum += parseInt(prsdetail.total_quantity);
                         totalNetweightSum += parseInt(prsdetail.total_weight);
                         totalGrossweightSum += parseInt(prsdetail.total_gross_weight);

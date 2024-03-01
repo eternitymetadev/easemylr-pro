@@ -118,6 +118,8 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
                     $payment_status = 'Unknown';
                 } 
                 
+                $hrsTotalQty = Helper::HrsPaymentTotalQty($requestlist->transaction_id);
+
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
                     'date'            => Helper::ShowDayMonthYear(@$requestlist->created_at),
@@ -125,6 +127,9 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
                     'branch_name'     => @$requestlist->Branch->name,
                     'branch_state'    => @$requestlist->Branch->nick_name,
                     'total_hrs'       => Helper::countHrsInTransaction(@$requestlist->transaction_id),
+                    'total_boxes'     => @$hrsTotalQty['totalQuantitySum'],
+                    'total_netwt'     => @$hrsTotalQty['totalNetwtSum'],
+                    'total_grosswt'   => @$hrsTotalQty['totalGrosswtSum'],
                     'payment_type'    => @$requestlist->payment_type,
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,
@@ -146,6 +151,9 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
             'Branch',
             'State',
             'Total Hrs',
+            'Sum of Boxes',
+            'Sum of NetWt',
+            'Sum of GrossWt',
             'Payment Type',
             'Advanced',
             'Balance',

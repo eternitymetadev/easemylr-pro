@@ -118,7 +118,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                     $payment_status = 'Unknown';
                 } 
 
-                $DrstotalQty = Helper::DrsPaymentTotalQty($requestlist->transaction_id);
+                $drsTotalQty = Helper::HrsPaymentTotalQty($requestlist->transaction_id);
 
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
@@ -127,9 +127,9 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                     'branch_name'     => @$requestlist->Branch->name,
                     'branch_state'    => @$requestlist->Branch->nick_name,
                     'total_drs'       => Helper::countDrsInTransaction(@$requestlist->transaction_id),
-                    'total_boxes'     => @$DrstotalQty['totalQuantitySum'],
-                    'total_netwt'     => @$DrstotalQty['totalNetwtSum'],
-                    'total_grosswt'   => @$DrstotalQty['totalGrosswtSum'],
+                    'total_boxes'     => @$drsTotalQty['totalQuantitySum'],
+                    'total_netwt'     => @$drsTotalQty['totalNetwtSum'],
+                    'total_grosswt'   => @$drsTotalQty['totalGrosswtSum'],
                     'payment_type'    => @$requestlist->payment_type,
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,

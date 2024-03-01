@@ -47,13 +47,11 @@ class PrsTransactionStatusExport implements FromCollection, WithHeadings, Should
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->with(['PickupRunSheet','PickupRunSheet.Consignments','Branch'])
+        $query = $query->with(['Branch'])
             ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
-            $query = $query->where('branch_id', $cc);
-        } else {
-            $query = $query;
+            $query->where('branch_id', $cc);
         }
 
         if (!empty($search)) {
@@ -117,6 +115,8 @@ class PrsTransactionStatusExport implements FromCollection, WithHeadings, Should
                 } else{
                     $payment_status = 'Unknown';
                 } 
+
+                $prsTotalQty = Helper::PrsPaymentTotalQty($requestlist->transaction_id);
                 
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
@@ -125,6 +125,9 @@ class PrsTransactionStatusExport implements FromCollection, WithHeadings, Should
                     'branch_name'     => @$requestlist->Branch->name,
                     'branch_state'    => @$requestlist->Branch->nick_name,
                     'total_prs'       => Helper::countPrsInTransaction(@$requestlist->transaction_id),
+                    'total_boxes'     => @$prsTotalQty['totalQuantitySum'],
+                    'total_netwt'     => @$prsTotalQty['totalNetwtSum'],
+                    'total_grosswt'   => @$prsTotalQty['totalGrosswtSum'],
                     'payment_type'    => @$requestlist->payment_type,
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,
@@ -146,6 +149,9 @@ class PrsTransactionStatusExport implements FromCollection, WithHeadings, Should
             'Branch',
             'State',
             'Total Prs',
+            'Sum of Boxes',
+            'Sum of NetWt',
+            'Sum of GrossWt',
             'Payment Type',
             'Advanced',
             'Balance',

@@ -1465,6 +1465,19 @@ class PickupRunSheetController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if(isset($startdate) && isset($enddate)){
+                $query = $query->whereBetween('created_at',[$startdate,$enddate]);                
+            }
+            
+            if ($request->paymentstatus_id !== null) {
+                if ($request->paymentstatus_id || $request->paymentstatus_id == 0) {
+                    $query = $query->where('payment_status', $request->paymentstatus_id);
+                }
+            }
+
             $prsRequests = $query->orderBy('id', 'DESC')->paginate($peritem);
             $prsRequests = $prsRequests->appends($request->query());
 
