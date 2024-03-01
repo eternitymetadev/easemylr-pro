@@ -14,7 +14,7 @@
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Purchase Price</label>
-                            <input type="text" class="form-control" id="purchse_edit" name="purchase_price" value="">
+                            <input type="number" class="form-control" id="purchse_edit" name="purchase_price" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Vehicle Type</label>
@@ -43,20 +43,22 @@
 <!-- /////////////////////////////////////////////////////////////// -->
 <div class="modal fade" id="show_hrs_model" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
+        <div class="modal-content" style="width: min(90vw, 700px)">
             <!-- Modal Header -->
             <div class="modal-header text-center">
-                <h4 class="modal-title">Confirm</h4>
+                <h4 class="modal-title">HRS Details</h4>
             </div>
             <!-- Modal body -->
             <div class="modal-body">
 
-                <table id="show_drs_table" class="table table-hover"
+                <table id="show_hrs_table" class="table table-hover"
                     style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                     <thead>
                         <tr>
-                            <th>Drs No</th>
+                            <th>HRS No</th>
+                            <th>Sum of Boxes</th>
+                            <th>Sum of Net Weight</th>
+                            <th>Sum of Gross Weight</th>
 
                         </tr>
                     </thead>
@@ -220,7 +222,7 @@ if ($countbranch > 1) {?>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Purchase Price</label>
-                            <input type="text" class="form-control" id="purchse" name="purchase_price" value="">
+                            <input type="number" class="form-control" id="purchse" name="purchase_price" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Vehicle Type</label>
@@ -353,8 +355,7 @@ if ($countbranch > 1) {?>
                         <div class="form-group form-group-sm col-md-4">
                             <label for="exampleFormControlSelect1">Branch Location</label>
                             <select class="form-control" id="branch_id_1" name="branch_id" tabindex="-1">
-                                <?php $countbranch = count($branchs);
-if ($countbranch > 1) {?>
+                                <?php if (count($branchs) > 1) {?>
                                 <option selected disabled>select location</option>
                                 <?php }?>
                                 @foreach($branchs as $branch)
@@ -368,8 +369,8 @@ if ($countbranch > 1) {?>
                                 <option value="" selected disabled>Select Vendor</option>
                                 @foreach($vendors as $vendor)
                                 <?php
-$bank_details = json_decode($vendor->bank_details, true);
-?>
+                                $bank_details = json_decode($vendor->bank_details, true);
+                                ?>
                                 <option value="{{$vendor->id}}">{{$vendor->name}}-{{$bank_details['account_no']}}
                                     -{{$vendor->Branch->name ?? '-'}}</option>
                                 @endforeach

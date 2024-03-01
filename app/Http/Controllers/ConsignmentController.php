@@ -1464,6 +1464,7 @@ class ConsignmentController extends Controller
                           </div>
 
                   <div class="footer">
+
                                   <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
                                 <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
                                 <p style="font-size: 8px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
@@ -1472,6 +1473,7 @@ class ConsignmentController extends Controller
                                 <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
                                 <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
                                 <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
+
                   </div>
                     </div>
                     <!-- Optional JavaScript; choose one of the two! -->
@@ -1984,46 +1986,11 @@ class ConsignmentController extends Controller
         
 
     }   
-     
-    public function unverifiedList1(Request $request)
-    {
-        $this->prefix = request()->route()->getPrefix();
-        $authuser = Auth::user();
-        $role_id = Role::where('id', '=', $authuser->role_id)->first();
-        $baseclient = explode(',', $authuser->baseclient_id);
-        $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',', $authuser->branch_id);
-        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
-        // set_time_limit(60);
-        $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
-            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->whereIn('consignment_notes.status', ['2', '6'])
-            ->where('consignment_notes.booked_drs', '!=', '1')
-            ->where('consignment_notes.lr_type', '!=', 3);
-
-        if ($authuser->role_id == 1) {
-            $data;
-        } elseif ($authuser->role_id == 4) {
-            $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-        } else {
-            $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc) {
-                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2','6']);
-            });
-        }
-        $consignments = $data->orderBy('id', 'DESC')->get();
-
-        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
-        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
-
-        return view('consignments.unverified-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])
-            ->with('i', ($request->input('page', 1) - 1) * 5);
-    }
-
+    
+    // create drs list
     public function unverifiedList(Request $request)
     {
+        set_time_limit(120);
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         
@@ -3065,6 +3032,16 @@ class ConsignmentController extends Controller
     // create drs function
     public function CreateEdd(Request $request)
     {
+        $authuser = Auth::user();
+        $cc = $authuser->branch_id;
+
+        if($authuser->role_id != 2 || $authuser->role_id != 4){
+            return response()->json([
+                'success' => false,
+                'checkdrs' => 'drs-exist', 
+                'error_message' => "You are not authorized to create DRS."
+            ]);
+        }
         $consignmentId = $_POST['consignmentID'];
         $checkDrs = TransactionSheet::whereIn('consignment_no', $consignmentId)->whereNotIn('status', [0, 4])->first();
         if ($checkDrs) {
@@ -3074,9 +3051,6 @@ class ConsignmentController extends Controller
                 'error_message' => "Drs already created DRS-".$checkDrs->drs_no
             ]);
         }
-
-        $authuser = Auth::user();
-        $cc = $authuser->branch_id;
 
         // check order book drs
         $checklrstatus = ConsignmentNote::whereIn('id', $consignmentId)->get();

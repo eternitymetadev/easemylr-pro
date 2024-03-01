@@ -330,13 +330,13 @@ if ($countbranch > 1) {?>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Purchase Price</label>
-                            <input type="text" class="form-control" id="purchse" name="purchase_price" value="">
+                            <input type="number" class="form-control" id="purchse" name="purchase_price" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Vehicle Type</label>
                             <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
                                 <option value="">Select vehicle type</option>
-                                @foreach($vehicletype as $vehicle)
+                                @foreach($vehicletypes as $vehicle)
                                 <option value="{{$vehicle->id}}">{{$vehicle->name}}
                                 </option>
                                 @endforeach
@@ -359,11 +359,10 @@ if ($countbranch > 1) {?>
 
 <div class="modal fade" id="show_prs_model" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
+        <div class="modal-content" style="width: min(90vw, 700px)">
             <!-- Modal Header -->
             <div class="modal-header text-center">
-                <h4 class="modal-title">Confirm</h4>
+                <h4 class="modal-title">PRS Details</h4>
             </div>
             <!-- Modal body -->
             <div class="modal-body">
@@ -372,7 +371,10 @@ if ($countbranch > 1) {?>
                     style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                     <thead>
                         <tr>
-                            <th>Prs No</th>
+                            <th>PRS No</th>
+                            <th>Sum of Boxes</th>
+                            <th>Sum of Net Weight</th>
+                            <th>Sum of Gross Weight</th>
 
                         </tr>
                     </thead>

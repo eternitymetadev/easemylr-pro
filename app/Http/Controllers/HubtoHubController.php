@@ -14,9 +14,11 @@ use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Vendor;
 use App\Exports\HrsSheetExport;
+use App\Exports\HrsTransactionStatusExport;
 use App\Models\PickupRunSheet;
 use Auth;
 use Config;
+use URL;
 use DB;
 use Helper;
 use Illuminate\Http\Request;
@@ -75,10 +77,18 @@ class HubtoHubController extends Controller
 
     public function createHrs(Request $request)
     {
-        $consignmentId = $_POST['consignmentID'];
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
+        
+        if($authuser->role_id != 2 || $authuser->role_id != 4){
+            return response()->json([
+                'success' => false,
+                'check_role' => 'role-exist', 
+                'error_message' => "You are not authorized to create HRS."
+            ]);
+        }
 
+        $consignmentId = $_POST['consignmentID'];
         $location = Location::where('id', $cc)->first();
 
         $hrsid = DB::table('hrs')->select('hrs_no')->latest('hrs_no')->first();
@@ -1399,28 +1409,13 @@ class HubtoHubController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
 
-            $query = $query->with('Branch', 'User')
-            ->whereIn('status', ['1', '0', '3'])
+            $query = $query->with(['HrsDetails','HrsDetails.ConsignmentDetail','VendorDetails','Branch', 'User'])
             ->groupBy('transaction_id');
 
-            if ($authuser->role_id == 1) {
-                $query = $query;
-            } elseif ($authuser->role_id == 4) {
-                $query = $query
-                    ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
-                        $query->whereIn('regclient_id', $regclient);
-                    });
-            } elseif ($authuser->role_id == 6) {
-                $query = $query
-                    ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
-                        $query->whereIn('base_clients.id', $baseclient);
-                    });
-            } elseif ($authuser->role_id == 7) {
-                $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
-            } elseif($authuser->role_id == 3){
-                $query = $query->where('rm_id', $authuser->id);
+            if ($authuser->role_id == 2) {
+                $query = $query->where('branch_id', $cc);
             } else {
-                $query = $query->whereIn('branch_id', $cc);
+                $query = $query;
             }
 
             if (!empty($request->search)) {
@@ -1429,6 +1424,22 @@ class HubtoHubController extends Controller
                 $query->where(function ($query) use ($search, $searchT) {
                     $query->where('hrs_no', 'like', '%' . $search . '%')
                     ->orWhere('transaction_id', 'like', '%' . $search . '%');
+                });
+            }
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('transaction_id', 'like', '%' . $search . '%')
+                        ->orWhere('total_amount', 'like', '%' . $search . '%')
+                        ->orWhere('advanced', 'like', '%' . $search . '%')
+                        ->orWhere('balance', 'like', '%' . $search . '%')
+                        ->orWhereHas('VendorDetails', function ($query) use ($search, $searchT) {
+                            $query->where(function ($vndrquery) use ($search, $searchT) {
+                                $vndrquery->where('name', 'like', '%' . $search . '%');
+                            });
+                        });
                 });
             }
 
@@ -1441,6 +1452,19 @@ class HubtoHubController extends Controller
                 $peritem = $peritem;
             } else {
                 $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if(isset($startdate) && isset($enddate)){
+                $query = $query->whereBetween('created_at',[$startdate,$enddate]);                
+            }
+            
+            if ($request->paymentstatus_id !== null) {
+                if ($request->paymentstatus_id || $request->paymentstatus_id == 0) {
+                    $query = $query->where('payment_status', $request->paymentstatus_id);
+                }
             }
             
             $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
@@ -1466,29 +1490,16 @@ class HubtoHubController extends Controller
 
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query->with('Branch', 'User')
-            ->whereIn('status', ['1', '0', '3'])
+        $query = $query->with(['HrsDetails','HrsDetails.ConsignmentDetail','VendorDetails','Branch', 'User'])
             ->groupBy('transaction_id');
+            // ->whereIn('status', ['1', '0', '3'])
 
-        if ($authuser->role_id == 1) {
-            $query = $query;
-        } elseif ($authuser->role_id == 4) {
-            $query = $query
-                ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
-                    $query->whereIn('regclient_id', $regclient);
-                });
-        } elseif ($authuser->role_id == 6) {
-            $query = $query
-                ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
-                    $query->whereIn('base_clients.id', $baseclient);
-                });
-        } elseif ($authuser->role_id == 7) {
-            $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
-        } elseif($authuser->role_id == 3){
-            $query = $query->where('rm_id', $authuser->id);
-        } else {
-            $query = $query->whereIn('branch_id', $cc);
-        }
+            if ($authuser->role_id == 2) {
+                $query = $query->where('branch_id', $cc);
+            } else {
+                $query = $query;
+            }
+
         $hrsRequests = $query->orderBy('id', 'DESC')->paginate($peritem);
         $hrsRequests = $hrsRequests->appends($request->query());
         $vendors = Vendor::with('Branch')->get();
@@ -1496,6 +1507,21 @@ class HubtoHubController extends Controller
 
         return view('hub-transportation.hrs-request-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrsRequests' => $hrsRequests, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes, 'branchs' => $branchs, 'vendors' => $vendors,'vehicletype' => $vehicletype]);
 
+    }
+
+    public function showHrs(Request $request)
+    {
+        $gethrs = HrsPaymentRequest::with(['HrsDetails','HrsDetails.ConsignmentDetail'])->select('hrs_no')->where('transaction_id', $request->trans_id)->get();
+        
+        $response['gethrs'] = $gethrs;
+        $response['success'] = true;
+        $response['success_message'] = "HRS Fetched successfully";
+        return response()->json($response);
+    }
+
+    public function hrsTransactionExport(Request $request)
+    {
+        return Excel::download(new HrsTransactionStatusExport($request->startdate, $request->enddate,$request->paymentstatus_id,$request->search), 'hrs-transaction-status-report.csv');
     }
 
     public function getVendorReqDetailsHrs(Request $request)
@@ -1863,24 +1889,13 @@ class HubtoHubController extends Controller
             $new_response['message'] = $res_data->message;
 
         } else {
-
-            $new_response['message'] = $res_data->message;
             $new_response['success'] = false;
-
+            $new_response['message'] = $res_data->message;
         }
     }
         return response()->json($new_response);
     }
-
-    public function showHrs(Request $request)
-    {
-        $gethrs = HrsPaymentRequest::select('hrs_no')->where('transaction_id', $request->trans_id)->get();
-
-        $response['gethrs'] = $gethrs;
-        $response['success'] = true;
-        $response['success_message'] = "HRS Fetched successfully";
-        return response()->json($response);
-    }
+    
     /////////////////
     public function editPurchasePriceHrs(Request $request)
     {

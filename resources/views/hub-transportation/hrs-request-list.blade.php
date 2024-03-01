@@ -67,6 +67,13 @@ input[readonly].styledInput {
     /* scroll-margin: 38px; */
     overflow: auto;
 }
+.highlight-on-hover {
+    cursor: pointer;
+}
+
+.highlight-on-hover:hover {
+    background-color: lightgrey;
+}
 </style>
 
 <div class="layout-px-spacing">
@@ -74,15 +81,59 @@ input[readonly].styledInput {
         <h2 class="pageHeading">HRS Payment Sheet</h2>
     </div>
 
-    <div class="widget-content widget-content-area br-6" style="min-height: min(80vh, 600px)">
-
-        <div class="p-3 d-flex flex-wrap justify-content-between align-items-center" style="gap: 1rem;">
-
+    <div class="widget-content widget-content-area br-6" >
+        {{-- <div class="p-3 d-flex flex-wrap justify-content-between align-items-center" style="gap: 1rem;">
             <div>
                 <input class="form-control" placeholder="Transaction Number Search" id="search"
-                    data-action="<?php echo url()->current(); ?>"
+                    data-action="<?php //echo url()->current(); ?>"
                     style="height: 36px; max-width: 250px; width: 300px;" />
             </div>
+        </div> --}}
+        <div class="row px-3 mx-0 mt-4 justify-content-between" style="gap: 12px; flex-wrap: wrap">
+            <div class="d-flex align-items-end" style="gap: 12px; flex-wrap: wrap">
+                <div style="width: 300px">
+                    <label>Search</label>
+                    <input type="text" class="form-control" placeholder="Transaction Id" id="search"
+                        data-action="<?php echo url()->current(); ?>">
+                </div>
+
+                <div style="width: 156px">
+                    <label>From</label>
+                    <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
+                </div>
+                <div style="width: 156px">
+                    <label>To</label>
+                    <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
+                </div>
+                <div style="width: 210px">
+                    <label>Payment Status</label>
+                    <select class="form-control my-select2" id="paymentstatus_filter" name="paymentstatus_id"
+                        data-action="<?php echo url()->current(); ?>" placeholder="Search By Status">
+                        <option value="" selected disabled>--select status--</option>
+                        <option value="1">Fully Paid</option>
+                        <option value="2">Processing</option>
+                        <option value="3">Create payment</option>
+                        <option value="0">Failed</option>
+                    </select>
+                </div>
+
+                <button type="button" id="filter_reportall" class="btn btn-primary"
+                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 100px">
+                    <span class="indicator-label">Filter</span>
+                </button>
+
+                <button type="button" class="btn btn-primary reset_filter"
+                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 100px"
+                    data-action="<?php echo url()->current(); ?>">
+                    <span class="indicator-label">Reset</span>
+                </button>
+            </div>
+
+            <a href="<?php echo URL::to($prefix . '/hrs-transaction-export'); ?>" data-url="<?php echo URL::to($prefix . '/hrs-request-list'); ?>"
+                class="consignmentReportEx btn btn-white btn-cstm"
+                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
+                data-action="<?php echo URL::to($prefix . '/hrs-transaction-export'); ?>" download><span><i class="fa fa-download"></i>
+                    Export</span></a>
         </div>
 
         @csrf
@@ -95,222 +146,341 @@ input[readonly].styledInput {
 @endsection
 @section('js')
 <script> 
-function toggleHrsAction() {
-    if ($('#rejectedSelected').is(':checked')) {
-        $('#rejectedRemarksBox').show();
-        $('#hrsActionButton').html('Reject');
-    } else {
-        $('#rejectedRemarksBox').hide();
-        $('#hrsActionButton').html('Push');
+    function toggleHrsAction() {
+        if ($('#rejectedSelected').is(':checked')) {
+            $('#rejectedRemarksBox').show();
+            $('#hrsActionButton').html('Reject');
+        } else {
+            $('#rejectedRemarksBox').hide();
+            $('#hrsActionButton').html('Push');
+        }
+
     }
 
-
-}
-
-$(document).on('click', '.approve', function() {
-    var transaction_id = $(this).attr('data-id');
-    $('#approver_model').modal('show');
-    $.ajax({
-        type: "GET",
-        url: "get-vender-req-details-hrs",
-        data: {
-            transaction_id: transaction_id
-        },
-        beforeSend: function() {
-
-        },
-        success: function(data) {
-
-            var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
-
-            $('#hrs_number').val(data.hrs_no);
-            $('#transaction_no').val(data.req_data[0].transaction_id);
-            $('#vendor_num').val(data.req_data[0].vendor_details.vendor_no);
-            $('#transaction_id_2').val(data.req_data[0].transaction_id);
-            $('#v_name').val(data.req_data[0].vendor_details.name);
-            $('#email').val(data.req_data[0].vendor_details.email);
-            $('#beneficiary_name').val(bank_details.acc_holder_name);
-            $('#bank_acc').val(bank_details.account_no);
-            $('#ifsc_code').val(bank_details.ifsc_code);
-            $('#bank_name').val(bank_details.bank_name);
-            $('#branch_name').val(bank_details.branch_name);
-            $('#total_clam_amt').val(data.req_data[0].total_amount);
-            $('#pan').val(data.req_data[0].vendor_details.pan);
-            $('#tds_deduct_balance').val(data.req_data[0].tds_deduct_balance);
-            $('#final_payable_amount').val(data.req_data[0].current_paid_amt);
-            $('#pymt_type').val(data.req_data[0].payment_type);
-            $('#branch_id_app').val(data.req_data[0].branch_id);
-            $('#user_id').val(data.req_data[0].user_id);
-            $('#advance').val(data.req_data[0].amt_without_tds);
-
-            $('.req_amt').html(data.req_data[0].current_paid_amt);
-            $('.req_vendor').html(data.req_data[0].vendor_details.name);
-            $('.req_trans_id').html(data.req_data[0].transaction_id);
-
-        }
-    });
-});
-///
-////////////////// RM Approver Request ////////////
-$("#rm_aprover").submit(function(e) {
-    e.preventDefault();
-    var formData = new FormData(this);
-    $.ajax({
-        url: "rm-approver",
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        type: "POST",
-        data: new FormData(this),
-        processData: false,
-        contentType: false,
-        beforeSend: function() {
-            $(".indicator-progress").show();
-            $(".indicator-label").hide();
-            $('.disableme').prop('disabled', true);
-        },
-        success: (data) => {
-            $('.disableme').prop('disabled', true);
-            $(".indicator-progress").hide();
-            $(".indicator-label").show();
-
-            if (data.success == true) {
-                swal("success", data.message, "success");
-                window.location.reload();
-            } else {
-                swal("error", data.message, "error");
-            }
-
-        },
-    });
-});
-//////
-//////////// Payment request sent model
-$(document).on('click', '.second_payment', function() {
-    $("#second_payment_form")[0].reset();
-    var trans_id = $(this).val();
-    $('#pymt_request_modal').modal('show');
-    $.ajax({
-        type: "GET",
-        url: "get-second-pymt-details",
-        data: {
-            trans_id: trans_id
-        },
-        beforeSend: //reinitialize Datatables
-            function() {
-                $('#p_type').empty();
+    $(document).on('click', '.approve', function() {
+        var transaction_id = $(this).attr('data-id');
+        $('#approver_model').modal('show');
+        $.ajax({
+            type: "GET",
+            url: "get-vender-req-details-hrs",
+            data: {
+                transaction_id: transaction_id
+            },
+            beforeSend: function() {
 
             },
-        success: function(data) {
+            success: function(data) {
 
-            var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
+                var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
 
-            $('#hrs_no_request').val(data.hrs_no);
-            $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
-            $('#transaction_id_2').val(data.req_data[0].transaction_id);
-            $('#name').val(data.req_data[0].vendor_details.name);
-            $('#email_second').val(data.req_data[0].vendor_details.email);
-            $('#beneficiary_name_second').val(bank_details.acc_holder_name);
-            $('#bank_acc_second').val(bank_details.account_no);
-            $('#ifsc_code_second').val(bank_details.ifsc_code);
-            $('#bank_name_second').val(bank_details.bank_name);
-            $('#branch_name_second').val(bank_details.branch_name);
-            $('#total_clam_amt_second').val(data.req_data[0].total_amount);
-            $('#tds_rate_second').val(data.req_data[0].vendor_details.tds_rate);
-            $('#pan_second').val(data.req_data[0].vendor_details.pan);
+                $('#hrs_number').val(data.hrs_no);
+                $('#transaction_no').val(data.req_data[0].transaction_id);
+                $('#vendor_num').val(data.req_data[0].vendor_details.vendor_no);
+                $('#transaction_id_2').val(data.req_data[0].transaction_id);
+                $('#v_name').val(data.req_data[0].vendor_details.name);
+                $('#email').val(data.req_data[0].vendor_details.email);
+                $('#beneficiary_name').val(bank_details.acc_holder_name);
+                $('#bank_acc').val(bank_details.account_no);
+                $('#ifsc_code').val(bank_details.ifsc_code);
+                $('#bank_name').val(bank_details.bank_name);
+                $('#branch_name').val(bank_details.branch_name);
+                $('#total_clam_amt').val(data.req_data[0].total_amount);
+                $('#pan').val(data.req_data[0].vendor_details.pan);
+                $('#tds_deduct_balance').val(data.req_data[0].tds_deduct_balance);
+                $('#final_payable_amount').val(data.req_data[0].current_paid_amt);
+                $('#pymt_type').val(data.req_data[0].payment_type);
+                $('#branch_id_app').val(data.req_data[0].branch_id);
+                $('#user_id').val(data.req_data[0].user_id);
+                $('#advance').val(data.req_data[0].amt_without_tds);
 
-            $('#p_type_second').append('<option value="Fully">Fully Payment</option>');
-            //check balance if null or delevery successful
-            if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
-                $('#amt_second').val(data.req_data[0].total_amount);
-                var amt = $('#amt_second').val();
-                var tds_rate = $('#tds_rate_second').val();
-                var cal = (tds_rate / 100) * amt;
-                var final_amt = amt - cal;
-                $('#tds_dedut_second').val(final_amt);
-                $('#amt_second').attr('readonly', true);
-
-            } else {
-                $('#amt_second').val(data.req_data[0].balance);
-                var amt = $('#amt_second').val();
-                //calculate
-                var tds_rate = $('#tds_rate_second').val();
-                var cal = (tds_rate / 100) * amt;
-                var final_amt = amt - cal;
-                $('#tds_dedut_second').val(final_amt);
-                // $('#amt').attr('disabled', 'disabled');
-                $('#amt_second').attr('readonly', true);
+                $('.req_amt').html(data.req_data[0].current_paid_amt);
+                $('.req_vendor').html(data.req_data[0].vendor_details.name);
+                $('.req_trans_id').html(data.req_data[0].transaction_id);
 
             }
-
-        }
-
+        });
     });
-
-});
-//////Second Payment
-$("#second_payment_form").submit(function(e) {
-    e.preventDefault();
-    var formData = new FormData(this);
-    var tds_rate = $("#tds_rate").val();
-
-    // if (!tds_rate) {
-    //     swal("Error", "please add tds rate in vendor", "error");
-    //     return false;
-    // }
-
-    $.ajax({
-        url: "second-payment-hrs",
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        type: "POST",
-        data: new FormData(this),
-        processData: false,
-        contentType: false,
-        beforeSend: function() {
-            $(".indicator-progress").show();
-            $(".indicator-label").hide(); 
-        },
-        success: (data) => {
-            $(".indicator-progress").hide();
-            $(".indicator-label").show();
-            if (data.success == true) {
-                swal("success", data.message, "success");
-                $("#second_payment_form")[0].reset();
-            } else {
-                swal("error", data.message, "error");
-            }
-        },
-    });
-});
-////
-///////////////////////////////////////////////
-$(document).on('click', '.show-hrs', function() {
-    var trans_id = $(this).attr('data-id');
-    $('#show_hrs_model').modal('show');
-    $.ajax({
-        type: "GET",
-        url: "show-hrs",
-        data: {
-            trans_id: trans_id
-        },
-        beforeSend: //reinitialize Datatables
-            function() {
-                $('#show_drs_table').dataTable().fnClearTable();
-                $('#show_drs_table').dataTable().fnDestroy();
+    ///
+    ////////////////// RM Approver Request ////////////
+    $("#rm_aprover").submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            url: "rm-approver",
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
-        success: function(data) {
-            // console.log(data.)
-            $.each(data.gethrs, function(index, value) {
+            type: "POST",
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+                $(".indicator-progress").show();
+                $(".indicator-label").hide();
+                $('.disableme').prop('disabled', true);
+            },
+            success: (data) => {
+                $('.disableme').prop('disabled', true);
+                $(".indicator-progress").hide();
+                $(".indicator-label").show();
 
-                $('#show_drs_table tbody').append("<tr><td>" + value.hrs_no + "</td></tr>");
+                if (data.success == true) {
+                    swal("success", data.message, "success");
+                    window.location.reload();
+                } else {
+                    swal("error", data.message, "error");
+                }
 
-            });
-        }
+            },
+        });
+    });
+    //////
+    //////////// Payment request sent model
+    $(document).on('click', '.second_payment', function() {
+        $("#second_payment_form")[0].reset();
+        var trans_id = $(this).val();
+        $('#pymt_request_modal').modal('show');
+        $.ajax({
+            type: "GET",
+            url: "get-second-pymt-details",
+            data: {
+                trans_id: trans_id
+            },
+            beforeSend: //reinitialize Datatables
+                function() {
+                    $('#p_type').empty();
+
+                },
+            success: function(data) {
+
+                var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
+
+                $('#hrs_no_request').val(data.hrs_no);
+                $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
+                $('#transaction_id_2').val(data.req_data[0].transaction_id);
+                $('#name').val(data.req_data[0].vendor_details.name);
+                $('#email_second').val(data.req_data[0].vendor_details.email);
+                $('#beneficiary_name_second').val(bank_details.acc_holder_name);
+                $('#bank_acc_second').val(bank_details.account_no);
+                $('#ifsc_code_second').val(bank_details.ifsc_code);
+                $('#bank_name_second').val(bank_details.bank_name);
+                $('#branch_name_second').val(bank_details.branch_name);
+                $('#total_clam_amt_second').val(data.req_data[0].total_amount);
+                $('#tds_rate_second').val(data.req_data[0].vendor_details.tds_rate);
+                $('#pan_second').val(data.req_data[0].vendor_details.pan);
+
+                $('#p_type_second').append('<option value="Fully">Fully Payment</option>');
+                //check balance if null or delevery successful
+                if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
+                    $('#amt_second').val(data.req_data[0].total_amount);
+                    var amt = $('#amt_second').val();
+                    var tds_rate = $('#tds_rate_second').val();
+                    var cal = (tds_rate / 100) * amt;
+                    var final_amt = amt - cal;
+                    $('#tds_dedut_second').val(final_amt);
+                    $('#amt_second').attr('readonly', true);
+
+                } else {
+                    $('#amt_second').val(data.req_data[0].balance);
+                    var amt = $('#amt_second').val();
+                    //calculate
+                    var tds_rate = $('#tds_rate_second').val();
+                    var cal = (tds_rate / 100) * amt;
+                    var final_amt = amt - cal;
+                    $('#tds_dedut_second').val(final_amt);
+                    // $('#amt').attr('disabled', 'disabled');
+                    $('#amt_second').attr('readonly', true);
+
+                }
+
+            }
+
+        });
 
     });
-});
-/////////////////////////////////////////////////////////////////
+    //////Second Payment
+    $("#second_payment_form").submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        var tds_rate = $("#tds_rate").val();
+
+        // if (!tds_rate) {
+        //     swal("Error", "please add tds rate in vendor", "error");
+        //     return false;
+        // }
+
+        $.ajax({
+            url: "second-payment-hrs",
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            type: "POST",
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+                $(".indicator-progress").show();
+                $(".indicator-label").hide(); 
+            },
+            success: (data) => {
+                $(".indicator-progress").hide();
+                $(".indicator-label").show();
+                if (data.success == true) {
+                    swal("success", data.message, "success");
+                    $("#second_payment_form")[0].reset();
+                } else {
+                    swal("error", data.message, "error");
+                }
+            },
+        });
+    });
+    ////
+    ///////////////////////////////////////////////
+    $(document).on('click', '.show-hrs', function() {
+        var trans_id = $(this).attr('data-id');
+        $('#show_hrs_model').modal('show');
+        $.ajax({
+            type: "GET",
+            url: "show-hrs",
+            data: {
+                trans_id: trans_id
+            },
+            beforeSend: //reinitialize Datatables
+                function() {
+                    $('#show_hrs_table').dataTable().fnClearTable();
+                    $('#show_hrs_table').dataTable().fnDestroy();
+                },
+            success: function(data) {
+                // console.log(data)
+                if (data.success) {
+                    $.each(data.gethrs, function(index, hrsPaymentreq) {
+                        console.log(hrsPaymentreq);
+                        var totalQuantitySum = 0;
+                        var totalNetweightSum = 0;
+                        var totalGrossweightSum = 0;
+                        $.each(hrsPaymentreq.hrs_details, function(index, hrsdetail) {
+                            
+                            totalQuantitySum += parseInt(hrsdetail.consignment_detail.total_quantity);
+                            totalNetweightSum += parseInt(hrsdetail.consignment_detail.total_weight);
+                            totalGrossweightSum += parseInt(hrsdetail.consignment_detail.total_gross_weight);
+                        });
+                        $('#show_hrs_table tbody').append("<tr><td>" + hrsPaymentreq.hrs_no +
+                            "</td><td>" + totalQuantitySum +
+                            "</td><td>" + totalNetweightSum +
+                            "</td><td>" + totalGrossweightSum +
+                            "</td></tr>");
+                    });
+                }
+            }
+
+        });
+    });
+    //////////////////////////////////////////
+
+    // payment status filter
+    $('#paymentstatus_filter').change(function() {
+        var paymentstatus_id = $(this).val();
+        let url = $(this).attr('data-action');
+        $.ajax({
+            url: url,
+            type: "get",
+            cache: false,
+            data: {
+                paymentstatus_id: paymentstatus_id
+            },
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+            },
+            beforeSend: function() {
+
+            },
+            success: function(res) {
+                if (res.html) {
+                    jQuery('.main-table').html(res.html);
+                }
+            },
+        });
+        return false;
+    });
+
+    jQuery(document).on('click', '#filter_reportall', function() {
+        var startdate = $("#startdate").val();
+        var enddate = $("#enddate").val();
+        var search = jQuery('#search').val();
+        var paymentstatus_id = $("#paymentstatus_filter").val();
+        
+        jQuery.ajax({
+            type: 'get',
+            url: 'hrs-request-list',
+            data: {
+                startdate: startdate,
+                enddate: enddate,
+                search: search,
+                paymentstatus_id: paymentstatus_id
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.html) {
+                    jQuery('.main-table').html(response.html);
+                }
+            }
+        });
+        return false;
+    });
+
+    jQuery(document).on('click', '.consignmentReportEx', function(event) {
+    event.preventDefault();
+
+        var totalcount = jQuery('.totalcount').text();
+        if (totalcount > 30000) {
+            jQuery('.limitmessage').show();
+            setTimeout(function() {
+                jQuery('.limitmessage').fadeOut();
+            }, 5000);
+            return false;
+        }
+
+        var geturl = jQuery(this).attr('data-action');
+        var startdate = jQuery('#startdate').val();
+        var enddate = jQuery('#enddate').val();
+        var paymentstatus_id = $("#paymentstatus_filter").val();
+        var search = jQuery('#search').val();
+
+        var url = jQuery('#search').attr('data-url');
+
+        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '?search=' + search + '&paymentstatus_id=' + paymentstatus_id;
+
+        jQuery.ajax({
+            url: url,
+            type: 'get',
+            cache: false,
+            data: {
+                startdate: startdate,
+                enddate: enddate,
+                search: search,
+                paymentstatus_id: paymentstatus_id
+            },
+            headers: {
+                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+            },
+            processData: true,
+            beforeSend: function() {
+                //jQuery(".load-main").show();
+            },
+            complete: function() {
+                //jQuery(".load-main").hide();
+            },
+            success: function(response) {
+                // jQuery(".load-main").hide();
+                setTimeout(() => {
+                    window.location.href = geturl
+                }, 10);
+            }
+        });
+    });
 </script>
 @endsection
