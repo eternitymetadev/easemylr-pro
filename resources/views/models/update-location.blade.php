@@ -110,21 +110,21 @@
                         </div>
                         <div class="form-row mb-0">
                             <span style="color: #000"><strong>Stationary:</strong></span>
-                            <div class="check-box d-flex align-content-center ml-2" style="gap: 8px">
-                                <div class="checkbox radio">
+                            <div class="checkbox radio">
                                     <label class="check-label">
-                                        <input type="radio" class="preprint_stationary" value='1' name="stationary">
+                                        <input type="radio" name="stationary" value='2'>
                                         <span class="checkmark"></span>
-                                        Preprinted Stationary
+                                        Plain
                                     </label>
                                 </div>
                                 <div class="checkbox radio">
                                     <label class="check-label">
-                                        <input type="radio" class="plain_stationary" name="stationary" value='2'>
+                                        <input type="radio" value='1' name="stationary" checked>
                                         <span class="checkmark"></span>
-                                        Plain Paper
+                                        Colored
                                     </label>
                                 </div>
+                                
                             </div>
 
                         </div>
@@ -133,16 +133,16 @@
                             <div class="check-box d-flex align-content-center ml-2" style="gap: 8px">
                                 <div class="checkbox radio">
                                     <label class="check-label">
-                                        <input type="radio" class="colored_sticker" value='1' name="sticker" >
+                                        <input type="radio" value='1' name="sticker" checked>
                                         <span class="checkmark"></span>
-                                        Colored
+                                        Plain
                                     </label>
                                 </div>
                                 <div class="checkbox radio">
                                     <label class="check-label">
-                                        <input type="radio" class="plain_sticker" name="sticker" value='2'>
+                                        <input type="radio" name="sticker" value='2'>
                                         <span class="checkmark"></span>
-                                        Plain
+                                        Colored
                                     </label>
                                 </div>
                             </div>
