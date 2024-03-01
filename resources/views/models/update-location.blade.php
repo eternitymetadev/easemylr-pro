@@ -1,5 +1,5 @@
-<div class="modal fade" id="location-updatemodal" tabindex="-1"
-     role="dialog" aria-labelledby="location-update-modal-title" aria-hidden="true">
+<div class="modal fade" id="location-updatemodal" tabindex="-1" role="dialog"
+    aria-labelledby="location-update-modal-title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: min(70%, 700px)">
         <div class="modal-content">
             <div class="modal-header">
@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 <form class="general_form" method="POST" action="{{url($prefix.'/locations/update')}}"
-                      id="updatelocation">
+                    id="updatelocation">
                     @csrf
                     <input type="hidden" class="locationid" value="" name="id">
                     <!-- Modal body -->
@@ -25,7 +25,7 @@
                                 <input class="form-control" id="nick_nameup" name="nick_name" value="">
                             </div>
                         </div>
-                        <div class="form-row mb-0"> 
+                        <div class="form-row mb-0">
                             <div class="form-group col-md-6">
                                 <label for="location_name">Email</label>
                                 <input class="form-control" id="emailup" name="email" value="">
@@ -46,19 +46,20 @@
                             </div> -->
 
                             <div class="form-group col-md-6">
-                            <label for="location_name">&nbsp;</label>
-                                <div class="check-box d-flex align-content-center align-items-center ml-2" style="gap: 8px; height: 42px">
-                                <!-- <span style="color: #000"><strong>Is HUB?</strong></span> -->
+                                <label for="location_name">&nbsp;</label>
+                                <div class="check-box d-flex align-content-center align-items-center ml-2"
+                                    style="gap: 8px; height: 42px">
+                                    <!-- <span style="color: #000"><strong>Is HUB?</strong></span> -->
                                     <div class="checkbox radio">
                                         <label class="check-label">
-                                            <input type="radio" class="is_hub_yes" value='1' name="is_hub"/>
+                                            <input type="radio" class="is_hub_yes" value='1' name="is_hub" />
                                             <!-- <span class="checkmark"></span> -->
                                             HUB
                                         </label>
                                     </div>
                                     <div class="checkbox radio">
                                         <label class="check-label">
-                                            <input type="radio" name="is_hub" value='0' class="is_hub_no"/>
+                                            <input type="radio" name="is_hub" value='0' class="is_hub_no" />
                                             <!-- <span class="checkmark"></span> -->
                                             Not a HUB
                                         </label>
@@ -66,14 +67,14 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="form-row mb-0">
                             <span style="color: #000"><strong>Allow LR without vehicle no. :</strong></span>
                             <div class="check-box d-flex align-content-center ml-2" style="gap: 8px">
                                 <div class="checkbox radio">
                                     <label class="check-label">
                                         <input class="radio_vehicleno_yes" type="radio" value='1'
-                                               name="with_vehicle_no">
+                                            name="with_vehicle_no">
                                         <span class="checkmark"></span>
                                         Yes
                                     </label>
@@ -97,7 +98,7 @@
                                         Eternity
                                     </label>
                                 </div>
-                                <div class="checkbox radio"> 
+                                <div class="checkbox radio">
                                     <label class="check-label">
                                         <input type="radio" class="app_use_shadow" name="app_use" value='Shadow'>
                                         <span class="checkmark"></span>
@@ -105,8 +106,51 @@
                                     </label>
                                 </div>
                             </div>
-                            
+
                         </div>
+                        <div class="form-row mb-0">
+                            <span style="color: #000"><strong>Stationary:</strong></span>
+                            <div class="check-box d-flex align-content-center ml-2" style="gap: 8px">
+                            <div class="checkbox radio">
+                                    <label class="check-label">
+                                        <input type="radio" class="plain_stationary" name="stationary" value='2'>
+                                        <span class="checkmark"></span>
+                                        Plain
+                                    </label>
+                                </div>
+                                <div class="checkbox radio">
+                                    <label class="check-label">
+                                        <input type="radio" class="preprint_stationary" value='1' name="stationary">
+                                        <span class="checkmark"></span>
+                                        Colored
+                                    </label>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+                        <div class="form-row mb-0">
+                            <span style="color: #000"><strong>Sticker:</strong></span>
+                            <div class="check-box d-flex align-content-center ml-2" style="gap: 8px">
+                                
+                                <div class="checkbox radio">
+                                    <label class="check-label">
+                                        <input type="radio" class="plain_sticker" name="sticker" value='2'>
+                                        <span class="checkmark"></span>
+                                        Plain
+                                    </label>
+                                </div>
+                                <div class="checkbox radio">
+                                    <label class="check-label">
+                                        <input type="radio" class="colored_sticker" value='1' name="sticker" checked>
+                                        <span class="checkmark"></span>
+                                        Colored
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
                     <!-- Modal footer -->
                     <div class="modal-footer">
