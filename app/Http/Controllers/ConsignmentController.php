@@ -738,7 +738,7 @@ class ConsignmentController extends Controller
         }
         return response()->json($response);
     }
-
+  
     // print LR for new view
     public function consignPrintview(Request $request)
     {
@@ -747,6 +747,7 @@ class ConsignmentController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $branch_add = BranchAddress::get();
         $locations = Location::with('GstAddress')->whereIn('id', $cc)->first();
+        
         $cn_id = $request->id;
 
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail')->first();
@@ -1148,8 +1149,13 @@ class ConsignmentController extends Controller
                                 <b>	' . @$locations->email . '</b><br />
                                 ' . @$locations->phone . '<br />
 
-                                </td>
-                            </tr>
+                                </td>';
+                                if($locations->stationary == '2'){
+                                $html .='<td class="a">
+                                <img src="' . $pay . '" alt="" class="" />
+                                </td>';
+                                }
+                                $html .= '</tr>
 
                         </table>
                         <hr />
@@ -1457,7 +1463,7 @@ class ConsignmentController extends Controller
                                 </div>
                           </div>
 
-                  <!--<div class="footer">
+                  <div class="footer">
                                   <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
                                 <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
                                 <p style="font-size: 8px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
@@ -1466,7 +1472,7 @@ class ConsignmentController extends Controller
                                 <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
                                 <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
                                 <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
-                  </div>-->
+                  </div>
                     </div>
                     <!-- Optional JavaScript; choose one of the two! -->
 
@@ -1959,16 +1965,23 @@ class ConsignmentController extends Controller
         } else {
             $baseclient = '';
         }
-
-        //$logo = url('assets/img/logo_se.jpg');
         $barcode = url('assets/img/barcode.png');
 
-        // if ($authuser->branch_id == 28) {
-        //     return view('consignments.consignment-sticker-ldh', ['data' => $data, 'baseclient' => $baseclient]);
-        // } else {
+        if($locations->sticker == '2'){
+            $pdf = \App::make('dompdf.wrapper');
+            $pdf->getDompdf()->set_option('chroot', base_path());
+            $pdf->setPaper([0, 0, 252, 330], 'pt');
+    
+            $html = view('consignments.consignment-sticker-plain', ['data' => $data, 'baseclient' => $baseclient, 'boxes' => $item_count])->render();
+            // Load HTML into Dompdf
+            $pdf->loadHtml($html);
+            $pdf->render();
+        
+            return $pdf->stream('print.pdf');
+        }else{
         return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
-        // }
-        //echo $barcode; die;
+        }
+        
 
     }   
      
