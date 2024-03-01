@@ -330,13 +330,13 @@ if ($countbranch > 1) {?>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Purchase Price</label>
-                            <input type="text" class="form-control" id="purchse" name="purchase_price" value="">
+                            <input type="number" class="form-control" id="purchse" name="purchase_price" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Vehicle Type</label>
                             <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
                                 <option value="">Select vehicle type</option>
-                                @foreach($vehicletype as $vehicle)
+                                @foreach($vehicletypes as $vehicle)
                                 <option value="{{$vehicle->id}}">{{$vehicle->name}}
                                 </option>
                                 @endforeach

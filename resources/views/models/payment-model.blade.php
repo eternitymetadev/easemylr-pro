@@ -14,7 +14,7 @@
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Purchase Price</label>
-                            <input type="text" class="form-control" id="purchse_edit" name="purchase_price" value="">
+                            <input type="number" class="form-control" id="purchse_edit" name="purchase_price" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Vehicle Type</label>
@@ -286,7 +286,7 @@
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Purchase Price</label>
-                            <input type="text" class="form-control" id="purchse" name="purchase_price" value="">
+                            <input type="number" class="form-control" id="purchse" name="purchase_price" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Vehicle Type</label>

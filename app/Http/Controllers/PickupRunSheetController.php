@@ -1417,10 +1417,10 @@ class PickupRunSheetController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
-        $query = PrsPaymentRequest::query();
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+        $query = PrsPaymentRequest::query();
 
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
@@ -1508,9 +1508,9 @@ class PickupRunSheetController extends Controller
         $prsRequests = $query->orderBy('id', 'DESC')->paginate($peritem);
         $prsRequests = $prsRequests->appends($request->query());
         $vendors = Vendor::with('Branch')->get();
-        $vehicletype = VehicleType::select('id', 'name')->get();
+        // $vehicletype = VehicleType::select('id', 'name')->get();
 
-        return view('prs.prs-request-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'prsRequests' => $prsRequests, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes, 'branchs' => $branchs, 'vendors' => $vendors, 'vehicletype' => $vehicletype]);
+        return view('prs.prs-request-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'prsRequests' => $prsRequests, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes, 'branchs' => $branchs, 'vendors' => $vendors]);
 
     }
 
