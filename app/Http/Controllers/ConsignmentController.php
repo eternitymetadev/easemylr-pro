@@ -1021,7 +1021,7 @@ class ConsignmentController extends Controller
             </td>';
         }
 
-        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
+        $pay = public_path('assets/img/plain_etf.jpg');
         $codStamp = public_path('assets/img/cod.png');
         $paidStamp = public_path('assets/img/paid.png');
         $waterMark = public_path('assets/img/demo.png');
@@ -1151,8 +1151,8 @@ class ConsignmentController extends Controller
 
                                 </td>';
                                 if($locations->stationary == '2'){
-                                $html .='<td class="a">
-                                <img src="' . $pay . '" alt="" class="" />
+                                $html .='<td>
+                                <img src="' . $pay . '" alt="" class="" style="height:50px;" />
                                 </td>';
                                 }
                                 $html .= '</tr>
