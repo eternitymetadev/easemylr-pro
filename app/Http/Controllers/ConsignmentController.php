@@ -1021,7 +1021,7 @@ class ConsignmentController extends Controller
             </td>';
         }
 
-        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
+        $pay = public_path('assets/img/plain_etf.jpg');
         $codStamp = public_path('assets/img/cod.png');
         $paidStamp = public_path('assets/img/paid.png');
         $waterMark = public_path('assets/img/demo.png');
