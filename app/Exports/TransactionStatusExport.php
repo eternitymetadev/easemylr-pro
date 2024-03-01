@@ -118,7 +118,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                     $payment_status = 'Unknown';
                 } 
 
-                $drsTotalQty = Helper::HrsPaymentTotalQty($requestlist->transaction_id);
+                $drsTotalQty = Helper::DrsPaymentTotalQty($requestlist->transaction_id);
 
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
