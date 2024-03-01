@@ -17,6 +17,8 @@ use App\Models\PaymentRequest;
 use App\Models\PickupRunSheet;
 use App\Models\PrsPaymentHistory;
 use App\Models\PrsPaymentRequest;
+use App\Models\HrsPaymentRequest;
+use App\Models\HrsPaymentHistory;
 use App\Models\Role;
 use App\Models\TransactionSheet;
 use App\Models\User;
@@ -229,6 +231,7 @@ class VendorController extends Controller
 
     public function paymentList(Request $request)
     {
+        set_time_limit(120);
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -1210,7 +1213,7 @@ class VendorController extends Controller
 
     public function showDrs(Request $request)
     {
-        $getdrs = PaymentRequest::select('drs_no')->where('transaction_id', $request->trans_id)->get();
+        $getdrs = PaymentRequest::with(['TransactionDetails', 'TransactionDetails.ConsignmentDetail'])->select('drs_no')->where('transaction_id', $request->trans_id)->get();
         // dd($request->transaction_id);
 
         $response['getdrs'] = $getdrs;
@@ -1269,10 +1272,12 @@ class VendorController extends Controller
         return response()->json($response);
     }
 
+    // check payment status update
     public function check_paid_status()
     {
+        // set_time_limit(120);
         ini_set('max_execution_time', 0); // 0 = Unlimited
-        // check drs=====
+        // check drs status update
         $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
         $size = sizeof($get_data_db);
 
@@ -1281,22 +1286,9 @@ class VendorController extends Controller
             $p_type = $get_data_db[$i]->payment_type;
 
             $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
-            $curl = curl_init();
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'GET',
-            ));
-
-            $response = curl_exec($curl);
-
-            curl_close($curl);
+            $response = $this->makeCurlRequest($url);
+            
             if ($response) {
                 $received_data = json_decode($response);
                 
@@ -1328,7 +1320,8 @@ class VendorController extends Controller
                 }
             }
         }
-        // =============check prs==================
+
+        // check prs status update
         $get_data_db = DB::table('prs_payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2, 3])->get()->toArray();
         $size = sizeof($get_data_db);
 
@@ -1337,22 +1330,9 @@ class VendorController extends Controller
             $p_type = $get_data_db[$i]->payment_type;
 
             $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
-            $curl = curl_init();
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'GET',
-            ));
+            $response = $this->makeCurlRequest($url);
 
-            $response = curl_exec($curl);
-
-            curl_close($curl);
             if ($response) {
                 $received_data = json_decode($response);
                 $status_code = $received_data->status_code;
@@ -1382,7 +1362,72 @@ class VendorController extends Controller
                 }
             }
         }
+
+        // check hrs status update
+        $get_data_db = DB::table('hrs_payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
+        $size = sizeof($get_data_db);
+
+        for ($i = 0; $i < $size; $i++) {
+            $trans_id = $get_data_db[$i]->transaction_id;
+            $p_type = $get_data_db[$i]->payment_type;
+
+            $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
+
+            $response = $this->makeCurlRequest($url);
+            
+            if ($response) {
+                $received_data = json_decode($response);
+                $status_code = $received_data->status_code;
+                if ($status_code == 2) {
+                    if ($p_type == 'Fully' || $p_type == 'Balance') {
+
+                        $update_status = HrsPaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
+
+                        HrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+
+                        $get_hrs = HrsPaymentRequest::select('hrs_no')->where('transaction_id', $trans_id)->get();
+
+                        foreach ($get_hrs as $hrs) {
+                            pickupRunSheet::where('pickup_id', $hrs->hrs_no)->where('payment_status', 2)->update(['payment_status' => 1]);
+                        }
+                    } else {
+                        $update_status = HrsPaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 3]);
+
+                        HrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+
+                        $get_hrs = HrsPaymentRequest::select('hrs_no')->where('transaction_id', $trans_id)->get();
+
+                        foreach ($get_hrs as $hrs) {
+                            pickupRunSheet::where('pickup_id', $hrs->hrs_no)->where('payment_status', 2)->update(['payment_status' => 3]);
+                        }
+                    }
+                }
+            }
+        }
+
         return 1;
+    }
+
+    private function makeCurlRequest($url)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        return $response;
     }
 
     public function paymentReportView(Request $request)

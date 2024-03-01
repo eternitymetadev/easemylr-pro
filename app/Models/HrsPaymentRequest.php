@@ -47,4 +47,9 @@ class HrsPaymentRequest extends Model
     public function HrsDetails(){
         return $this->hasMany('App\Models\Hrs','hrs_no','hrs_no');
     }
+
+    public function HrsPaymentHistory()
+    {
+        return $this->hasOne('App\Models\HrsPaymentHistory','transaction_id','transaction_id');
+    }
 }
