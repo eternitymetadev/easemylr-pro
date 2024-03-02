@@ -47,7 +47,7 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->with(['HrsDetails','HrsDetails.ConsignmentDetail','VendorDetails', 'Branch'])
+        $query = $query->with(['latestPayment','VendorDetails', 'Branch'])
             ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
@@ -122,7 +122,7 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
 
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
-                    'date'            => Helper::ShowDayMonthYear(@$requestlist->created_at),
+                    'created_date'    => Helper::ShowDayMonthYear(@$requestlist->created_at),
                     'vendor'          => @$requestlist->VendorDetails->name,
                     'branch_name'     => @$requestlist->Branch->name,
                     'branch_state'    => @$requestlist->Branch->nick_name,
@@ -131,6 +131,7 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
                     'total_netwt'     => @$hrsTotalQty['totalNetwtSum'],
                     'total_grosswt'   => @$hrsTotalQty['totalGrosswtSum'],
                     'payment_type'    => @$requestlist->payment_type,
+                    'payment_date'    => Helper::ShowDayMonthYear(@$requestlist->latestPayment->payment_date),
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,
                     'total_amt'       => @$requestlist->total_amount,
@@ -155,6 +156,7 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
             'Sum of NetWt',
             'Sum of GrossWt',
             'Payment Type',
+            'Payment Date',
             'Advanced',
             'Balance',
             'Total Amount',

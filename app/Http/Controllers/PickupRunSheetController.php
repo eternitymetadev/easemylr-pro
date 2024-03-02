@@ -1436,7 +1436,7 @@ class PickupRunSheetController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = $query->with(['PickupRunSheet','PickupRunSheet.Consignments','Branch'])
+            $query = $query->with(['PickupRunSheet','PickupRunSheet.Consignments','latestPayment','Branch'])
             ->groupBy('transaction_id');
             // ->whereIn('status', ['1', '0', '3'])
 
@@ -1450,7 +1450,15 @@ class PickupRunSheetController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('hrs_no', 'like', '%' . $search . '%');
+                    $query->where('transaction_id', 'like', '%' . $search . '%')
+                        ->orWhere('total_amount', 'like', '%' . $search . '%')
+                        ->orWhere('advanced', 'like', '%' . $search . '%')
+                        ->orWhere('balance', 'like', '%' . $search . '%')
+                        ->orWhereHas('VendorDetails', function ($query) use ($search, $searchT) {
+                            $query->where(function ($vndrquery) use ($search, $searchT) {
+                                $vndrquery->where('name', 'like', '%' . $search . '%');
+                            });
+                        });
                 });
             }
 
@@ -1496,7 +1504,7 @@ class PickupRunSheetController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query->with(['PickupRunSheet','PickupRunSheet.Consignments','Branch'])
+        $query = $query->with(['PickupRunSheet','PickupRunSheet.Consignments','latestPayment','Branch'])
             ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
@@ -1508,9 +1516,9 @@ class PickupRunSheetController extends Controller
         $prsRequests = $query->orderBy('id', 'DESC')->paginate($peritem);
         $prsRequests = $prsRequests->appends($request->query());
         $vendors = Vendor::with('Branch')->get();
-        // $vehicletype = VehicleType::select('id', 'name')->get();
+        $vehicletype = VehicleType::select('id', 'name')->get();
 
-        return view('prs.prs-request-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'prsRequests' => $prsRequests, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes, 'branchs' => $branchs, 'vendors' => $vendors]);
+        return view('prs.prs-request-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'prsRequests' => $prsRequests, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes, 'branchs' => $branchs, 'vendors' => $vendors, 'vehicletype' => $vehicletype]);
 
     }
 

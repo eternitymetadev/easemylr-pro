@@ -935,7 +935,10 @@ class HubtoHubController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('hrs_no', 'like', '%' . $search . '%');
+                    $query->where('hrs_no', 'like', '%' . $search . '%')
+                    ->orWhereHas('VehicleDetail', function ($vehiclequery) use ($search) {
+                        $vehiclequery->where('regn_no', 'like', '%' . $search . '%');
+                    });
                 });
             }
 
@@ -995,8 +998,7 @@ class HubtoHubController extends Controller
         $vendors = Vendor::with('Branch')->get();
         $vehicletype = VehicleType::select('id', 'name')->get();
 
-        return view('hub-transportation.hrs-payment-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletype' => $vehicletype, 'branchs' => $branchs, 'vendors' => $vendors]);
-
+        return view('hub-transportation.hrs-payment-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'branchs' => $branchs, 'vendors' => $vendors,'vehicletype' => $vehicletype,'vehicletypes' => $vehicletypes]);
     }
     /////////////////////// hrs payment list page ///////////////////////////
     public function viewhrsLr(Request $request)
@@ -1409,7 +1411,7 @@ class HubtoHubController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
 
-            $query = $query->with(['HrsDetails','HrsDetails.ConsignmentDetail','VendorDetails','Branch', 'User'])
+            $query = $query->with(['HrsDetails','HrsDetails.ConsignmentDetail','VendorDetails','latestPayment','Branch', 'User'])
             ->groupBy('transaction_id');
 
             if ($authuser->role_id == 2) {
@@ -1490,7 +1492,7 @@ class HubtoHubController extends Controller
 
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query->with(['HrsDetails','HrsDetails.ConsignmentDetail','VendorDetails','Branch', 'User'])
+        $query = $query->with(['HrsDetails','HrsDetails.ConsignmentDetail','VendorDetails','latestPayment','Branch', 'User'])
             ->groupBy('transaction_id');
             // ->whereIn('status', ['1', '0', '3'])
 

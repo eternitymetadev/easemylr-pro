@@ -452,7 +452,13 @@ input[readonly].styledInput {
 
         var url = jQuery('#search').attr('data-url');
 
-        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '?search=' + search + '&paymentstatus_id=' + paymentstatus_id;
+        if (typeof(paymentstatus_id) === "undefined" || paymentstatus_id == null) {
+            var paymentstatus_id = '';
+        } else {
+            var paymentstatus_id = paymentstatus_id;
+        }
+
+        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&search=' + search + '&paymentstatus_id=' + paymentstatus_id;
 
         jQuery.ajax({
             url: url,

@@ -47,7 +47,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->with(['TransactionDetails', 'TransactionDetails.ConsignmentDetail','VendorDetails', 'Branch'])
+        $query = $query->with(['latestPayment','VendorDetails', 'Branch'])
             ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
@@ -118,11 +118,11 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                     $payment_status = 'Unknown';
                 } 
 
-                $drsTotalQty = Helper::HrsPaymentTotalQty($requestlist->transaction_id);
+                $drsTotalQty = Helper::DrsPaymentTotalQty($requestlist->transaction_id);
 
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
-                    'date'            => Helper::ShowDayMonthYear(@$requestlist->created_at),
+                    'created_date'    => Helper::ShowDayMonthYear(@$requestlist->created_at),
                     'vendor'          => @$requestlist->VendorDetails->name,
                     'branch_name'     => @$requestlist->Branch->name,
                     'branch_state'    => @$requestlist->Branch->nick_name,
@@ -131,6 +131,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                     'total_netwt'     => @$drsTotalQty['totalNetwtSum'],
                     'total_grosswt'   => @$drsTotalQty['totalGrosswtSum'],
                     'payment_type'    => @$requestlist->payment_type,
+                    'payment_date'    => Helper::ShowDayMonthYear(@$requestlist->latestPayment->payment_date),
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,
                     'total_amt'       => @$requestlist->total_amount,
@@ -145,8 +146,8 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
     public function headings(): array
     {
         return [
-            'Transaction Id',
-            'Date',
+            'Transaction ID',
+            'Created Date',
             'Vendor',
             'Branch',
             'State',
@@ -155,6 +156,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
             'Sum of NetWt',
             'Sum of GrossWt',
             'Payment Type',
+            'Payment Date',
             'Advanced',
             'Balance',
             'Total Amount',

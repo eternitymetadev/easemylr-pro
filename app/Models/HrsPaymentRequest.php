@@ -52,4 +52,8 @@ class HrsPaymentRequest extends Model
     {
         return $this->hasOne('App\Models\HrsPaymentHistory','transaction_id','transaction_id');
     }
+    public function latestPayment(){
+        return $this->hasOne('App\Models\HrsPaymentHistory','transaction_id','transaction_id')
+                    ->select('id','transaction_id', 'payment_date', 'created_at');
+    }
 }
