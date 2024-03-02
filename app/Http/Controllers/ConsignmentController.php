@@ -1142,13 +1142,13 @@ class ConsignmentController extends Controller
                                ' . @$branch_address . '
                            </td>
 
-                               <td class="a">
+                               <td class="a" style="width: max-content; padding-right: 1rem">
                                <b>	Email & Phone</b><br />
                                <b>	' . @$locations->email . '</b><br />
                                ' . @$locations->phone . '<br />
                                </td>';
                         if ($locations->stationary == '2') {
-                            $html .= '<td><img src="' . $pay . '" alt="" class="" style="height:50px;" />
+                            $html .= '<td style="text-align: right"><img src="' . $pay . '" alt="" class="" style="width: 150px" />
                                             </td>';
                         }
             $html .= '</tr>
@@ -1225,7 +1225,7 @@ class ConsignmentController extends Controller
                     $html .= '   <div class="loc">
                                <table>
                                    <tr>
-                                       <td class="width_set">
+                                       <td class="width_set" style="width: 260px">
                                            <div style="margin-left: 20px">';
                     if ($data['is_salereturn'] == '1') {
                         $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
