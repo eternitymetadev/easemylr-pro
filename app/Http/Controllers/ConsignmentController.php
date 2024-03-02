@@ -31,8 +31,8 @@ use Config;
 use DateTime;
 use DB;
 use Helper;
-use Illuminate\Http\Request;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\Request;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Maatwebsite\Excel\Facades\Excel;
 use QrCode;
@@ -76,8 +76,8 @@ class ConsignmentController extends Controller
             if (isset($request->updatestatus)) {
                 $lr_cancel = ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'cancel_userid' => $authuser->id, 'delivery_status' => 'Cancel']);
 
-                if($lr_cancel && $request->status == 0){
-                    TransactionSheet::where('consignment_no', $request->id)->where('status',1)->update(['status' => $request->status, 'delivery_status' => 'Cancel']);
+                if ($lr_cancel && $request->status == 0) {
+                    TransactionSheet::where('consignment_no', $request->id)->where('status', 1)->update(['status' => $request->status, 'delivery_status' => 'Cancel']);
                 }
 
                 $url = $this->prefix . '/consignments';
@@ -90,7 +90,6 @@ class ConsignmentController extends Controller
                 return response()->json($response);
             }
 
-            
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
             $baseclient = explode(',', $authuser->baseclient_id);
             $regclient = explode(',', $authuser->regionalclient_id);
@@ -753,27 +752,27 @@ class ConsignmentController extends Controller
         $data = json_decode(json_encode($getdata), true);
 
         if (isset($data['consigner_detail']['legal_name'])) {
-            $legal_name = '<b>' . $data['consigner_detail']['legal_name'] . '</b><br>';
+            $legal_name = '<span style="font-size: 12px;"><strong>' . $data['consigner_detail']['legal_name'] . '</strong></span><br>';
         } else {
             $legal_name = '';
         }
         if (isset($data['consigner_detail']['address_line1'])) {
-            $address_line1 = '' . $data['consigner_detail']['address_line1'] . '<br>';
+            $address_line1 = '<span style="font-size: 11px;">' . $data['consigner_detail']['address_line1'] . '</span><br>';
         } else {
             $address_line1 = '';
         }
         if (isset($data['consigner_detail']['address_line2'])) {
-            $address_line2 = '' . $data['consigner_detail']['address_line2'] . '<br>';
+            $address_line2 = '<span style="font-size: 11px;">' . $data['consigner_detail']['address_line2'] . '</span><br>';
         } else {
             $address_line2 = '';
         }
         if (isset($data['consigner_detail']['address_line3'])) {
-            $address_line3 = '' . $data['consigner_detail']['address_line3'] . '<br>';
+            $address_line3 = '<span style="font-size: 11px;">' . $data['consigner_detail']['address_line3'] . '</span><br>';
         } else {
             $address_line3 = '';
         }
         if (isset($data['consigner_detail']['address_line4'])) {
-            $address_line4 = '' . $data['consigner_detail']['address_line4'] . '<br><br>';
+            $address_line4 = '<span style="font-size: 11px;">' . $data['consigner_detail']['address_line4'] . '</span><br><br>';
         } else {
             $address_line4 = '<br>';
         }
@@ -921,19 +920,19 @@ class ConsignmentController extends Controller
 
         if ($request->typeid == 1) {
             $adresses = '<table width="100%">
-                    <tr>
-                        <td style="width:50%">' . $conr_add . '</td>
-                        <td style="width:50%">' . $consnee_add . '</td>
-                    </tr>
-                </table>';
+                   <tr>
+                       <td style="width:50%">' . $conr_add . '</td>
+                       <td style="width:50%">' . $consnee_add . '</td>
+                   </tr>
+               </table>';
         } else if ($request->typeid == 2) {
             $adresses = '<table width="100%">
-                        <tr>
-                            <td style="width:33%">' . $conr_add . '</td>
-                            <td style="width:33%">' . $consnee_add . '</td>
-                            <td style="width:33%">' . $shiptoadd . '</td>
-                        </tr>
-                    </table>';
+                       <tr>
+                           <td style="width:33%">' . $conr_add . '</td>
+                           <td style="width:33%">' . $consnee_add . '</td>
+                           <td style="width:33%">' . $shiptoadd . '</td>
+                       </tr>
+                   </table>';
         }
 
         // get branch address
@@ -951,76 +950,74 @@ class ConsignmentController extends Controller
         // }
 
         if ($data['branch_id'] == 2 || $data['branch_id'] == 6 || $data['branch_id'] == 26) {
-            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
-        <b>' . $branch_add[1]->address . ',</b><br />
-        <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
-        <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
+            $branch_address = '<span style="font-size: 15px;"><b>' . $branch_add[1]->name . ' </b></span><br />
+       <b>' . $branch_add[1]->address . ',</b><br />
+       <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
+       <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
         } else if ($data['branch_id'] == 32) {
-            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[2]->name . ' </b></span><br />
-        <b>' . $branch_add[2]->address . ',</b><br />
-        <b>	' . $branch_add[2]->district . ' - ' . $branch_add[2]->postal_code . ',' . $branch_add[2]->state . '</b><br />
-        <b>GST No. : ' . $branch_add[2]->gst_number . '</b><br />';
+            $branch_address = '<span style="font-size: 15px;"><b>' . $branch_add[2]->name . ' </b></span><br />
+       <b>' . $branch_add[2]->address . ',</b><br />
+       <b>	' . $branch_add[2]->district . ' - ' . $branch_add[2]->postal_code . ',' . $branch_add[2]->state . '</b><br />
+       <b>GST No. : ' . $branch_add[2]->gst_number . '</b><br />';
         } else {
-            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
-        <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
-        <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
-        <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
+            $branch_address = '<span style="font-size: 15px;"><b>' . $branch_add[0]->name . ' </b></span><br />
+       <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+       <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+       <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
         }
 
         // relocate cnr cnee address check for sale to return case
         if ($data['is_salereturn'] == '1') {
             $cnradd_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
-            </div>
-            <div style="margin-top: -11px;">
-            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . $shiptoadd . '
-            </p>
-            </div>';
+           <div>
+           <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
+           </div>
+           <div style="margin-top: -11px;">
+           <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+           ' . $shiptoadd . '
+           </p>
+           </div>';
             $cneadd_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
-            </div>
-                <div style="margin-top: -11px;">
-                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                ' . $conr_add . '
-            </p>
-            </div>';
+           <div>
+           <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
+           </div>
+               <div style="margin-top: -11px;">
+               <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+               ' . $conr_add . '
+           </p>
+           </div>';
             $shipto_address = '';
         } else {
             $cnradd_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
-            </div>
-            <div style="margin-top: -11px;">
-            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . $conr_add . '
-            </p>
-            </div>';
+           <div>
+           <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
+           </div>
+           <div style="margin-top: -11px;">
+           <p  style="margin-left:6px;margin-top: -13px; font-size: 11px;">
+           ' . $conr_add . '
+           </p>
+           </div>';
             $cneadd_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
-            </div>
-                <div style="margin-top: -11px;">
-                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                ' . $consnee_add . '
-            </p>
-            </div>';
-            $shipto_address = '<td width="30%" style="vertical-align:top;>
-            <div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
-            </div>
-                <div style="margin-top: -11px;">
-                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-              ' . $shiptoadd . '
-            </p>
-                </div>
-            </td>';
+           <div>
+           <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
+           </div>
+               <div style="margin-top: -11px;">
+               <p  style="margin-left:6px;margin-top: -13px; font-size: 11px;">
+               ' . $consnee_add . '
+           </p>
+           </div>';
+            $shipto_address = '<div class="container">
+           <div>
+           <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
+           </div>
+               <div style="margin-top: -11px;">
+               <p  style="margin-left:6px;margin-top: -13px; font-size: 11px;">
+             ' . $shiptoadd . '
+           </p>
+               </div>';
         }
 
-        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
+        $pay = public_path('assets/img/plain_etf.jpg');
         $codStamp = public_path('assets/img/cod.png');
         $paidStamp = public_path('assets/img/paid.png');
         $waterMark = public_path('assets/img/demo.png');
@@ -1034,229 +1031,233 @@ class ConsignmentController extends Controller
             }
 
             $html = '<!DOCTYPE html>
-            <html lang="en">
-                <head>
-                    <!-- Required meta tags -->
-                    <meta charset="utf-8" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+           <html lang="en">
+               <head>
+                   <!-- Required meta tags -->
+                   <meta charset="utf-8" />
+                   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-                    <!-- Bootstdap CSS -->
+                   <!-- Bootstdap CSS -->
 
-                    <style>
-                        * {
-                            box-sizing: border-box;
+                   <style>
+                       * {
+                           box-sizing: border-box;
+                       }
+                       label {
+                           padding: 12px 12px 12px 0;
+                           display: inline-block;
+                       }
+
+                       /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+                       @media screen and (max-width: 600px) {
+                       }
+                       img {
+                           width: 120px;
+                           height: 60px;
+                       }
+                       .a {
+                           width: 290px;
+                           font-size: 11px;
+                       }
+                       td.b {
+                           width: 238px;
+                           margin: auto;
+                       }
+                       .width_set{
+                           width:200px;
+                       }
+                       img.imgu {
+                           margin-left: 58px;
+                           height:100px;
+                       }
+                       .loc {
+                               margin-bottom: -8px;
+                               margin-top: 27px;
+                           }
+                           .table3 {
+               border-collapse: collapse;
+               width: 378px;
+               height: 84px;
+               margin: 20px auto 4px;
+           }
+                 .footer {
+              position: fixed;
+              left: 0;
+              bottom: 0;
+           }
+           .vl {
+               border-left: solid;
+               height: 18px;
+               margin-left: 3px;
+           }
+           .ff{
+             margin-top: 26px;
+           }
+           .relative {
+             position: relative;
+             left: 30px;
+           }
+           .mini-table1{
+
+               border: 1px solid;
+               border-radius: 13px;
+               width: 429px;
+               height: 72px;
+
+           }
+           .mini-th{
+             width:90px;
+             font-size: 12px;
+           }
+           .ee{
+               margin:auto;
+               margin-top:12px;
+           }
+           .nn{
+             border-bottom:1px solid;
+           }
+           .mm{
+           border-right:1px solid;
+           padding:4px;
+           }
+           html { -webkit-print-color-adjust: exact; }
+           .td_style{
+               text-align: left;
+               padding: 8px;
+               color: #627429;
+           }
+           .amitTable td{
+               border-radius: 12px;
+               overflow: hidden;
+           }
+                   </style>
+               <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
+               </head>
+               <body style="font-family:Arial Helvetica,sans-serif;">
+               <!-- <img src="' . $waterMark . '" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" /> -->
+                   <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px;">
+                       <table style="height: 70px; margin-bottom: 20px;">
+                           <tr>
+                               <td class="a" style="font-size: 10px; padding-top: 12px">
+                               ' . @$branch_address . '
+                           </td>
+
+                               <td class="a" style="width: max-content; padding-right: 1rem">
+                               <b>	Email & Phone</b><br />
+                               <b>	' . @$locations->email . '</b><br />
+                               ' . @$locations->phone . '<br />
+                               </td>';
+                        if ($locations->stationary == '2') {
+                            $html .= '<td style="text-align: right"><img src="' . $pay . '" alt="" class="" style="width: 150px" />
+                                            </td>';
                         }
-                        label {
-                            padding: 12px 12px 12px 0;
-                            display: inline-block;
-                        }
+            $html .= '</tr>
+                       </table>
+                       <hr />
+             <table>
+                           <tr>
+                               <td class="b">
+                       <div class="ff" >
+                                     <img src="' . $fullpath . '" alt="" class="imgu" />
+                       </div>
+                               </td>
+                               <td>
+                                   <div style="margin-top: -15px; text-align: center">
+                                               <h2 style="margin-bottom: -10px; font-size: 20px">CONSIGNMENT NOTE</h2>
+                                               <p style="font-size: 14px">' . $type . '</p>
+                                   </div>
+                      <div class="mini-table1" style="background:#C0C0C0;">
+                                   <table style=" border-collapse: collapse;" class="ee">
+                                       <tr>
+                                           <th class="mini-th mm nn">LR Number</th>
+                                           <th class="mini-th mm nn">LR Date</th>
+                                           <th class="mini-th mm nn">Dispatch</th>
+                                           <th class="mini-th nn">Delivery</th>
+                                       </tr>
+                                       <tr>
+                                           <th class="mini-th mm" >' . $data['id'] . '</th>
+                                           <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
+                            if ($data['is_salereturn'] == '1') {
+                                   $html .= '<th class="mini-th mm">' . @$data['shipto_detail']['city'] . '</th>
+                                                       <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
+            } else {
+                $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
+                                                       <th class="mini-th">' . @$data['shipto_detail']['city'] . '</th>';
+            }
 
-                        /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
-                        @media screen and (max-width: 600px) {
-                        }
-                        img {
-                            width: 120px;
-                            height: 60px;
-                        }
-                        .a {
-                            width: 290px;
-                            font-size: 11px;
-                        }
-                        td.b {
-                            width: 238px;
-                            margin: auto;
-                        }
-                        .width_set{
-                            width:200px;
-                        }
-                        img.imgu {
-                            margin-left: 58px;
-                            height:100px;
-                        }
-                        .loc {
-                                margin-bottom: -8px;
-                                margin-top: 27px;
-                            }
-                            .table3 {
-                border-collapse: collapse;
-                width: 378px;
-                height: 84px;
-                margin-left: 71px;
-            }
-                  .footer {
-               position: fixed;
-               left: 0;
-               bottom: 0;
-
-
-            }
-            .vl {
-                border-left: solid;
-                height: 18px;
-                margin-left: 3px;
-            }
-            .ff{
-              margin-top: 26px;
-            }
-            .relative {
-              position: relative;
-              left: 30px;
-            }
-            .mini-table1{
-
-                border: 1px solid;
-                border-radius: 13px;
-                width: 429px;
-                height: 72px;
-
-            }
-            .mini-th{
-              width:90px;
-              font-size: 12px;
-            }
-            .ee{
-                margin:auto;
-                margin-top:12px;
-            }
-            .nn{
-              border-bottom:1px solid;
-            }
-            .mm{
-            border-right:1px solid;
-            padding:4px;
-            }
-            html { -webkit-print-color-adjust: exact; }
-            .td_style{
-                text-align: left;
-                padding: 8px;
-                color: #627429;
-            }
-                    </style>
-                <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
-                </head>
-                <body style="font-family:Arial Helvetica,sans-serif;">
-                <!-- <img src="' . $waterMark . '" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" /> -->
-                    <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px;">
-                        <table style="height: 70px;">
-                            <tr>
-                            <td class="a" style="font-size: 10px;">
-                            ' . $branch_address . '
-                            </td>
-
-                                <td class="a">
-                                <b>	Email & Phone</b><br />
-                                <b>	' . @$locations->email . '</b><br />
-                                ' . @$locations->phone . '<br />
-
-                                </td>
-                            </tr>
-
-                        </table>
-                        <hr />
-                        <table>
-                            <tr>
-                                <td class="b">
-                        <div class="ff" >
-                                      <img src="' . $fullpath . '" alt="" class="imgu" />
-                        </div>
-                                </td>
-                                <td>
-                                    <div style="margin-top: -15px; text-align: center">
-                                        <h2 style="margin-bottom: -16px">CONSIGNMENT NOTE</h2>
-                                        <P>' . $type . '</P>
-                                    </div>
-                       <div class="mini-table1" style="background:#C0C0C0;">
-                                    <table style=" border-collapse: collapse;" class="ee">
-                                        <tr>
-                                            <th class="mini-th mm nn">LR Number</th>
-                                            <th class="mini-th mm nn">LR Date</th>
-                                            <th class="mini-th mm nn">Dispatch</th>
-                                            <th class="mini-th nn">Delivery</th>
-                                        </tr>
-                                        <tr>
-                                            <th class="mini-th mm" >' . $data['id'] . '</th>
-                                            <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
-                                            if ($data['is_salereturn'] == '1') {
-                                                $html .= '<th class="mini-th mm">' . @$data['shipto_detail']['city'] . '</th>
-                                                        <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
-                                            } else {
-                                                $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
-                                                        <th class="mini-th">' . @$data['shipto_detail']['city'] . '</th>';
-                                            }
-
-                                $html .= '</tr>
-                                    </table>
-                        </div>
-                                </td>
-                            </tr>
-                        </table>';
+            $html .= '</tr>
+                                   </table>
+                       </div>
+                               </td>
+                           </tr>
+                       </table>';
             if ($data['payment_type'] == 'To be Billed' || $data['payment_type'] == null) {
                 if (!empty($data['cod'])) {
                     $html .= ' <div class="loc">
-                                <table>
-                                    <tr>
-                                        <td valign="middle" style="position:relative; width: 200px">
-                                        <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
-                                            <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
-                                            <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>' . @$data['cod'] . '
-                                            </h2>
-                                        </td>
-                                        <td class="width_set">
-                                            <table border="1px solid" class="table3">
-                                                <tr>
-                                                    <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                    <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                    <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                    <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                                </tr>
+                               <table>
+                                   <tr><td valign="middle" style="position:relative; width: 200px">
+                                   <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
+                                       <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
+                                       <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>' . @$data['cod'] . '
+                                       </h2>
+                                   </td>
+                                       <td class="width_set">
+                                           <table border="1px solid" class="table3" style="font-size: 14px;">
+                                               <tr>
+                                                   <td width="40%" style="padding-left: 8px"><strong>Vehicle No</strong></td>
+                                                   <td style="padding-left: 8px">' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                               </tr>
+                                               <tr>
+                                                   <td width="40%" style="padding-left: 8px"><strong>Driver Name</strong></td>
+                                                   <td style="padding-left: 8px">' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                               </tr>
+                                               <tr>
+                                                   <td width="40%" style="padding-left: 8px"><strong>Driver Number</strong></td>
+                                                   <td style="padding-left: 8px">' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                               </tr>
 
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>';
+                                           </table>
+                                       </td>
+                                   </tr>
+                               </table>
+                           </div>';
                 } else {
                     $html .= '   <div class="loc">
-                                <table>
-                                    <tr>
-                                        <td class="width_set">
-                                            <div style="margin-left: 20px">';
+                               <table>
+                                   <tr>
+                                       <td class="width_set" style="width: 260px">
+                                           <div style="margin-left: 20px">';
                     if ($data['is_salereturn'] == '1') {
                         $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
-                                                <div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
-                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
+                                               <div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                               <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
                     } else {
                         $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                           <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
                     }
                     $html .= ' </div>
-                                        </td>
-                                        <td class="width_set">
-                                            <table border="1px solid" class="table3">
-                                                <tr>
-                                                    <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                    <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                    <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                    <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                                </tr>
+                                       </td>
+                                       <td class="width_set">
+                                       <table border="1px solid" class="table3">
+                                           <tr>
+                                               <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                               <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                           </tr>
+                                           <tr>
+                                               <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                               <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                           </tr>
+                                           <tr>
+                                               <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                               <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                           </tr>
 
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>';
+                                       </table>
+                                   </td>
+                                      </table>
+
+                                         
+                           </div>';
                 }
             }
 
@@ -1265,69 +1266,69 @@ class ConsignmentController extends Controller
                     $total_cod_sum = @$data['freight_on_delivery']+@$data['cod'];
 
                     $html .= ' <div class="loc">
-                                    <table>
-                                        <tr>
-                                            <td valign="middle" style="position:relative; width: 200px">
-                                            <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
-                                                <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
-                                                <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>' . $total_cod_sum . '
-                                                </h2>
-                                            </td>
-                                            <td class="width_set">
-                                                <table border="1px solid" class="table3">
-                                                    <tr>
-                                                        <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                        <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                                    </tr>
+                                   <table>
+                                       <tr>
+                                           <td valign="middle" style="position:relative; width: 200px">
+                                           <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
+                                               <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
+                                               <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>' . $total_cod_sum . '
+                                               </h2>
+                                           </td>
+                                           <td class="width_set">
+                                               <table border="1px solid" class="table3">
+                                                   <tr>
+                                                       <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                       <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                   </tr>
+                                                   <tr>
+                                                       <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                       <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                   </tr>
+                                                   <tr>
+                                                       <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                       <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                   </tr>
 
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>';
+                                               </table>
+                                           </td>
+                                       </tr>
+                                   </table>
+                               </div>';
                 } else {
                     $html .= '   <div class="loc">
-                                    <table>
-                                        <tr>
-                                            <td class="width_set">
-                                                <div style="margin-left: 20px">';
+                                   <table>
+                                       <tr>
+                                           <td class="width_set">
+                                               <div style="margin-left: 20px">';
                     if ($data['is_salereturn'] == 1) {
                         $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
-                                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
+                                                   <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
                     } else {
                         $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                               <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
                     }
                     $html .= '</div>
-                                            </td>
-                                            <td class="width_set">
-                                                <table border="1px solid" class="table3">
-                                                    <tr>
-                                                        <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                        <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                                    </tr>
+                                           </td>
+                                           <td class="width_set">
+                                               <table border="1px solid" class="table3">
+                                                   <tr>
+                                                       <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                       <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                   </tr>
+                                                   <tr>
+                                                       <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                       <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                   </tr>
+                                                   <tr>
+                                                       <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                       <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                   </tr>
 
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>';
+                                               </table>
+                                           </td>
+                                       </tr>
+                                   </table>
+                               </div>';
                 }
 
             }
@@ -1335,160 +1336,168 @@ class ConsignmentController extends Controller
             if ($data['payment_type'] == 'Paid') {
 
                 $html .= ' <div class="loc">
-                                    <table>
-                                        <tr>
-                                            <td valign="middle" style="position:relative; width: 200px">
-                                            <img src="' . $paidStamp . '" style="position:absolute;left: 50%; transform: translateX(-40%); top: -2.5rem; height: 150px; width: 150px;" />
-                                            </td>
-                                            <td class="width_set">
-                                                <table border="1px solid" class="table3">
-                                                    <tr>
-                                                        <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                        <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                                    </tr>
+                                   <table>
+                                       <tr>
+                                           <td valign="middle" style="position:relative; width: 200px">
+                                           <img src="' . $paidStamp . '" style="position:absolute;left: 50%; transform: translateX(-40%); top: -2.5rem; height: 150px; width: 150px;" />
+                                           </td>
+                                           <td class="width_set">
+                                               <table border="1px solid" class="table3">
+                                                   <tr>
+                                                       <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                       <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                   </tr>
+                                                   <tr>
+                                                       <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                       <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                   </tr>
+                                                   <tr>
+                                                       <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                       <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                   </tr>
 
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>';
+                                               </table>
+                                           </td>
+                                       </tr>
+                                   </table>
+                               </div>';
 
             }
 
             $html .= '<div class="container">
-                                <div class="row">
-                                    <div class="col-sm-12 ">
-                                        <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
-                                    </div>
-                                </div>
-                            <table border="1" style=" border-collapse:collapse; width: 690px; ">
-                                <tr>
-                                    <td width="30%" style="vertical-align:top; >
-                                    ' . $cnradd_heading . '
-                                    </td>
-                                    <td width="30%" style="vertical-align:top;>
-                                    ' . $cneadd_heading . '
-                                    </td>
-                                    ' . $shipto_address . '
-                                </tr>
-                            </table>
-                      </div>
-                                <div>
-                                      <div class="row">
-                                                           <div class="col-sm-12 ">
-                                                <h4 style="margin-left:19px;"><b>Order Information</b></h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <table border="1" style=" border-collapse:collapse; width: 690px;height: 48px; font-size: 10px; background-color:#e0dddc40;">
+                           <h4 style="padding-left:12px; margin-bottom: 8px"><b>Pickup and Drop Information</b></h4>
+                           <div style="border-radius: 12px; overflow: hidden;outline: 1px solid; outline-offset :2px">
+                               <table class="amitTable" style="border-collapse:collapse; border: none; width: 100%;">
+                               <tr>
+                                       <td width="30%" style="vertical-align:top; padding-top: 4px" >
+                                   ' . $cnradd_heading . '
+                                   </td>
+                                       <td width="30%" style="vertical-align:top; border-left: 1px solid; border-right: 1px solid">
+                                   ' . $cneadd_heading . '
+                                   </td>
+                                       <td width="30%" style="vertical-align:top;">
+                                   ' . $shipto_address . '
+                                       </td>
+                               </tr>
+                           </table>
+                     </div>
+                               <div>
+                                     <div class="row">
+                                                          <div class="col-sm-12 ">
+                                               <h4 style="margin-left:19px;"><b>Order Information</b></h4>
+                                                   </div>
+                      
+                                           <table border="1" style=" border-collapse:collapse; width: 690px;height: 48px; font-size: 10px; background-color:#e0dddc40;">
 
-                                                    <tr>
-                                                        <th>Number of invoice</th>
-                                                        <th>Item Description</th>
-                                                        <th>Mode of packing</th>
-                                                        <th>Total Quantity</th>
-                                                        <th>Total Net Weight</th>
-                                                        <th>Total Gross Weight</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>' . $no_invoive . '</th>
-                                                        <th>' . $data['description'] . '</th>
-                                                        <th>' . $data['packing_type'] . '</th>
-                                                        <th>' . $data['total_quantity'] . '</th>
-                                                        <th>' . $data['total_weight'] . ' Kgs.</th>
-                                                        <th>' . $data['total_gross_weight'] . ' Kgs.</th>
+                                                   <tr>
+                                                       <th>Number of invoice</th>
+                                                       <th>Item Description</th>
+                                                       <th>Mode of packing</th>
+                                                       <th>Total Quantity</th>
+                                                       <th>Total Net Weight</th>
+                                                       <th>Total Gross Weight</th>
+                                                   </tr>
+                                                   <tr>
+                                                       <th>' . $no_invoive . '</th>
+                                                       <th>' . $data['description'] . '</th>
+                                                       <th>' . $data['packing_type'] . '</th>
+                                                       <th>' . $data['total_quantity'] . '</th>
+                                                       <th>' . $data['total_weight'] . ' Kgs.</th>
+                                                       <th>' . $data['total_gross_weight'] . ' Kgs.</th>
 
 
-                                                    </tr>
-                                                </table>
-                                </div>
+                                                   </tr>
+                                               </table>
+                               </div>
 
-                                <div class="inputfiled">
-                                <table style="width: 690px;
-                                font-size: 10px; background-color:#e0dddc40;">
-                              <tr>
-                                  <th style="width:70px ">Order ID</th>
-                                  <th style="width: 70px">Inv No</th>
-                                  <th style="width: 70px">Inv Date</th>
-                                  <th style="width:70px " >Inv Amount</th>
-                                  <th style="width:70px ">E-way No</th>
-                                  <th style="width: 70px">E-Way Date</th>
-                                  <th style="width: 60px">Quantity</th>
-                                  <th style="width:70px ">Net Weight</th>
-                                  <th style="width:70px ">Gross Weight</th>
+                               <div class="inputfiled">
+                               <table style="width: 690px;
+                               font-size: 10px; background-color:#e0dddc40;">
+                             <tr>
+                                 <th style="width:70px ">Order ID</th>
+                                 <th style="width: 70px">Inv No</th>
+                                 <th style="width: 70px">Inv Date</th>
+                                 <th style="width:70px " >Inv Amount</th>
+                                 <th style="width:70px ">E-way No</th>
+                                 <th style="width: 70px">E-Way Date</th>
+                                 <th style="width: 60px">Quantity</th>
+                                 <th style="width:70px ">Net Weight</th>
+                                 <th style="width:70px ">Gross Weight</th>
 
-                              </tr>
-                            </table>
-                            <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >';
+                             </tr>
+                           </table>
+                           <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >';
             $counter = 0;
             foreach ($data['consignment_items'] as $k => $dataitem) {
                 $counter = $counter + 1;
 
                 $html .= ' <tr>
-                                <td style="width:70px ">' . $dataitem['order_id'] . '</td>
-                                <td style="width: 70px">' . $dataitem['invoice_no'] . '</td>
-                                <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
-                                <td style="width:70px ">' . $dataitem['invoice_amount'] . '</td>
-                                <td style="width: 70px">' . $dataitem['e_way_bill'] . '</td>
-                                <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
-                                <td style="width:60px "> ' . $dataitem['quantity'] . '</td>
-                                <td style="width:70px ">' . $dataitem['weight'] . ' Kgs. </td>
-                                <td style="width:70px "> ' . $dataitem['gross_weight'] . ' Kgs.</td>
+                               <td style="width:70px ">' . $dataitem['order_id'] . '</td>
+                               <td style="width: 70px">' . $dataitem['invoice_no'] . '</td>
+                               <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
+                               <td style="width:70px ">' . $dataitem['invoice_amount'] . '</td>
+                               <td style="width: 70px">' . $dataitem['e_way_bill'] . '</td>
+                               <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
+                               <td style="width:60px "> ' . $dataitem['quantity'] . '</td>
+                               <td style="width:70px ">' . $dataitem['weight'] . ' Kgs. </td>
+                               <td style="width:70px "> ' . $dataitem['gross_weight'] . ' Kgs.</td>
 
-                                </tr>';
+                               </tr>';
             }
             $html .= '      </table>
-                                <div>
-                                    <table style="margin-top:0px;">
-                                    <tr>
-                                    <td width="50%" style="font-size: 13px;"><p style="margin-top:60px;"><b>Received the goods mentioned above in good conditions.</b><br><br>Receivers Name & Number:<br><br>Receiving Date & Time	:<br><br>Receiver Signature:<br><br></p></td>
-                                    <td  width="50%"><p style="margin-left: 99px; margin-bottom:150px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
-                                </tr>
-                                    </table>
+                               <div>
+                           <table style="width: 100%; margin-top: 20px">
+                                   <tr>
+                           <td width="60%" style="font-size: 13px; line-height: 24px">
+                               <strong>Received the goods mentioned above in good conditions.</strong><br/>
+                               Receivers Name & Number :<br/>
+                               Receiving Date & Time :<br/>
+                               Receiver Signature :
+                           </td>
 
-                                </div>
-                          </div>
+                           <td width="40%; text-align: center; vertical-align: top">
+                           <strong>For Eternity Forwarders Pvt.Ltd</strong>
+                           </td>
+                               </tr>
+                                   </table>
 
-                  <!--<div class="footer">
-                                  <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
-                                <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
-                                <p style="font-size: 8px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
-                                <p style="font-size: 8px; margin-top: -5px">3. The delivery of the goods will have to be taken immediately on arrival at the destination failing which the  consignee will be liable to detention charges @Rs.200/hour or Rs.300/day whichever is lower.</p>
-                                <p style="font-size: 8px; margin-top: -5px">4. Eternity Solutons takes absolutely no responsibility for delay or loss in transits due to accident strike or any other cause beyond its control and due to breakdown of vehicle and for the consequence thereof. </p>
-                                <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
-                                <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
-                                <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
-                  </div>-->
-                    </div>
-                    <!-- Optional JavaScript; choose one of the two! -->
+                               </div>
+                         </div>
 
-                    <!-- Option 1: Bootstdap Bundle with Popper -->
-                    <script
-                        src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.bundle.min.js"
-                        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-                        crossorigin="anonymous"
-                    ></script>
+                 <div class="footer">
+                                 <p style="text-align:center; font-size: 9px;">Terms & Conditions</p>
+                               <p style="font-size: 7px; margin-top: -5px">1. Eternity Forwarders Private Limited does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun, rain ,fire and any other damage caused.</p>
+                               <p style="font-size: 7px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
+                               <p style="font-size: 7px; margin-top: -5px">3. The delivery of the goods will have to be taken immediately on arrival at the destination failing which the  consignee will be liable to detention charges @Rs.200/hour or Rs.300/day whichever is lower.</p>
+                               <p style="font-size: 7px; margin-top: -5px">4. Eternity Solutons takes absolutely no responsibility for delay or loss in transits due to accident strike or any other cause beyond its control and due to breakdown of vehicle and for the consequence thereof. </p>
+                               <p style="font-size: 7px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
+                               <p style="font-size: 7px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
+                               <p style="font-size: 7px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
+                               <p style="text-align:center; font-size: 10px; margin-top: -1px">Head Office: Plot No. B-104/03712, Pabhat, Zirakpur – 140 603 | contact@eternityforwarders.com
+                               CIN: U63030PB2021PTC053388
+                               </p>
+                   </div>
+                   <!-- Optional JavaScript; choose one of the two! -->
 
-                    <!-- Option 2: Separate Popper and Bootstdap JS -->
-                    <!--
-                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-                <script src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKtdIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-                -->
-                </body>
-            </html>
-            ';
+                   <!-- Option 1: Bootstdap Bundle with Popper -->
+                   <script
+                       src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.bundle.min.js"
+                       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                       crossorigin="anonymous"
+                   ></script>
+
+                   <!-- Option 2: Separate Popper and Bootstdap JS -->
+                   <!--
+               <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+               <script src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKtdIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+               -->
+               </body>
+           </html>
+           ';
 
             $pdf = \App::make('dompdf.wrapper');
             $pdf->loadHTML($html);
-            $pdf->setPaper('legal', 'portrait');
+            $pdf->setPaper('A4', 'portrait');
             $pdf->save(public_path() . '/consignment-pdf/congn-' . $i . '.pdf')->stream('congn-' . $i . '.pdf');
             $pdf_name[] = 'congn-' . $i . '.pdf';
         }
@@ -1959,61 +1968,32 @@ class ConsignmentController extends Controller
         } else {
             $baseclient = '';
         }
-
-        //$logo = url('assets/img/logo_se.jpg');
         $barcode = url('assets/img/barcode.png');
 
-        // if ($authuser->branch_id == 28) {
-        //     return view('consignments.consignment-sticker-ldh', ['data' => $data, 'baseclient' => $baseclient]);
-        // } else {
-        return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
-        // }
-        //echo $barcode; die;
+        if ($locations->sticker == '2') {
+            $pdf = \App::make('dompdf.wrapper');
+            $pdf->getDompdf()->set_option('chroot', base_path());
+            $pdf->setPaper([0, 0, 252, 330], 'pt');
 
-    }   
-     
-    public function unverifiedList1(Request $request)
-    {
-        $this->prefix = request()->route()->getPrefix();
-        $authuser = Auth::user();
-        $role_id = Role::where('id', '=', $authuser->role_id)->first();
-        $baseclient = explode(',', $authuser->baseclient_id);
-        $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',', $authuser->branch_id);
-        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
-        // set_time_limit(60);
-        $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
-            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->whereIn('consignment_notes.status', ['2', '6'])
-            ->where('consignment_notes.booked_drs', '!=', '1')
-            ->where('consignment_notes.lr_type', '!=', 3);
+            $html = view('consignments.consignment-sticker-plain', ['data' => $data, 'baseclient' => $baseclient, 'boxes' => $item_count])->render();
+            // Load HTML into Dompdf
+            $pdf->loadHtml($html);
+            $pdf->render();
 
-        if ($authuser->role_id == 1) {
-            $data;
-        } elseif ($authuser->role_id == 4) {
-            $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
+            return $pdf->stream('print.pdf');
         } else {
-            $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc) {
-                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2','6']);
-            });
+            return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
         }
-        $consignments = $data->orderBy('id', 'DESC')->get();
 
-        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
-        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
-
-        return view('consignments.unverified-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])
-            ->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
+    // create drs list
     public function unverifiedList(Request $request)
     {
+        set_time_limit(120);
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-        
+
         $data = DB::table('consignment_notes')
             ->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -2051,43 +2031,43 @@ class ConsignmentController extends Controller
     {
         DB::beginTransaction();
         try {
-            if($request->is_started == 1){
+            if ($request->is_started == 1) {
 
                 $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
                 $getDriver = Driver::where('id', $request->driver_id)->first();
-                if($getVehicle){            
-                    $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
-                    ->whereDate('created_at', '>', '2023-12-20')
-                    ->where('vehicle_no', $getVehicle->regn_no)
-                    ->whereNotNull('vehicle_no')
-                    ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                if ($getVehicle) {
+                    $drsVehicleIds = TransactionSheet::select('id', 'drs_no', 'vehicle_no', 'driver_name')
+                        ->whereDate('created_at', '>', '2023-12-20')
+                        ->where('vehicle_no', $getVehicle->regn_no)
+                        ->whereNotNull('vehicle_no')
+                        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
                     // ->where('status', '!=', 4)
-                    ->whereNotIn('status', [4, 0])
-                    ->where('is_started', '=', 1)
-                    ->pluck('drs_no')
-                    ->unique()
-                    ->toArray();
+                        ->whereNotIn('status', [4, 0])
+                        ->where('is_started', '=', 1)
+                        ->pluck('drs_no')
+                        ->unique()
+                        ->toArray();
 
                     if (!empty($drsVehicleIds)) {
                         $errorMessage = "Vehicle number already assigned to DRS: " . implode(', ', $drsVehicleIds);
-                        return response()->json(['success' => false,'error_message' => $errorMessage]);
+                        return response()->json(['success' => false, 'error_message' => $errorMessage]);
                     }
                 }
-                if($getDriver){            
-                    $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
-                    ->whereDate('created_at', '>', '2023-12-20')
-                    ->where('driver_no', $getDriver->phone)
-                    ->whereNotNull('driver_no')
-                    ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-                    ->whereNotIn('status', [4, 0])
-                    ->where('is_started', '=', 1)
-                    ->pluck('drs_no')
-                    ->unique()
-                    ->toArray();
+                if ($getDriver) {
+                    $drsDriverIds = TransactionSheet::select('id', 'drs_no', 'vehicle_no', 'driver_name', 'driver_no')
+                        ->whereDate('created_at', '>', '2023-12-20')
+                        ->where('driver_no', $getDriver->phone)
+                        ->whereNotNull('driver_no')
+                        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                        ->whereNotIn('status', [4, 0])
+                        ->where('is_started', '=', 1)
+                        ->pluck('drs_no')
+                        ->unique()
+                        ->toArray();
 
                     if (!empty($drsDriverIds)) {
                         $errorMessage = "Driver already assigned to DRS: " . implode(', ', $drsDriverIds);
-                        return response()->json(['success' => false,'error_message' => $errorMessage]);
+                        return response()->json(['success' => false, 'error_message' => $errorMessage]);
                     }
                 }
             }
@@ -2097,31 +2077,31 @@ class ConsignmentController extends Controller
             $c_ids = $request->transaction_id;
             $consignmentId = explode(',', $c_ids);
 
-            if($request->vehicle_id){
+            if ($request->vehicle_id) {
                 $updateData['vehicle_id'] = $request->vehicle_id;
             }
-            if($request->driver_id){
+            if ($request->driver_id) {
                 $updateData['driver_id'] = $request->driver_id;
             }
-            if($request->transporter_name){
+            if ($request->transporter_name) {
                 $updateData['transporter_name'] = $request->transporter_name;
             }
-            if($request->vehicle_type){
+            if ($request->vehicle_type) {
                 $updateData['vehicle_type'] = $request->vehicle_type;
             }
-            if($request->purchase_price){
+            if ($request->purchase_price) {
                 $updateData['purchase_price'] = $request->purchase_price;
             }
             $updateData['delivery_status'] = 'Assigned';
 
             $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->where('status', '!=', 0)->update($updateData);
-           
-            $get_consignment = ConsignmentNote::with('ConsigneeDetail','VehicleDetail','DriverDetail')->whereIn('id', $consignmentId)->first();
+
+            $get_consignment = ConsignmentNote::with('ConsigneeDetail', 'VehicleDetail', 'DriverDetail')->whereIn('id', $consignmentId)->first();
             if ($get_consignment) {
-                if($get_consignment->VehicleDetail && isset($get_consignment->VehicleDetail->regn_no)){
+                if ($get_consignment->VehicleDetail && isset($get_consignment->VehicleDetail->regn_no)) {
                     $trnUpdate['vehicle_no'] = $get_consignment->VehicleDetail->regn_no;
                 }
-                if($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->name)){
+                if ($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->name)) {
                     $trnUpdate['driver_name'] = $get_consignment->DriverDetail->name;
                 }
                 if ($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->phone)) {
@@ -2132,21 +2112,21 @@ class ConsignmentController extends Controller
                 $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
             }
 
-            if($request->is_started == 1){
+            if ($request->is_started == 1) {
                 // Bulk update for TransactionSheet records
-                $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1,'delivery_status' => 'Started']);
-                $updateLR = ConsignmentNote::whereIn('id', $consignmentId)->where('status',1)->update(['delivery_status' => 'Started']);
-                
+                $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update(['is_started' => 1, 'delivery_status' => 'Started']);
+                $updateLR = ConsignmentNote::whereIn('id', $consignmentId)->where('status', 1)->update(['delivery_status' => 'Started']);
+
                 // Get driver details
                 $get_driver_details = Driver::select('access_status', 'branch_id')->where('id', $request->driver_id)->first();
 
                 $mytime = Carbon::now('Asia/Kolkata');
                 $currentdate = $mytime->toDateTimeString();
-                
+
                 // Bulk update for ConsignmentNote records
                 $lr_mode = ($get_driver_details->access_status == 1) ? 2 : 0;
                 ConsignmentNote::whereIn('id', $consignmentId)
-                ->update(['lr_mode' => $lr_mode]);
+                    ->update(['lr_mode' => $lr_mode]);
 
                 // Prepare an array of job data
                 foreach ($consignmentId as $c_id) {
@@ -2177,12 +2157,12 @@ class ConsignmentController extends Controller
                     }
                     // ==== end started
                 }
-            }            
+            }
             DB::commit();
 
             $response['success'] = true;
             $response['success_message'] = "Data Imported successfully";
-            
+
             return response()->json($response);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -2204,19 +2184,19 @@ class ConsignmentController extends Controller
             $consignmentId = explode(',', $c_ids);
 
             // Bulk update for TransactionSheet records
-            $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1,'delivery_status' => 'Started']);
-            $updateLR = ConsignmentNote::whereIn('id', $consignmentId)->where('status',1)->update(['delivery_status' => 'Started']);
-            
+            $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update(['is_started' => 1, 'delivery_status' => 'Started']);
+            $updateLR = ConsignmentNote::whereIn('id', $consignmentId)->where('status', 1)->update(['delivery_status' => 'Started']);
+
             // Get driver details
             $get_driver_details = Driver::select('access_status', 'branch_id')->where('id', $request->driver_id)->first();
 
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString();
-            
+
             // Bulk update for ConsignmentNote records
             $lr_mode = ($get_driver_details->access_status == 1) ? 2 : 0;
             ConsignmentNote::whereIn('id', $consignmentId)
-            ->update(['lr_mode' => $lr_mode]);
+                ->update(['lr_mode' => $lr_mode]);
 
             // Prepare an array of job data
             foreach ($consignmentId as $c_id) {
@@ -2264,11 +2244,11 @@ class ConsignmentController extends Controller
         // set_time_limit(60);
         $this->segment == 'transaction-sheet';
         ini_set('max_execution_time', -1);
-        
+
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
         $query = TransactionSheet::query();
-        
+
         if ($request->ajax()) {
             $this->segment == 'transaction-sheet';
             if (isset($request->resetfilter)) {
@@ -2347,45 +2327,45 @@ class ConsignmentController extends Controller
             }
 
             // get vehicles
-            $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
-            ->whereDate('created_at', '>', '2023-12-20')
-            ->whereNotNull('vehicle_no')
-            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-            ->whereNotIn('status', [4, 0])
-            ->pluck('vehicle_no')
-            ->unique()
-            ->toArray();
+            $drsVehicleIds = TransactionSheet::select('id', 'drs_no', 'vehicle_no', 'driver_name')
+                ->whereDate('created_at', '>', '2023-12-20')
+                ->whereNotNull('vehicle_no')
+                ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                ->whereNotIn('status', [4, 0])
+                ->pluck('vehicle_no')
+                ->unique()
+                ->toArray();
 
             // Fetch vehicles that are not in the merged array
             $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
-            ->whereNotIn('regn_no', $drsVehicleIds)
-            ->get();
-            
+                ->whereNotIn('regn_no', $drsVehicleIds)
+                ->get();
+
             // get drivers
             $drsDriverIds = TransactionSheet::select('driver_name', 'driver_no')
-            ->whereDate('created_at', '>', '2023-12-20')
-            ->whereNotNull('driver_no')
-            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-            ->whereNotIn('status', [4, 0])
-            ->groupBy('driver_no', 'driver_name')
-            ->get(['driver_no', 'driver_name'])
-            ->unique(function ($item) {
-                return $item['driver_no'].$item['driver_name'];
-            })
-            ->toArray();
-            if($drsDriverIds && count($drsDriverIds)>0){
-                $getDrivers = Driver::where('status', '1')
-                ->where(function ($query) use ($drsDriverIds) {
-                    foreach ($drsDriverIds as $driver) {
-                        $query->orWhere(function ($subquery) use ($driver) {
-                            $subquery->where('phone', $driver['driver_no'])
-                                ->where('name', $driver['driver_name']);
-                        });
-                    }
+                ->whereDate('created_at', '>', '2023-12-20')
+                ->whereNotNull('driver_no')
+                ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                ->whereNotIn('status', [4, 0])
+                ->groupBy('driver_no', 'driver_name')
+                ->get(['driver_no', 'driver_name'])
+                ->unique(function ($item) {
+                    return $item['driver_no'] . $item['driver_name'];
                 })
-                ->select('id', 'name', 'phone')
-                ->get()
                 ->toArray();
+            if ($drsDriverIds && count($drsDriverIds) > 0) {
+                $getDrivers = Driver::where('status', '1')
+                    ->where(function ($query) use ($drsDriverIds) {
+                        foreach ($drsDriverIds as $driver) {
+                            $query->orWhere(function ($subquery) use ($driver) {
+                                $subquery->where('phone', $driver['driver_no'])
+                                    ->where('name', $driver['driver_name']);
+                            });
+                        }
+                    })
+                    ->select('id', 'name', 'phone')
+                    ->get()
+                    ->toArray();
 
                 $excludedDriverIds = array_column($getDrivers, 'id');
 
@@ -2394,7 +2374,7 @@ class ConsignmentController extends Controller
                     ->whereNotIn('id', $excludedDriverIds)
                     ->select('id', 'name', 'phone')
                     ->get();
-            }else{
+            } else {
                 $drivers = Driver::where('status', '1')
                     ->select('id', 'name', 'phone')
                     ->get();
@@ -2407,7 +2387,7 @@ class ConsignmentController extends Controller
             $transaction = $query->orderBy('id', 'DESC')->paginate($peritem);
             $transaction = $transaction->appends($request->query());
 
-            $html = view('consignments.download-drs-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix,'segment'=>$this->segment, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
+            $html = view('consignments.download-drs-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'segment' => $this->segment, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -2447,46 +2427,46 @@ class ConsignmentController extends Controller
         $transaction = $transaction->appends($request->query());
 
         // get vehicles
-        $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
-        ->whereDate('created_at', '>', '2023-12-20')
-        ->whereNotNull('vehicle_no')
-        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-        ->whereNotIn('status', [4, 0])
-        ->pluck('vehicle_no')
-        ->unique()
-        ->toArray();
-        
+        $drsVehicleIds = TransactionSheet::select('id', 'drs_no', 'vehicle_no', 'driver_name')
+            ->whereDate('created_at', '>', '2023-12-20')
+            ->whereNotNull('vehicle_no')
+            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+            ->whereNotIn('status', [4, 0])
+            ->pluck('vehicle_no')
+            ->unique()
+            ->toArray();
+
         // Fetch vehicles that are not in the merged array
         $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
-        ->whereNotIn('regn_no', $drsVehicleIds)
-        ->get();
-        
+            ->whereNotIn('regn_no', $drsVehicleIds)
+            ->get();
+
         // get drivers
         $drsDriverIds = TransactionSheet::select('driver_name', 'driver_no')
-        ->whereDate('created_at', '>', '2023-12-20')
-        ->whereNotNull('driver_no')
-        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-        ->whereNotIn('status', [4, 0])
-        ->groupBy('driver_no', 'driver_name')
-        ->get(['driver_no', 'driver_name'])
-        ->unique(function ($item) {
-            return $item['driver_no'].$item['driver_name'];
-        })
-        ->toArray();
-        
-        if($drsDriverIds && count($drsDriverIds)>0){
-            $getDrivers = Driver::where('status', '1')
-            ->where(function ($query) use ($drsDriverIds) {
-                foreach ($drsDriverIds as $driver) {
-                    $query->orWhere(function ($subquery) use ($driver) {
-                        $subquery->where('phone', $driver['driver_no'])
-                            ->where('name', $driver['driver_name']);
-                    });
-                }
+            ->whereDate('created_at', '>', '2023-12-20')
+            ->whereNotNull('driver_no')
+            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+            ->whereNotIn('status', [4, 0])
+            ->groupBy('driver_no', 'driver_name')
+            ->get(['driver_no', 'driver_name'])
+            ->unique(function ($item) {
+                return $item['driver_no'] . $item['driver_name'];
             })
-            ->select('id', 'name', 'phone')
-            ->get()
             ->toArray();
+
+        if ($drsDriverIds && count($drsDriverIds) > 0) {
+            $getDrivers = Driver::where('status', '1')
+                ->where(function ($query) use ($drsDriverIds) {
+                    foreach ($drsDriverIds as $driver) {
+                        $query->orWhere(function ($subquery) use ($driver) {
+                            $subquery->where('phone', $driver['driver_no'])
+                                ->where('name', $driver['driver_name']);
+                        });
+                    }
+                })
+                ->select('id', 'name', 'phone')
+                ->get()
+                ->toArray();
 
             $excludedDriverIds = array_column($getDrivers, 'id');
 
@@ -2495,7 +2475,7 @@ class ConsignmentController extends Controller
                 ->whereNotIn('id', $excludedDriverIds)
                 ->select('id', 'name', 'phone')
                 ->get();
-        }else{
+        } else {
             $drivers = Driver::where('status', '1')
                 ->select('id', 'name', 'phone')
                 ->get();
@@ -2505,7 +2485,7 @@ class ConsignmentController extends Controller
         // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        return view('consignments.download-drs-list', ['peritem' => $peritem, 'prefix' => $this->prefix,'segment'=>$this->segment, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
+        return view('consignments.download-drs-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'segment' => $this->segment, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
     }
 
     public function getDriverdrs(Request $request)
@@ -2530,8 +2510,8 @@ class ConsignmentController extends Controller
             ->whereNull('pickup_run_sheets.vehicle_id')
             ->select('vehicles.id', 'vehicles.regn_no')
             ->get();
-    
-            $drivers = Driver::where('drivers.status', '1')
+
+        $drivers = Driver::where('drivers.status', '1')
             ->leftJoin('consignment_notes', function ($join) {
                 $join->on('drivers.id', '=', 'consignment_notes.driver_id')
                     ->where('consignment_notes.delivery_status', '!=', 'successful');
@@ -2549,9 +2529,9 @@ class ConsignmentController extends Controller
             ->whereNull('hrs.driver_id')
             ->whereNull('pickup_run_sheets.driver_id')
             ->select('drivers.id', 'drivers.name', 'drivers.phone')
-            ->get();  
+            ->get();
 
-            $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         $response['vehicles'] = $vehicles;
         $response['drivers'] = $drivers;
@@ -2562,7 +2542,7 @@ class ConsignmentController extends Controller
         return response()->json($response);
     }
 
-    // on unassigned btn click in drs list 
+    // on unassigned btn click in drs list
     public function getTransactionDetails(Request $request)
     {
         // $drsId = $_GET['drsId'];
@@ -2570,7 +2550,7 @@ class ConsignmentController extends Controller
         $result = TransactionSheet::where('drs_no', $drsId)
             ->with(['ConsignmentDetail' => function ($query) {
                 $query->whereIn('status', [0, 1, 2])
-                ->where('lr_type', '!=', 3);
+                    ->where('lr_type', '!=', 3);
             }])
             ->orderBy('order_no', 'asc')
             ->get();
@@ -2589,18 +2569,17 @@ class ConsignmentController extends Controller
         //     }])
         //     ->orderBy('order_no', 'asc')
         //     ->get();
-            
-            $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status',1)
+
+        $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status', 1)
             ->pluck('consignment_no')
             ->toArray();
 
-            // Use the retrieved 'consignment_no' values to fetch corresponding ConsignmentNote records
-            $getLrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lrIds)->first();
-            
-            $getVehicle = Vehicle::where('id',$getLrs->vehicle_id)->first();
-            $getDriver = Driver::where('id',$getLrs->driver_id)->first();
-            $getVehicleType = VehicleType::where('id',$getLrs->vehicle_type)->first();
+        // Use the retrieved 'consignment_no' values to fetch corresponding ConsignmentNote records
+        $getLrs = ConsignmentNote::select('id', 'vehicle_id', 'driver_id', 'vehicle_type', 'transporter_name', 'purchase_price')->whereIn('id', $lrIds)->first();
 
+        $getVehicle = Vehicle::where('id', $getLrs->vehicle_id)->first();
+        $getDriver = Driver::where('id', $getLrs->driver_id)->first();
+        $getVehicleType = VehicleType::where('id', $getLrs->vehicle_type)->first();
 
         $response['fetch'] = $result;
         $response['fetch_lrs'] = $getLrs;
@@ -2609,10 +2588,10 @@ class ConsignmentController extends Controller
         $response['fetchVehicleType'] = $getVehicleType;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
-        
+
         return response()->json($response);
     }
-    
+
     public function printTransactionsheetold(Request $request)
     {
         $id = $request->id;
@@ -2792,10 +2771,10 @@ class ConsignmentController extends Controller
     {
         $id = $request->id;
         $transcationview = TransactionSheet::with([
-                'ConsignmentDetail.ConsignerDetail.GetRegClient', 
-                'ConsignmentDetail.ShiptoDetail:id,nick_name,phone,city,district,postal_code',
-                'ConsignmentItem'
-            ])
+            'ConsignmentDetail.ConsignerDetail.GetRegClient',
+            'ConsignmentDetail.ShiptoDetail:id,nick_name,phone,city,district,postal_code',
+            'ConsignmentItem'
+        ])
             ->whereHas('ConsignmentDetail', function ($q) {
                 $q->where('status', '!=', 0)->where('lr_type', '!=', 3);
             })
@@ -2803,7 +2782,7 @@ class ConsignmentController extends Controller
             ->whereIn('status', ['1', '3', '4'])
             ->orderBy('order_no', 'asc')
             ->get();
-        
+
         // Fetch details efficiently
         $no_of_deliveries = $transcationview->count();
         $details = $transcationview[0];
@@ -2953,7 +2932,7 @@ class ConsignmentController extends Controller
 
             $total_Boxes += $dataitem->total_quantity;
             $total_weight += $dataitem->total_weight;
-            // dd($dataitem->ConsignmentDetail->ConsignerDetail->GetRegClient); 
+            // dd($dataitem->ConsignmentDetail->ConsignerDetail->GetRegClient);
             //echo'<pre>'; print_r($dataitem->ConsignmentDetail->ConsignerDetail->GetRegClient->name); die;
             $html .= '
                 <div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; margin-bottom: -10px;">
@@ -2989,10 +2968,10 @@ class ConsignmentController extends Controller
             $html .= '<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 190px; padding:6px;"><span style="font-weight: bold;">Order ID</span></td><td style="width: 190px;"><span style="font-weight: bold;">Invoice No</span></td></tr></table>';
             $itm_no = 0;
             // if(count($dataitem->consignment_item']) > 0){
-            if(count($dataitem->ConsignmentItem) > 0) {
+            if (count($dataitem->ConsignmentItem) > 0) {
                 foreach ($dataitem->ConsignmentItem as $cc) {
                     $itm_no++;
-                    
+
                     $html .= '  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->order_id . '</td><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->invoice_no . '</td></tr></table>';
 
                 }
@@ -3030,7 +3009,7 @@ class ConsignmentController extends Controller
             return response()->json(['error' => 'Something went wrong']);
         }
     }
-    
+
     //////////////////////////////////remove lr////////////////////
     public function removeLR(Request $request)
     {
@@ -3052,18 +3031,25 @@ class ConsignmentController extends Controller
     // create drs function
     public function CreateEdd(Request $request)
     {
+        $authuser = Auth::user();
+        $cc = $authuser->branch_id;
+
+        if ($authuser->role_id != 2 || $authuser->role_id != 4) {
+            return response()->json([
+                'success' => false,
+                'checkdrs' => 'drs-exist',
+                'error_message' => "You are not authorized to create DRS."
+            ]);
+        }
         $consignmentId = $_POST['consignmentID'];
         $checkDrs = TransactionSheet::whereIn('consignment_no', $consignmentId)->whereNotIn('status', [0, 4])->first();
         if ($checkDrs) {
             return response()->json([
                 'success' => false,
-                'checkdrs' => 'drs-exist' , 
-                'error_message' => "Drs already created DRS-".$checkDrs->drs_no
+                'checkdrs' => 'drs-exist',
+                'error_message' => "Drs already created DRS-" . $checkDrs->drs_no
             ]);
         }
-
-        $authuser = Auth::user();
-        $cc = $authuser->branch_id;
 
         // check order book drs
         $checklrstatus = ConsignmentNote::whereIn('id', $consignmentId)->get();
@@ -3133,16 +3119,16 @@ class ConsignmentController extends Controller
         $drsId = $request->drsId;
         $result = TransactionSheet::with(['ConsignmentDetail', 'ConsignmentItem'])->where('drs_no', $drsId)
             ->whereHas('ConsignmentDetail', function ($query) {
-                $query->whereIn('status', ['1','5']);
+                $query->whereIn('status', ['1', '5']);
             })
             ->orderby('order_no', 'asc')->get();
 
-        $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status',1)
-        ->pluck('consignment_no')
-        ->toArray();
+        $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status', 1)
+            ->pluck('consignment_no')
+            ->toArray();
 
         // Use the retrieved 'consignment_no' values to fetch corresponding ConsignmentNote records
-        $getLrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lrIds)->first();
+        $getLrs = ConsignmentNote::select('id', 'vehicle_id', 'driver_id', 'vehicle_type', 'transporter_name', 'purchase_price')->whereIn('id', $lrIds)->first();
         // $getVehicle = Vehicle::where('id',$getLrs->vehicle_id)->first();
         // $getDriver = Driver::where('id',$getLrs->driver_id)->first();
         $getVehicle = Vehicle::find($getLrs->vehicle_id);
@@ -3175,12 +3161,12 @@ class ConsignmentController extends Controller
         $result = $transactionView->toArray();
 
         // Retrieve an array of 'consignment_no' values based on the criteria
-        $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status',1)
+        $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status', 1)
             ->pluck('consignment_no')
             ->toArray();
 
         // Use the retrieved 'consignment_no' values to fetch corresponding ConsignmentNote records
-        $getLrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lrIds)->first();
+        $getLrs = ConsignmentNote::select('id', 'vehicle_id', 'driver_id', 'vehicle_type', 'transporter_name', 'purchase_price')->whereIn('id', $lrIds)->first();
 
         $getVehicle = Vehicle::find($getLrs->vehicle_id);
         $getDriver = Driver::find($getLrs->driver_id);
@@ -3196,7 +3182,7 @@ class ConsignmentController extends Controller
             'success' => true,
             'success_message' => "Data Imported successfully"
         ];
-        
+
         echo json_encode($response);
     }
 
@@ -3232,14 +3218,14 @@ class ConsignmentController extends Controller
         $delivery_date = $_POST['delivery_date'];
         $consignmentId = $_POST['consignment_id'];
         $consigmentUpdate = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_status' => 'Successful', 'delivery_date' => $delivery_date]);
-        
+
         if ($consigmentUpdate) {
-            $latestRecord = TransactionSheet::where('consignment_no', $request->lr)->where('status',1)
+            $latestRecord = TransactionSheet::where('consignment_no', $request->lr)->where('status', 1)
                 ->latest('drs_no')
                 ->first();
 
             if ($latestRecord) {
-                $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate,]);
+                $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate]);
             }
             return response()->json(['success' => 'Delivery Date Updated Successfully']);
         } else {
@@ -3252,7 +3238,7 @@ class ConsignmentController extends Controller
     public function getdeliverydatamodel(Request $request)
     {
         $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd', 'consignment_notes.delivery_date as dd', 'consignment_notes.signed_drs as signed_drs', 'consignment_notes.lr_mode as lr_mode', 'consignment_notes.reattempt_reason')
-            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $request->drs_no)->whereIn('transaction_sheets.status', ['0', '1', '3','4'])->get();
+            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $request->drs_no)->whereIn('transaction_sheets.status', ['0', '1', '3', '4'])->get();
         // $result = json_decode(json_encode($transcationview), true);
         // $result = $transcationview;
         // echo'<pre>'; print_r($result); exit;
@@ -3475,7 +3461,7 @@ class ConsignmentController extends Controller
                         $phone = '';
                     }
                     // if (@$data['is_salereturn'] != 1) {
-                        $shiptoadd = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
+                    $shiptoadd = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
                     // } else {
                     //     $shiptoadd = '';
                     // }
@@ -3484,17 +3470,17 @@ class ConsignmentController extends Controller
                     $output_file = '/qr-code/img-' . time() . '.svg';
                     Storage::disk('public')->put($output_file, $generate_qrcode);
                     $fullpath = storage_path('app/public/' . $output_file);
-                    
+
                     $no_invoive = count($data['consignment_items']);
                     if ($request->typeid == 1) {
-                            $adresses = '<table width="100%">
+                        $adresses = '<table width="100%">
                                 <tr>
                                     <td style="width:50%">' . $conr_add . '</td>
                                     <td style="width:50%">' . $consnee_add . '</td>
                                 </tr>
                             </table>';
                     } else if ($request->typeid == 2) {
-                            $adresses = '<table width="100%">
+                        $adresses = '<table width="100%">
                                     <tr>
                                         <td style="width:33%">' . $conr_add . '</td>
                                         <td style="width:33%">' . $consnee_add . '</td>
@@ -3735,15 +3721,15 @@ class ConsignmentController extends Controller
                                                     <tr>
                                                         <th class="mini-th mm" >' . $data['id'] . '</th>
                                                         <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
-                                                        if ($data['is_salereturn'] == '1') {
-                                                            $html .= '<th class="mini-th mm">' . @$data['shipto_detail']['city'] . '</th>
+                        if ($data['is_salereturn'] == '1') {
+                            $html .= '<th class="mini-th mm">' . @$data['shipto_detail']['city'] . '</th>
                                                                     <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
-                                                        } else {
-                                                            $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
+                        } else {
+                            $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
                                                                     <th class="mini-th">' . @$data['shipto_detail']['city'] . '</th>';
-                                                        }      
+                        }
 
-                                        $html .= '</tr>
+                        $html .= '</tr>
                                                 </table>
                                     </div>
                                             </td>
@@ -3785,14 +3771,14 @@ class ConsignmentController extends Controller
                                                 <tr>
                                                     <td class="width_set">
                                                         <div style="margin-left: 20px">';
-                                                        if ($data['is_salereturn'] == '1') {
-                                                            $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
+                                if ($data['is_salereturn'] == '1') {
+                                    $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
                                                         <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
-                                                    } else {
-                                                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                } else {
+                                    $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
                                                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
-                                                    }
-                                                    $html .= ' <div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                }
+                                $html .= ' <div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                         </div>
                                                     </td>
                                                     <td class="width_set">
@@ -4502,7 +4488,7 @@ class ConsignmentController extends Controller
 
         $result = json_decode(json_encode($transcationview), true);
 
-        $awsUrl = env('AWS_S3_URL'); 
+        $awsUrl = env('AWS_S3_URL');
         $getapp = AppMedia::where('consignment_no', $request->lr_no)->get();
 
         $response['fetch'] = $result;
@@ -4814,30 +4800,30 @@ class ConsignmentController extends Controller
             //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
             //     return Response::json($response);
             // }
-            if($request->file('file')){
-                $pod_image = $request->file('file');                
+            if ($request->file('file')) {
+                $pod_image = $request->file('file');
                 $originalFilename = uniqid() . '_' . $pod_image->getClientOriginalName();
-            
+
                 if (Storage::disk('s3')->putFileAs('pod_images', $pod_image, $originalFilename)) {
                     $imagePath = explode('/', $originalFilename);
                     $filename = end($imagePath);
                 } else {
                     $filename = null;
                 }
-            }else{
+            } else {
                 $filename = null;
             }
             $deliverydate = $request->delivery_date;
 
             if (!empty($deliverydate)) {
-                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no'=>'By consignment-list']);
+                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no' => 'By consignment-list']);
 
-                $latestRecord = TransactionSheet::where('consignment_no', $request->lr)->where('status',1)
+                $latestRecord = TransactionSheet::where('consignment_no', $request->lr)->where('status', 1)
                     ->latest('drs_no')
                     ->first();
 
                 if ($latestRecord) {
-                    $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate,]);
+                    $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate]);
                 }
                 // TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
@@ -4876,7 +4862,7 @@ class ConsignmentController extends Controller
 
     public function allSaveDRS(Request $request)
     {
-        try{
+        try {
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
             $location = Location::whereIn('id', $cc)->first();
@@ -4886,26 +4872,26 @@ class ConsignmentController extends Controller
 
                 foreach ($get_data as $key => $save_data) {
                     $lrno = $save_data['lrno'];
-                    
+
                     $getlrDetail = ConsignmentNote::where('id', $lrno)->first();
 
-                    if(!empty($getlrDetail) && $getlrDetail->status != 0){                    
+                    if (!empty($getlrDetail) && $getlrDetail->status != 0) {
                         $deliverydate = @$save_data['delivery_date'];
                         $pod_img = @$save_data['img'];
 
                         if ($save_data['job_id'] == 'null') {
 
-                            if($pod_img){
+                            if ($pod_img) {
                                 // prev folder name- drs/Image
                                 $originalFilename = uniqid() . '_' . $pod_img->getClientOriginalName();
-                            
+
                                 if (Storage::disk('s3')->putFileAs('pod_images', $pod_img, $originalFilename)) {
                                     $imagePath = explode('/', $originalFilename);
                                     $filename = end($imagePath);
                                 } else {
                                     $filename = null;
                                 }
-                            }else{
+                            } else {
                                 $filename = null;
                             }
 
@@ -4921,7 +4907,7 @@ class ConsignmentController extends Controller
                                 }
 
                                 if ($getlrDetail->lr_mode == 0) {
-                                    ConsignmentNote::where('id', $lrno)->where('status', '!=', 0)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no'=>'By drs-list']);
+                                    ConsignmentNote::where('id', $lrno)->where('status', '!=', 0)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no' => 'By drs-list']);
 
                                     $latestRecord = TransactionSheet::where('consignment_no', $lrno)
                                         ->where('status', 1)
@@ -4929,7 +4915,7 @@ class ConsignmentController extends Controller
                                         ->first();
 
                                     if ($latestRecord) {
-                                        $latestRecord->where('status', '!=', 0)->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate,]);
+                                        $latestRecord->where('status', '!=', 0)->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate]);
                                     }
                                 }
 
@@ -5018,16 +5004,16 @@ class ConsignmentController extends Controller
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
 
-        $getdrs = TransactionSheet::where('drs_no',$drs_no)->where('status',1)->first();
-        $getConsignment = ConsignmentNote::select('vehicle_id','driver_id','vehicle_type')->where('id',$getdrs->consignment_no)->first();
+        $getdrs = TransactionSheet::where('drs_no', $drs_no)->where('status', 1)->first();
+        $getConsignment = ConsignmentNote::select('vehicle_id', 'driver_id', 'vehicle_type')->where('id', $getdrs->consignment_no)->first();
 
-        if($getConsignment->vehicle_id){
+        if ($getConsignment->vehicle_id) {
             $vehicle = Vehicle::where('id', $getConsignment->vehicle_id)->first();
             $driver = Driver::where('id', $getConsignment->driver_id)->first();
-            
-            ConsignmentNote::whereIn('id', $consignmentId)->update(['vehicle_id'=>$vehicle->id,'driver_id'=>$driver->id,'vehicle_type'=>$getConsignment->vehicle_type,'status' => '1']);
-            TransactionSheet::where('drs_no', $getdrs->drs_no)->where('status',1)->update(['vehicle_no'=>$vehicle->regn_no,'driver_name'=>$driver->name,'driver_no'=>$driver->phone]);
-        }else{
+
+            ConsignmentNote::whereIn('id', $consignmentId)->update(['vehicle_id' => $vehicle->id, 'driver_id' => $driver->id, 'vehicle_type' => $getConsignment->vehicle_type, 'status' => '1']);
+            TransactionSheet::where('drs_no', $getdrs->drs_no)->where('status', 1)->update(['vehicle_no' => $vehicle->regn_no, 'driver_name' => $driver->name, 'driver_no' => $driver->phone]);
+        } else {
             ConsignmentNote::whereIn('id', $consignmentId)->update(['status' => '1']);
         }
         $consignment = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
@@ -5036,7 +5022,7 @@ class ConsignmentController extends Controller
             ->whereIn('consignment_notes.id', $consignmentId)
             ->get(['consignees.city']);
         $simplyfy = json_decode(json_encode($consignment), true);
-        
+
         $orderno = $getdrs->order_no;
 
         $i = $orderno;
@@ -5115,7 +5101,7 @@ class ConsignmentController extends Controller
                 $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             })->first();
-        
+
         $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')
             ->where('consignment_notes.id', $request->lr_id)
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -5133,7 +5119,7 @@ class ConsignmentController extends Controller
         // ======img
         // echo "<pre>"; print_r($newArray); die;
         $app_media = AppMedia::where('consignment_no', $request->lr_id)->get();
-        $awsUrl = env('AWS_S3_URL'); 
+        $awsUrl = env('AWS_S3_URL');
         if (!empty($job->trail)) {
             $job_data = json_decode($job->trail);
             $tracking_history = array_reverse($job_data->task_history);
@@ -5187,7 +5173,7 @@ class ConsignmentController extends Controller
                     $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
                         ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
                 })->first();
-                
+
             if ($driver_app) {
                 $app_trail = json_decode($driver_app->trail, true);
                 $status = [2];
@@ -5408,11 +5394,11 @@ class ConsignmentController extends Controller
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
             $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)
-            ->with('ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount');
+                ->with('ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount');
 
             if ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
-            } elseif($authuser->role_id != 1) {
+            } elseif ($authuser->role_id != 1) {
                 $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                     $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
                 });
@@ -5476,7 +5462,7 @@ class ConsignmentController extends Controller
 
         if ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
-        } elseif($authuser->role_id != 1) {
+        } elseif ($authuser->role_id != 1) {
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
             });
@@ -5963,13 +5949,13 @@ class ConsignmentController extends Controller
                     $location_name = $location->name;
                 }
             }
-            
+
             $pod_img = $request->file('pod');
             $filename = null;
-            
+
             if ($pod_img) {
                 $originalFilename = uniqid() . '_' . $pod_img->getClientOriginalName();
-            
+
                 if (Storage::disk('s3')->putFileAs('pod_images', $pod_img, $originalFilename)) {
                     $imagePath = explode('/', $originalFilename);
                     $filename = end($imagePath);
@@ -5983,7 +5969,7 @@ class ConsignmentController extends Controller
 
             if (empty($request->delivery_date)) {
                 $updatePods = ConsignmentNote::where('id', $lr_no)
-                    ->update(['signed_drs' => $filename ]);
+                    ->update(['signed_drs' => $filename]);
 
                 if ($updatePods) {
                     $response['success'] = true;
@@ -5999,7 +5985,7 @@ class ConsignmentController extends Controller
                         'pod_userid' => $authuser->id,
                         'delivery_status' => 'Successful',
                         'delivery_date' => $request->delivery_date,
-                        'consignment_no'=>'By pod-list'
+                        'consignment_no' => 'By pod-list'
                     ]);
 
                 if ($updateRecords) {
@@ -6009,7 +5995,7 @@ class ConsignmentController extends Controller
                         ->first();
 
                     if ($latestRecord) {
-                        $latestRecord->update(['delivery_status' => 'Successful','delivery_date' => $request->delivery_date,]);
+                        $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
                     }
                 }
 
@@ -6017,7 +6003,7 @@ class ConsignmentController extends Controller
                 $mytime = Carbon::now('Asia/Kolkata');
                 $currentdate = $mytime->toDateTimeString();
 
-                $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'desc' => 'Delivered', 'create_at' => $currentdate,'location' => $location_name, 'type' => '2');
+                $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'desc' => 'Delivered', 'create_at' => $currentdate, 'location' => $location_name, 'type' => '2');
 
                 $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lr_no)->latest('id')->first();
                 if (!empty($lastjob->response_data)) {
@@ -6032,7 +6018,7 @@ class ConsignmentController extends Controller
                 $response['success'] = true;
                 $response['messages'] = 'POD and delivery date updated successfully';
                 return Response::json($response);
-            }else{
+            } else {
                 $response['success'] = false;
                 $response['error'] = true;
                 $response['messages'] = 'POD not uploaded';
@@ -6152,18 +6138,18 @@ class ConsignmentController extends Controller
 
             $lastreattempt = ConsignmentNote::where('id', $request->lr_id)->where('status', '!=', 0)->pluck('reattempt_reason')->first();
 
-            if($request->otherText == null || $request->otherText == ''){
+            if ($request->otherText == null || $request->otherText == '') {
                 $otherText = '';
-            }else{
+            } else {
                 $otherText = $request->otherText;
             }
-            
-            if ($lastreattempt  == null || $lastreattempt  == '') {
-                $respons = array('drs_no' => $request->drs_no, 'reattempt_reason' => $request->reattempt_reason, 'otherText'=>$otherText, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
+
+            if ($lastreattempt == null || $lastreattempt == '') {
+                $respons = array('drs_no' => $request->drs_no, 'reattempt_reason' => $request->reattempt_reason, 'otherText' => $otherText, 'user_id' => $authuser->id, 'create_at' => $currentdate);
                 $respons_data = json_encode([$respons]);
             } else {
-                $respons2 = array('drs_no' => $request->drs_no, 'reattempt_reason' => $request->reattempt_reason, 'otherText'=>$otherText, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
-                
+                $respons2 = array('drs_no' => $request->drs_no, 'reattempt_reason' => $request->reattempt_reason, 'otherText' => $otherText, 'user_id' => $authuser->id, 'create_at' => $currentdate);
+
                 if (!empty($lastreattempt)) {
                     $st = json_decode($lastreattempt, true);
                     $st[] = $respons2; // Add $respons2 to the array
@@ -6178,10 +6164,10 @@ class ConsignmentController extends Controller
             $consignmentsave['vehicle_type'] = null;
             $consignmentsave['status'] = 2;
 
-            $saveconsignment = ConsignmentNote::where('id',$request->lr_id)->where('status', '!=', 0)->update($consignmentsave);
-            
-            if($saveconsignment){
-                TransactionSheet::where('consignment_no',$request->lr_id)->where('status', '!=', 0)->update(['status' => 4]);
+            $saveconsignment = ConsignmentNote::where('id', $request->lr_id)->where('status', '!=', 0)->update($consignmentsave);
+
+            if ($saveconsignment) {
+                TransactionSheet::where('consignment_no', $request->lr_id)->where('status', '!=', 0)->update(['status' => 4]);
 
                 $url = $this->prefix . '/transaction-sheet';
                 $response['success'] = true;
@@ -6204,5 +6190,5 @@ class ConsignmentController extends Controller
         }
         return response()->json($response);
     }
-    
+
 }

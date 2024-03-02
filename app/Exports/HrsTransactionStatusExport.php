@@ -6,7 +6,7 @@ use App\models\SecondaryAvailStock;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use App\Models\PaymentRequest;
+use App\Models\HrsPaymentRequest;
 use App\Models\Role;
 use App\Models\User;
 use Session;
@@ -15,7 +15,7 @@ use Auth;
 use DateTime;
 use DB;
 
-class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQueue
+class HrsTransactionStatusExport implements FromCollection, WithHeadings, ShouldQueue
 {
     protected $startdate;
     protected $enddate;
@@ -35,7 +35,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
         set_time_limit ( 6000 );
         $arr = array();
 
-        $query = PaymentRequest::query();
+        $query = HrsPaymentRequest::query();
 
         $startdate = $this->startdate;
         $enddate = $this->enddate;
@@ -89,7 +89,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
 
                 if($requestlist->payment_status == 1){
                     $create_payment = 'Fully Paid';
-                }elseif($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ 
+                }else if($requestlist->payment_status == 2){ 
                     $create_payment = 'Processing...';
                 } else if($requestlist->payment_status == 0){
                     if(!empty($requestlist->current_paid_amt)){
@@ -117,8 +117,8 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                 } else{
                     $payment_status = 'Unknown';
                 } 
-
-                $drsTotalQty = Helper::DrsPaymentTotalQty($requestlist->transaction_id);
+                
+                $hrsTotalQty = Helper::HrsPaymentTotalQty($requestlist->transaction_id);
 
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
@@ -126,10 +126,10 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                     'vendor'          => @$requestlist->VendorDetails->name,
                     'branch_name'     => @$requestlist->Branch->name,
                     'branch_state'    => @$requestlist->Branch->nick_name,
-                    'total_drs'       => Helper::countDrsInTransaction(@$requestlist->transaction_id),
-                    'total_boxes'     => @$drsTotalQty['totalQuantitySum'],
-                    'total_netwt'     => @$drsTotalQty['totalNetwtSum'],
-                    'total_grosswt'   => @$drsTotalQty['totalGrosswtSum'],
+                    'total_hrs'       => Helper::countHrsInTransaction(@$requestlist->transaction_id),
+                    'total_boxes'     => @$hrsTotalQty['totalQuantitySum'],
+                    'total_netwt'     => @$hrsTotalQty['totalNetwtSum'],
+                    'total_grosswt'   => @$hrsTotalQty['totalGrosswtSum'],
                     'payment_type'    => @$requestlist->payment_type,
                     'payment_date'    => Helper::ShowDayMonthYear(@$requestlist->latestPayment->payment_date),
                     'advanced'        => @$requestlist->advanced,
@@ -148,10 +148,10 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
         return [
             'Transaction ID',
             'Created Date',
-            'Vendor',
+            'Vendor Name',
             'Branch',
             'State',
-            'Total Drs',
+            'Total Hrs',
             'Sum of Boxes',
             'Sum of NetWt',
             'Sum of GrossWt',

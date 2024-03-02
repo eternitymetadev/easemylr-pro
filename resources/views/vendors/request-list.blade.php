@@ -42,6 +42,14 @@
             /* scroll-margin: 38px; */
             overflow: auto;
         }
+
+        .highlight-on-hover {
+            cursor: pointer;
+        }
+
+        .highlight-on-hover:hover {
+            background-color: lightgrey;
+        }
     </style>
     <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/table/datatable/datatables.css') }}">
@@ -294,9 +302,7 @@
         });
         ///////////////////////////////////////////////
         $(document).on('click', '.show-drs', function() {
-
             var trans_id = $(this).attr('data-id');
-            // alert(show);
             $('#show_drs').modal('show');
             $.ajax({
                 type: "GET",
@@ -310,51 +316,31 @@
                         $('#show_drs_table').dataTable().fnDestroy();
                     },
                 success: function(data) {
-                    // console.log(data.)
-                    $.each(data.getdrs, function(index, value) {
-
-                        $('#show_drs_table tbody').append("<tr><td>" + value.drs_no +
-                            "</td></tr>");
-
-                    });
+                    if (data.success) {
+                        $.each(data.getdrs, function(index, drsPaymentreq) {
+                            console.log(drsPaymentreq);
+                            var totalQuantitySum = 0;
+                            var totalNetweightSum = 0;
+                            var totalGrossweightSum = 0;
+                            $.each(drsPaymentreq.transaction_details, function(index, drsdetail) {
+                                
+                                totalQuantitySum += parseInt(drsdetail.consignment_detail.total_quantity);
+                                totalNetweightSum += parseInt(drsdetail.consignment_detail.total_weight);
+                                totalGrossweightSum += parseInt(drsdetail.consignment_detail.total_gross_weight);
+                            });
+                            $('#show_drs_table tbody').append("<tr><td>" + drsPaymentreq.drs_no +
+                                "</td><td>" + totalQuantitySum +
+                                "</td><td>" + totalNetweightSum +
+                                "</td><td>" + totalGrossweightSum +
+                                "</td></tr>");
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
                 }
-
             });
         });
-        /////////////////////////////////////////////////////////////////
-        // $('#unverified-table').DataTable({
-        //     bFilter: false,
-        //     bInfo: false,
-        //     "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
-        //         "<'table-responsive'tr>" +
-        //         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
-        //     buttons: {
-        //         buttons: [
-        //             // { extend: 'copy', className: 'btn btn-sm' },
-        //             // { extend: 'csv', className: 'btn btn-sm' },
-        //             {
-        //                 extend: 'excel',
-        //                 className: 'btn btn-sm'
-        //             },
-        //             // { extend: 'print', className: 'btn btn-sm' }
-        //         ]
-        //     },
-        //     "oLanguage": {
-        //         "oPaginate": {
-        //             "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-        //             "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-        //         },
-        //         "sInfo": "Showing page PAGE of _PAGES_",
-        //         "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-        //         "sSearchPlaceholder": "Search...",
-        //         "sLengthMenu": "Results :  _MENU_",
-        //     },
-
-        //     "ordering": true,
-        //     "paging": false,
-        //     "pageLength": 100,
-
-        // });
 
         // payment status filter
         $('#paymentstatus_filter').change(function() {
@@ -521,13 +507,21 @@
         var search = jQuery('#search').val();
 
         var url = jQuery('#search').attr('data-url');
-        if (startdate)
-            geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
-        else if (search)
-            geturl = geturl + '?search=' + search;
-        else if (paymentstatus_id)
-            geturl = geturl + '?paymentstatus_id=' + paymentstatus_id;
+        // if (startdate)
+        //     geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
+        // else if (search)
+        //     geturl = geturl + '?search=' + search;
+        // else if (paymentstatus_id)
+        //     geturl = geturl + '?paymentstatus_id=' + paymentstatus_id;
 
+        if (typeof(paymentstatus_id) === "undefined" || paymentstatus_id == null) {
+            var paymentstatus_id = '';
+        } else {
+            var paymentstatus_id = paymentstatus_id;
+        }
+
+        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&search=' + search + '&paymentstatus_id=' + paymentstatus_id;
+        
         jQuery.ajax({
             url: url,
             type: 'get',

@@ -14,7 +14,7 @@
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Purchase Price</label>
-                            <input type="text" class="form-control" id="purchse_edit" name="purchase_price" value="">
+                            <input type="number" class="form-control" id="purchse_edit" name="purchase_price" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Vehicle Type</label>
@@ -43,20 +43,22 @@
 <!-- /////////////////////////////////////////////////////////////// -->
 <div class="modal fade" id="show_hrs_model" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
+        <div class="modal-content" style="width: min(90vw, 700px)">
             <!-- Modal Header -->
             <div class="modal-header text-center">
-                <h4 class="modal-title">Confirm</h4>
+                <h4 class="modal-title">HRS Details</h4>
             </div>
             <!-- Modal body -->
             <div class="modal-body">
 
-                <table id="show_drs_table" class="table table-hover"
+                <table id="show_hrs_table" class="table table-hover"
                     style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                     <thead>
                         <tr>
-                            <th>Drs No</th>
+                            <th>HRS No</th>
+                            <th>Sum of Boxes</th>
+                            <th>Sum of Net Weight</th>
+                            <th>Sum of Gross Weight</th>
 
                         </tr>
                     </thead>
@@ -107,7 +109,7 @@
                             <label for="exampleFormControlSelect1">Branch Location</label>
                             <select class="form-control" id="branch_id" name="branch_id" tabindex="-1">
                                 <?php $countbranch = count($branchs);
-if ($countbranch > 1) {?>
+                                if ($countbranch > 1) {?>
                                 <option selected disabled>select location </option>
                                 <?php }?>
                                 @foreach($branchs as $branch)
@@ -220,7 +222,7 @@ if ($countbranch > 1) {?>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Purchase Price</label>
-                            <input type="text" class="form-control" id="purchse" name="purchase_price" value="">
+                            <input type="number" class="form-control" id="purchse" name="purchase_price" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Vehicle Type</label>
@@ -353,8 +355,7 @@ if ($countbranch > 1) {?>
                         <div class="form-group form-group-sm col-md-4">
                             <label for="exampleFormControlSelect1">Branch Location</label>
                             <select class="form-control" id="branch_id_1" name="branch_id" tabindex="-1">
-                                <?php $countbranch = count($branchs);
-if ($countbranch > 1) {?>
+                                <?php if (count($branchs) > 1) {?>
                                 <option selected disabled>select location</option>
                                 <?php }?>
                                 @foreach($branchs as $branch)
@@ -368,8 +369,8 @@ if ($countbranch > 1) {?>
                                 <option value="" selected disabled>Select Vendor</option>
                                 @foreach($vendors as $vendor)
                                 <?php
-$bank_details = json_decode($vendor->bank_details, true);
-?>
+                                $bank_details = json_decode($vendor->bank_details, true);
+                                ?>
                                 <option value="{{$vendor->id}}">{{$vendor->name}}-{{$bank_details['account_no']}}
                                     -{{$vendor->Branch->name ?? '-'}}</option>
                                 @endforeach
@@ -483,3 +484,40 @@ $bank_details = json_decode($vendor->bank_details, true);
         </div>
     </div>
 </div>
+
+{{-- search payment vehicle --}}
+<!-- The Modal Change status-->
+<div class="modal" id="search-paymentvehicle">
+    <div class="modal-dialog">
+       <div class="modal-content">
+          <!-- <button type="button" class="close" data-dismiss="modal">X</button> -->
+          <!-- Modal Header -->
+ 
+          <div class="modal-header text-center" style="background: #4361ee; ">
+             <h4 class="modal-title text-center" style="color: #fff; width: 100%;" >Search Assigned To</h4>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body searchbody_n">
+           <div class="form-group pt-2 vehicleField"> 
+             <select name="vehicle[]" id="searchvehicle" class="form-control" multiple> 
+               <?php 
+ 
+               foreach ($vehicles as $key => $vehicle) {
+                ?>
+                 <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}</option>
+               <?php } ?>
+             </select>
+             <div class="text-right close-c"><i class="fa fa-times"></i></div>
+           </div>
+          </div>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+             <div class="btn-section w-100 P-0">
+             <!-- <a class="btn-cstm btn-white btn btn-modal searchassignvehicle" data-action="<?php echo url()->current(); ?>">search</a> -->
+                <a class="btn btn-modal" data-dismiss="modal">Cancel</a>
+             </div> 
+          </div>
+       </div>
+    </div>
+ </div>
+ <!--End The Modal Change status-->

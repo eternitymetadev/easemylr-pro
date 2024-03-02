@@ -67,7 +67,43 @@ input[readonly].styledInput {
     overflow: auto;
 }
 
+.move {
+    cursor: move;
+}
+
+.has-details {
+    position: relative;
+}
+
+.details {
+    position: absolute;
+    top: 0;
+    transform: translateY(70%) scale(0);
+    transition: transform 0.1s ease-in;
+    transform-origin: left;
+    display: inline;
+    background: white;
+    z-index: 20;
+    min-width: 100%;
+    padding: 1rem;
+    border: 1px solid black;
+}
+
+.has-details:hover span {
+    transform: translateY(70%) scale(1);
+}
+
+.vehicleField .sumo_vehicle {
+    width: 100% !important;
+}
+
+.vehicleField .text-right.close-c {
+    display: none;
+}
+
 </style>
+<!-- END PAGE LEVEL CUSTOM STYLES -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css" type="text/css">
 
 <div class="layout-px-spacing">
     <div class="page-header layout-spacing">

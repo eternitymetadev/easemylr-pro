@@ -231,8 +231,9 @@
                     if (data.success == true) {
                         swal('success','Hrs Created Successfully','success');
                         window.location.href = "hrs-sheet";
-                    }
-                    else {
+                    }else if(data.success == false && data.check_role == 'role-exist'){
+                        swal('error', data.error_message, 'error');
+                    }else {
                         swal('error','something wrong','error');
                     }
                 }

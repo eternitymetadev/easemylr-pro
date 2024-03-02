@@ -143,7 +143,6 @@ class GlobalFunctions
     //////format 10/07/2000
     public static function ShowDayMonthYearslash($date)
     {
-
         if (!empty($date)) {
             $changeformat = date('d/m/Y', strtotime($date));
         } else {
@@ -504,6 +503,72 @@ class GlobalFunctions
             $disable = 'disable_n';
         }
         return $disable;
+    }
+
+    public static function DrsPaymentTotalQty($trans_id){
+        $drsPayments= PaymentRequest::with(['TransactionDetails', 'TransactionDetails.ConsignmentDetail'])->select('drs_no')->where('transaction_id', $trans_id)->get();
+
+        $totalQuantitySum = 0;
+        $totalNetwtSum = 0;
+        $totalGrosswtSum = 0;
+
+        foreach($drsPayments as $paymentvalue){
+            foreach($paymentvalue->TransactionDetails as $val){
+                $totalQuantitySum += intval($val->ConsignmentDetail->total_quantity);
+                $totalNetwtSum += intval($val->ConsignmentDetail->total_weight);
+                $totalGrosswtSum += intval($val->ConsignmentDetail->total_gross_weight);
+            }
+        }
+        
+        return [
+            'totalQuantitySum' => $totalQuantitySum,
+            'totalNetwtSum' => $totalNetwtSum,
+            'totalGrosswtSum' => $totalGrosswtSum
+        ];
+    }
+
+    public static function HrsPaymentTotalQty($trans_id){
+        $hrsPayments = HrsPaymentRequest::with(['HrsDetails','HrsDetails.ConsignmentDetail'])->select('hrs_no')->where('transaction_id', $trans_id)->get();
+
+        $totalQuantitySum = 0;
+        $totalNetwtSum = 0;
+        $totalGrosswtSum = 0;
+
+        foreach($hrsPayments as $paymentvalue){
+            foreach($paymentvalue->HrsDetails as $val){
+                $totalQuantitySum += intval($val->ConsignmentDetail->total_quantity);
+                $totalNetwtSum += intval($val->ConsignmentDetail->total_weight);
+                $totalGrosswtSum += intval($val->ConsignmentDetail->total_gross_weight);
+            }
+        }
+        
+        return [
+            'totalQuantitySum' => $totalQuantitySum,
+            'totalNetwtSum' => $totalNetwtSum,
+            'totalGrosswtSum' => $totalGrosswtSum
+        ];
+    }
+
+    public static function PrsPaymentTotalQty($trans_id){
+        $prsPayments = PrsPaymentRequest::with(['PickupRunSheet','PickupRunSheet.Consignments'])->select('prs_no')->where('transaction_id', $trans_id)->get();
+
+        
+        foreach($prsPayments as $paymentvalue){
+            $totalQuantitySum = 0;
+            $totalNetwtSum = 0;
+            $totalGrosswtSum = 0;
+            foreach($paymentvalue->PickupRunSheet->Consignments as $val){
+                $totalQuantitySum += intval($val->total_quantity);
+                $totalNetwtSum += intval($val->total_weight);
+                $totalGrosswtSum += intval($val->total_gross_weight);
+            }
+        }
+        
+        return [
+            'totalQuantitySum' => $totalQuantitySum,
+            'totalNetwtSum' => $totalNetwtSum,
+            'totalGrosswtSum' => $totalGrosswtSum
+        ];
     }
 
     public static function PrsTotalQty($prs_id)
