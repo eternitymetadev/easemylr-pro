@@ -50,7 +50,7 @@ class PrsTransactionStatusExport implements FromCollection, WithHeadings, Should
         $query = $query->with(['latestPayment','Branch'])
             ->groupBy('transaction_id');
 
-        if ($authuser->role_id == 2) {
+        if ($authuser->role_id == 2  || $authuser->role_id == 4) {
             $query->where('branch_id', $cc);
         }
 

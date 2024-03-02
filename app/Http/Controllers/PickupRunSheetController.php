@@ -1440,7 +1440,7 @@ class PickupRunSheetController extends Controller
             ->groupBy('transaction_id');
             // ->whereIn('status', ['1', '0', '3'])
 
-            if ($authuser->role_id == 2) {
+            if ($authuser->role_id == 2 || $authuser->role_id == 4) {
                 $query = $query->where('branch_id', $cc);
             } else {
                 $query = $query;
@@ -1507,7 +1507,7 @@ class PickupRunSheetController extends Controller
         $query = $query->with(['PickupRunSheet','PickupRunSheet.Consignments','latestPayment','Branch'])
             ->groupBy('transaction_id');
 
-        if ($authuser->role_id == 2) {
+        if ($authuser->role_id == 2 || $authuser->role_id == 4) {
             $query = $query->where('branch_id', $cc);
         } else {
             $query = $query;

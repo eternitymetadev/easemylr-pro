@@ -1414,7 +1414,7 @@ class HubtoHubController extends Controller
             $query = $query->with(['HrsDetails','HrsDetails.ConsignmentDetail','VendorDetails','latestPayment','Branch', 'User'])
             ->groupBy('transaction_id');
 
-            if ($authuser->role_id == 2) {
+            if ($authuser->role_id == 2 || $authuser->role_id == 4) {
                 $query = $query->where('branch_id', $cc);
             } else {
                 $query = $query;
@@ -1494,9 +1494,8 @@ class HubtoHubController extends Controller
 
         $query = $query->with(['HrsDetails','HrsDetails.ConsignmentDetail','VendorDetails','latestPayment','Branch', 'User'])
             ->groupBy('transaction_id');
-            // ->whereIn('status', ['1', '0', '3'])
 
-            if ($authuser->role_id == 2) {
+            if ($authuser->role_id == 2 || $authuser->role_id == 4) {
                 $query = $query->where('branch_id', $cc);
             } else {
                 $query = $query;

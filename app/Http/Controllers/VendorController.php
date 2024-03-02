@@ -1105,7 +1105,7 @@ class VendorController extends Controller
             ->groupBy('transaction_id');
             // ->where('payment_status', '!=', 0)
 
-            if ($authuser->role_id == 2) {
+            if ($authuser->role_id == 2 || $authuser->role_id == 4) {
                 $query = $query->where('branch_id', $cc);
             } else {
                 $query = $query;
@@ -1150,7 +1150,7 @@ class VendorController extends Controller
         // ->where('payment_status', '!=', 0)
             ->groupBy('transaction_id');
 
-        if ($authuser->role_id == 2) {
+        if ($authuser->role_id == 2 || $authuser->role_id == 4) {
             $query = $query->where('branch_id', $cc);
         } else {
             $query = $query;
