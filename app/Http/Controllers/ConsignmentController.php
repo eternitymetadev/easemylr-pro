@@ -2773,7 +2773,7 @@ class ConsignmentController extends Controller
         $transcationview = TransactionSheet::with([
             'ConsignmentDetail.ConsignerDetail.GetRegClient',
             'ConsignmentDetail.ShiptoDetail:id,nick_name,phone,city,district,postal_code',
-            'ConsignmentItem',
+            'ConsignmentItem'
         ])
             ->whereHas('ConsignmentDetail', function ($q) {
                 $q->where('status', '!=', 0)->where('lr_type', '!=', 3);
@@ -3038,7 +3038,7 @@ class ConsignmentController extends Controller
             return response()->json([
                 'success' => false,
                 'checkdrs' => 'drs-exist',
-                'error_message' => "You are not authorized to create DRS.",
+                'error_message' => "You are not authorized to create DRS."
             ]);
         }
         $consignmentId = $_POST['consignmentID'];
@@ -3047,7 +3047,7 @@ class ConsignmentController extends Controller
             return response()->json([
                 'success' => false,
                 'checkdrs' => 'drs-exist',
-                'error_message' => "Drs already created DRS-" . $checkDrs->drs_no,
+                'error_message' => "Drs already created DRS-" . $checkDrs->drs_no
             ]);
         }
 
@@ -3140,7 +3140,7 @@ class ConsignmentController extends Controller
             'fetchVehicle' => $getVehicle,
             'fetchDriver' => $getDriver,
             'success' => true,
-            'success_message' => "Data Imported successfully",
+            'success_message' => "Data Imported successfully"
         ];
 
         return response()->json($response);
@@ -3180,7 +3180,7 @@ class ConsignmentController extends Controller
             'fetchVehicle' => $getVehicle,
             'fetchDriver' => $getDriver,
             'success' => true,
-            'success_message' => "Data Imported successfully",
+            'success_message' => "Data Imported successfully"
         ];
 
         echo json_encode($response);
@@ -5985,7 +5985,7 @@ class ConsignmentController extends Controller
                         'pod_userid' => $authuser->id,
                         'delivery_status' => 'Successful',
                         'delivery_date' => $request->delivery_date,
-                        'consignment_no' => 'By pod-list',
+                        'consignment_no' => 'By pod-list'
                     ]);
 
                 if ($updateRecords) {
