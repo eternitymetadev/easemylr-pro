@@ -1450,7 +1450,15 @@ class PickupRunSheetController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('hrs_no', 'like', '%' . $search . '%');
+                    $query->where('transaction_id', 'like', '%' . $search . '%')
+                        ->orWhere('total_amount', 'like', '%' . $search . '%')
+                        ->orWhere('advanced', 'like', '%' . $search . '%')
+                        ->orWhere('balance', 'like', '%' . $search . '%')
+                        ->orWhereHas('VendorDetails', function ($query) use ($search, $searchT) {
+                            $query->where(function ($vndrquery) use ($search, $searchT) {
+                                $vndrquery->where('name', 'like', '%' . $search . '%');
+                            });
+                        });
                 });
             }
 

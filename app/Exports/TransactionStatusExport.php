@@ -146,7 +146,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
     public function headings(): array
     {
         return [
-            'Transaction Id',
+            'Transaction ID',
             'Created Date',
             'Vendor',
             'Branch',
