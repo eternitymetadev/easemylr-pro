@@ -11,7 +11,9 @@ use App\Models\Consigner;
 use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
 use App\Models\ConsignmentSubItem;
+use App\Models\PickupRunSheet;
 use App\Models\Driver;
+use App\Models\Hrs;
 use App\Models\EfDeliveryRating;
 use App\Models\ItemMaster;
 use App\Models\Job;
@@ -737,7 +739,6 @@ class ConsignmentController extends Controller
     }
 
     // print LR for new view
-    // print LR for new view
     public function consignPrintview(Request $request)
     {
         $query = ConsignmentNote::query();
@@ -1253,12 +1254,9 @@ class ConsignmentController extends Controller
 
                                        </table>
                                    </td>
-                       </table>
+                                      </table>
 
-                                           </table>
-                                       </td>
-                                   </tr>
-                               </table>
+                                         
                            </div>';
                 }
             }
