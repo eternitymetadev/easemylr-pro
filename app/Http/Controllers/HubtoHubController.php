@@ -80,7 +80,7 @@ class HubtoHubController extends Controller
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
         
-        if($authuser->role_id != 2 || $authuser->role_id != 4){
+        if($authuser->role_id != 2 && $authuser->role_id != 4){
             return response()->json([
                 'success' => false,
                 'check_role' => 'role-exist', 
