@@ -51,6 +51,8 @@
                 <th>Cash on Delivery</th>
                 <th>LR Type</th>
                 <th>No of Reattempt</th>
+                <th>Reattempt Remarks</th>
+                <th>Cancel Remarks</th>
             </tr>
         </thead>
         <tbody>
@@ -243,11 +245,27 @@
                 <td>{{$lr_type}}</td>
                 <?php // No of reattempt
                 if($consignment->reattempt_reason != null){
-                    $no_reattempt = count(json_decode($consignment->reattempt_reason,true));
+                    $reasons = json_decode($consignment->reattempt_reason, true);
+
+                    // Extract reattempt_reason from each element and concatenate them with '/'
+                    $concatenatedReasons = '';
+                    foreach ($reasons as $item) {
+                        if ($item['reattempt_reason'] !== null) {
+                            // Append the reason to the concatenated string
+                            $concatenatedReasons .= $item['reattempt_reason'] . ' / ';
+                        }
+                    }
+
+                    // Remove the trailing ' / ' from the concatenated string
+                    $reattemptRemarks = rtrim($concatenatedReasons, ' / ');
+                    $no_reattempt = count($reasons);
                 }else{
                     $no_reattempt = '';
+                    $reattemptRemarks = '';
                 }?>
                 <td>{{$no_reattempt}}</td>
+                <td>{{$reattemptRemarks}}</td>
+                <td>{{$consignment->reason_to_cancel}}</td>
 
             </tr>
             @endforeach

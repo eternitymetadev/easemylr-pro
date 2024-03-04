@@ -200,7 +200,6 @@ class PickupRunSheetController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         try {
             DB::beginTransaction();
 
@@ -218,6 +217,7 @@ class PickupRunSheetController extends Controller
                 $response['errors'] = $errors;
                 return response()->json($response);
             }
+            
             $authuser = Auth::user();
             $pickup_id = DB::table('pickup_run_sheets')->select('pickup_id')->latest('pickup_id')->first();
             $pickup_id = json_decode(json_encode($pickup_id), true);
@@ -517,12 +517,12 @@ class PickupRunSheetController extends Controller
     {
         try {
             DB::beginTransaction();
-
+            
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
                 // 'regclient_id' => 'required',
             );
-
+            
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
                 $errors = $validator->errors();
@@ -532,6 +532,7 @@ class PickupRunSheetController extends Controller
                 $response['errors'] = $errors;
                 return response()->json($response);
             }
+
             // insert prs driver task items
             if (!empty($request->data)) {
                 $authuser = Auth::user();
@@ -1113,8 +1114,8 @@ class PickupRunSheetController extends Controller
             $prssave['status'] = "1";
 
             $saveprs = PickupRunSheet::where('id', $request->prs_id)->update($prssave);
+            $url = URL::to($this->prefix . '/prs');
             if ($saveprs) {
-                $url = URL::to($this->prefix . '/prs');
                 $response['success'] = true;
                 $response['success_message'] = "PRS Updated successfully";
                 $response['error'] = false;
@@ -1133,6 +1134,7 @@ class PickupRunSheetController extends Controller
             $response['success'] = false;
             $response['redirect_url'] = $url;
         }
+        
         return response()->json($response);
     }
     // ================= ADD PURCHASE AMT ============= //

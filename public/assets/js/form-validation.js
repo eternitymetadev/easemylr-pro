@@ -16,7 +16,7 @@ jQuery(document).ready(function(){
           return false;
         }
     });
-
+    
     /*====== Pan number check =========*/
     // $(document).on("keyup", "#pan_no", function () {
     $.validator.addMethod("PanNumbers", function(value, element) {
@@ -947,7 +947,7 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
+    
     /*===== create order ptl =====*/
     $('#create_ptlconsignment').validate({ 
         rules: {
@@ -1204,25 +1204,31 @@ jQuery(document).ready(function(){
     /*===== Create prs task item =====*/
     $('#createprstaskitem').validate({ 
         rules: {
+            'invoice_no[]': {
+                required: true
+            },
+            'invoice_date[]': {
+                required: true
+            },
             'quantity[]': {
                 required: true
             },
            'net_weight[]': {
                 required: true
             },
-           'gross_weight[]': {
-                required: true
-            }
         },
         messages: {
+            'invoice_no[]': {
+                required: "Enter invoice no"
+            },
+            'invoice_date[]': {
+                required: "Enter invoice date"
+            },
             'quantity[]': {
                 required: "Enter quantity"
             },
             'net_weight[]': {
                 required: "Enter weight"
-            },
-            'gross_weight[]': {
-                required: "Enter gross weight"
             },
             
         },
@@ -1473,7 +1479,7 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
+    
     // create branch address
     jQuery('#createbranchadd').validate({
         rules:
@@ -1770,39 +1776,55 @@ jQuery(document).ready(function(){
     jQuery('#createprs').validate({
         rules:
         {
-            regclient_id: {
-                required: true,
-            },
-            consigner_id: {
+            vehicletype_id: {
                 required: true,
             },
             vehicle_id: {
-                // required: true,
+                required: true,
             },
             driver_id: {
-                // required: true,
+                required: true,
             },
+            location_id: {
+                required: true,
+            },
+            hub_location_id: {
+               required:true,
+            }
 
         },
         messages:
         {
-            regclient_id: {
-                required: "Select regional client",
-            },
-            consigner_id: {
-                required: "Select consignor",
+            vehicletype_id: {
+                required: "Select vehicle type",
             },
             vehicle_id: {
-                required: "",
+                required: "Select vehicle",
             },
             driver_id: {
-                required: "",
+                required: "Select driver",
             },
+            location_id: {
+                required: "Select pickup location",
+            },
+            hub_location_id: {
+               required:"Select drop location",
+            }
         },
         submitHandler : function(form)
         {
             formSubmitRedirect(form);
         }
+    });
+
+    $(".select_prsregclient").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Select reginal client."
+                },
+        });
     });
     $(".consigner_prs").each(function()
     {
@@ -1814,15 +1836,31 @@ jQuery(document).ready(function(){
             });
     });
 
+    // $(".consigner_prs").each(function()
+    // {
+    //     $(this).rules('add', {
+    //             required: true,
+    //             messages: {
+    //                 required: "Select Consignor."
+    //             },
+    //         });
+    // });
+    // $(".select_prsregclient").each(function()
+    // {
+    //     $(this).rules('add', {
+    //             required: true,
+    //             messages: {
+    //                 required: "Select RegClient."
+    //             },
+    //         });
+    // });
+
     // update Pickup run sheet
     jQuery('#updateprs').validate({
         rules:
         {
-            regclient_id: {
-                // required: true,
-            },
-            consigner_id: {
-                // required: true,
+            vehicletype_id: {
+                required: true,
             },
             vehicle_id: {
                 required: true,
@@ -1830,22 +1868,31 @@ jQuery(document).ready(function(){
             driver_id: {
                 required: true,
             },
+            location_id: {
+                required: true,
+            },
+            hub_location_id: {
+               required:true,
+            }
 
         },
         messages:
         {
-            regclient_id: {
-                required: "Select regional client",
-            },
-            consigner_id: {
-                required: "Select consignor",
+            vehicletype_id: {
+                required: "Select vehicle type",
             },
             vehicle_id: {
-                required: "",
+                required: "Select vehicle",
             },
             driver_id: {
-                required: "",
+                required: "Select driver",
             },
+            location_id: {
+                required: "Select pickup location",
+            },
+            hub_location_id: {
+               required:"Select drop location",
+            }
         },
         submitHandler : function(form)
         {

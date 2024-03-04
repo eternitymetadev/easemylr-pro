@@ -79,6 +79,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'signed_drs',
             'job_id',
             'reattempt_reason',
+            'reason_to_cancel',
         ])
         ->where('status', '!=', 5)
         ->where('lr_type', '!=', 3)
@@ -246,13 +247,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                             $lr_type = "-";
                             }
 
-                // No of reattempt
-                if($consignment->reattempt_reason != null){
-                    $no_reattempt = count(json_decode($consignment->reattempt_reason,true));
-                }else{
-                    $no_reattempt = '';
-                }
-
                 // reatempted drs nos
                 if(!empty($consignment->DrsDetailReattempted)){
                     $drs_nos = array();
@@ -267,6 +261,27 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     $delivery_branch = @$consignment->Branch->name;
                 }else{
                     $delivery_branch = @$consignment->ToBranch->name;
+                }
+
+                // No of reattempt
+                if($consignment->reattempt_reason != null){
+                    $reasons = json_decode($consignment->reattempt_reason, true);
+
+                    // Extract reattempt_reason from each element and concatenate them with '/'
+                    $concatenatedReasons = '';
+                    foreach ($reasons as $item) {
+                        if ($item['reattempt_reason'] !== null) {
+                            // Append the reason to the concatenated string
+                            $concatenatedReasons .= $item['reattempt_reason'] . ' / ';
+                        }
+                    }
+
+                    // Remove the trailing ' / ' from the concatenated string
+                    $reattemptRemarks = rtrim($concatenatedReasons, ' / ');
+                    $no_reattempt = count($reasons);
+                }else{
+                    $no_reattempt = '';
+                    $reattemptRemarks = '';
                 }
 
                 $arr[] = [
@@ -318,7 +333,9 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'freight_on_delivery' => @$consignment->freight_on_delivery,
                     'cod'                 => @$consignment->cod,
                     'lr_type'             => @$lr_type,
-                    'reattempt_reason'   => @$no_reattempt,
+                    'no_reattempt_reason' => @$no_reattempt,
+                    'reattempt_remarks'   => @$reattemptRemarks,
+                    'cancel_lr_remarks'   => @$consignment->reason_to_cancel
                 ];
             }
         }
@@ -378,6 +395,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'COD',
             'LR Type',
             'No of Reattempt',
+            'Reattempt Remarks',
+            'Cancel Remarks'
         ];
     }
 }
