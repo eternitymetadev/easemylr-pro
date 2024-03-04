@@ -58,8 +58,7 @@
         <tbody>
             @if (count($consignments) > 0)
                 @foreach ($consignments as $consignment)
-                    <?php
-                    
+                    <?php                    
                     $start_date = strtotime($consignment->consignment_date);
                     $end_date = strtotime($consignment->delivery_date);
                     $tat = ($end_date - $start_date) / 60 / 60 / 24;
@@ -89,31 +88,31 @@
                         <td>DRS-{{ @$reattempt_drs['drs_nos'] ?? '-' }}</td>
                         <td>{{ $drs_date }}</td>
                         <?php if(empty($consignment->order_id)){ 
-                    if(!empty($consignment->ConsignmentItems)){
-                    $order = array();
-                    $invoices = array();
-                    $inv_date = array();
-                    $inv_amt = array();
-                    foreach($consignment->ConsignmentItems as $orders){ 
-                        
-                        $order[] = $orders->order_id;
-                        $invoices[] = $orders->invoice_no;
-                        $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
-                        $inv_amt[] = $orders->invoice_amount;
-                    }
-                    //echo'<pre>'; print_r($order); die;
-                    $order_item['orders'] = implode(',', $order);
-                    $order_item['invoices'] = implode(',', $invoices);
-                    $invoice['date'] = implode(',', $inv_date);
-                    $invoice['amt'] = implode(',', $inv_amt);?>
+                        if(!empty($consignment->ConsignmentItems)){
+                            $order = array();
+                            $invoices = array();
+                            $inv_date = array();
+                            $inv_amt = array();
+                            foreach($consignment->ConsignmentItems as $orders){ 
+                                
+                                $order[] = $orders->order_id;
+                                $invoices[] = $orders->invoice_no;
+                                $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
+                                $inv_amt[] = $orders->invoice_amount;
+                            }
+                            $order_item['orders'] = implode(',', $order);
+                            $order_item['invoices'] = implode(',', $invoices);
+                            $invoice['date'] = implode(',', $inv_date);
+                            $invoice['amt'] = implode(',', $inv_amt);?>
 
-                        <td>{{ $orders->order_id ?? '-' }}</td>
+                            <td>{{ $orders->order_id ?? '-' }}</td>
 
                         <?php }else{ ?>
-                        <td>-</td>
+                            <td>-</td>
                         <?php } }else{ ?>
                         <td>{{ $consignment->order_id ?? '-' }}</td>
                         <?php  } ?>
+                        
                         <td>{{ $consignment->Branch->name ?? '-' }}</td>
                         <?php
                         if ($consignment->lr_type == 0) {
@@ -123,22 +122,22 @@
                         }
                         ?>
                         <td>{{ @$delivery_branch ?? '-' }}</td>
-                        <td>{{ $consignment->ConsignerDetail->GetRegClient->BaseClient->client_name ?? '-' }}</td>
-                        <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? '-' }}</td>
-                        <td>{{ $consignment->ConsignerDetail->nick_name ?? '-' }}</td>
-                        <td>{{ $consignment->ConsignerDetail->city ?? '-' }}</td>
-                        <td>{{ $consignment->ConsigneeDetail->nick_name ?? '-' }}</td>
-                        <td>{{ $consignment->ConsigneeDetail->contact_name ?? '-' }}</td>
-                        <td>{{ $consignment->ConsigneeDetail->phone ?? '-' }}</td>
-                        <td>{{ $consignment->ConsigneeDetail->city ?? '-' }}</td>
-                        <td>{{ $consignment->ConsigneeDetail->postal_code ?? '-' }}</td>
-                        <td>{{ $consignment->ConsigneeDetail->district ?? '-' }}</td>
-                        <td>{{ $consignment->ConsigneeDetail->Zone->state ?? '-' }}</td>
-                        <td>{{ $consignment->ShiptoDetail->nick_name ?? '-' }}</td>
-                        <td>{{ $consignment->ShiptoDetail->city ?? '-' }}</td>
-                        <td>{{ $consignment->ShiptoDetail->postal_code ?? '-' }}</td>
-                        <td>{{ $consignment->ShiptoDetail->district ?? '-' }}</td>
-                        <td>{{ $consignment->ShiptoDetail->Zone->state ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsignerDetail->GetRegClient->name ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsignerDetail->nick_name ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsignerDetail->city ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsigneeDetail->nick_name ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsigneeDetail->contact_name ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsigneeDetail->phone ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsigneeDetail->city ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsigneeDetail->postal_code ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsigneeDetail->district ?? '-' }}</td>
+                        <td>{{ @$consignment->ConsigneeDetail->Zone->state ?? '-' }}</td>
+                        <td>{{ @$consignment->ShiptoDetail->nick_name ?? '-' }}</td>
+                        <td>{{ @$consignment->ShiptoDetail->city ?? '-' }}</td>
+                        <td>{{ @$consignment->ShiptoDetail->postal_code ?? '-' }}</td>
+                        <td>{{ @$consignment->ShiptoDetail->district ?? '-' }}</td>
+                        <td>{{ @$consignment->ShiptoDetail->Zone->state ?? '-' }}</td>
                         <?php if(empty($consignment->invoice_no)){ ?>
                         <td>{{ $order_item['invoices'] ?? '-' }}</td>
                         <td>{{ $invoice['date'] ?? '-' }}</td>
@@ -159,7 +158,7 @@
                         <td>{{ $consignment->DriverDetail->fleet_id ?? '-' }}</td>
 
                         <?php 
-                if($consignment->status == 0){ ?>
+                        if($consignment->status == 0){ ?>
                         <td>Cancel</td>
                         <?php }elseif($consignment->status == 1){ ?>
                         <td>Active</td>
@@ -170,20 +169,9 @@
                         <?php   } ?>
                         <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date) }}</td>
                         <td>{{ Helper::ShowDayMonthYearslash($consignment->delivery_date) }}</td>
-                        <?php 
-                if($consignment->delivery_status == 'Assigned'){ ?>
-                        <td>Assigned</td>
-                        <?php }elseif($consignment->delivery_status == 'Unassigned'){ ?>
-                        <td>Unassigned</td>
-                        <?php }elseif($consignment->delivery_status == 'Started'){ ?>
-                        <td>Started</td>
-                        <?php }elseif($consignment->delivery_status == 'Successful'){ ?>
-                        <td>Successful</td>
-                        <?php }elseif($consignment->delivery_status == 'Cancel'){ ?>
-                        <td>Cancel</td>
-                        <?php }else{?>
-                        <td>Unknown</td>
-                        <?php }?>
+
+                        <td>{{ $consignment->delivery_status ?? "Unknown" }}</td>
+
                         <?php if($consignment->delivery_date == ''){?>
                         <td> - </td>
                         <?php }else{?>
@@ -195,44 +183,30 @@
                         <?php  }else{?>
                         <td>Shiprider</td>
                         <?php } ?>
-                        {{-- start pod available status --}}
-                        <?php if($consignment->lr_mode == 0){
-                            if(empty($consignment->signed_drs)){
-                            ?>
-                                <td>Not Available</td>
-                                <?php } else { ?>
-                                <td>Avliable</td>
-                                <?php } ?>
-                                <?php } else if($consignment->lr_mode == 1) { 
+                        {{-- start pod status --}}
+                        <?php
+                        $availableStatus = "Not Available";
+                        if ($consignment->lr_mode == 0) {
+                            $availableStatus = empty($consignment->signed_drs) ? "Not Available" : "Available";
+                        } else if ($consignment->lr_mode == 1) { 
                             $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
-
-                            if(!empty($job->response_data)){
-                            $trail_decorator = json_decode($job->response_data);
-                            $img_group = array();
-                            if(!empty($trail_decorator)){
-                                foreach($trail_decorator->task_history as $task_img){
-                                    if($task_img->type == 'image_added'){
-                                        $img_group[] = $task_img->description;
+                            if (!empty($job->response_data)) {
+                                $trail_decorator = json_decode($job->response_data);
+                                $img_group = array_filter(
+                                    $trail_decorator->task_history, 
+                                    function($task_img) {
+                                        return $task_img->type == 'image_added';
                                     }
-                                }
+                                );
+                                $availableStatus = empty($img_group) ? "Not Available" : "Available";
                             }
-                            if(empty($img_group)){?>
-                                <td>Not Available</td>
-                                <?php } else{?>
-                                <td>Available</td>
-                                <?php }
-                            }
-                            ?>
-                        <?php } else{ 
-                        $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
-                        $count_arra = count($getjobimg);
-                        if ($count_arra > 1) { ?>
-                            <td>Available</td>
-                            <?php   }else{ ?>
-                            <td>Not Available</td>
-                            <?php   }  ?>
-                        <?php  } ?>
-                        {{-- end pod available status --}}
+                        } else { 
+                            $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->count();
+                            $availableStatus = $getjobimg > 1 ? "Available" : "Not Available";
+                        }
+                        ?>
+                        <td>{{ @$availableStatus }}</td>
+                        {{-- end pod status --}}
                         <td>{{ $consignment->payment_type }}</td>
                         <td>{{ $consignment->freight_on_delivery }}</td>
                         <td>{{ $consignment->cod }}</td>
