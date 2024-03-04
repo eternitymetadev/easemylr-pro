@@ -6,7 +6,7 @@ use App\models\SecondaryAvailStock;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use App\Models\PaymentRequest;
+use App\Models\PrsPaymentRequest;
 use App\Models\Role;
 use App\Models\User;
 use Session;
@@ -15,7 +15,7 @@ use Auth;
 use DateTime;
 use DB;
 
-class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQueue
+class PrsTransactionStatusExport implements FromCollection, WithHeadings, ShouldQueue
 {
     protected $startdate;
     protected $enddate;
@@ -35,7 +35,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
         set_time_limit ( 6000 );
         $arr = array();
 
-        $query = PaymentRequest::query();
+        $query = PrsPaymentRequest::query();
 
         $startdate = $this->startdate;
         $enddate = $this->enddate;
@@ -47,13 +47,11 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->with(['latestPayment','VendorDetails', 'Branch'])
+        $query = $query->with(['latestPayment','Branch'])
             ->groupBy('transaction_id');
 
-        if ($authuser->role_id == 2 || $authuser->role_id == 4) {
-            $query = $query->where('branch_id', $cc);
-        } else {
-            $query = $query;
+        if ($authuser->role_id == 2  || $authuser->role_id == 4) {
+            $query->where('branch_id', $cc);
         }
 
         if (!empty($search)) {
@@ -89,7 +87,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
 
                 if($requestlist->payment_status == 1){
                     $create_payment = 'Fully Paid';
-                }elseif($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ 
+                }else if($requestlist->payment_status == 2){ 
                     $create_payment = 'Processing...';
                 } else if($requestlist->payment_status == 0){
                     if(!empty($requestlist->current_paid_amt)){
@@ -118,25 +116,25 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                     $payment_status = 'Unknown';
                 } 
 
-                $drsTotalQty = Helper::DrsPaymentTotalQty($requestlist->transaction_id);
-
+                $prsTotalQty = Helper::PrsPaymentTotalQty($requestlist->transaction_id);
+                
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
                     'created_date'    => Helper::ShowDayMonthYear(@$requestlist->created_at),
                     'vendor'          => @$requestlist->VendorDetails->name,
                     'branch_name'     => @$requestlist->Branch->name,
                     'branch_state'    => @$requestlist->Branch->nick_name,
-                    'total_drs'       => Helper::countDrsInTransaction(@$requestlist->transaction_id),
-                    'total_boxes'     => @$drsTotalQty['totalQuantitySum'],
-                    'total_netwt'     => @$drsTotalQty['totalNetwtSum'],
-                    'total_grosswt'   => @$drsTotalQty['totalGrosswtSum'],
+                    'total_prs'       => Helper::countPrsInTransaction(@$requestlist->transaction_id),
+                    'total_boxes'     => @$prsTotalQty['totalQuantitySum'],
+                    'total_netwt'     => @$prsTotalQty['totalNetwtSum'],
+                    'total_grosswt'   => @$prsTotalQty['totalGrosswtSum'],
                     'payment_type'    => @$requestlist->payment_type,
                     'payment_date'    => Helper::ShowDayMonthYear(@$requestlist->latestPayment->payment_date),
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,
                     'total_amt'       => @$requestlist->total_amount,
                     'create_payment'  => @$create_payment,
-                    'payment_status'  => @$payment_status,                    
+                    'payment_status'  => @$payment_status,
                 ];
             }
         }
@@ -148,10 +146,10 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
         return [
             'Transaction ID',
             'Created Date',
-            'Vendor',
+            'Vendor Name',
             'Branch',
             'State',
-            'Total Drs',
+            'Total Prs',
             'Sum of Boxes',
             'Sum of NetWt',
             'Sum of GrossWt',

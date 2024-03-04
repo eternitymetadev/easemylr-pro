@@ -50,4 +50,9 @@ class PaymentRequest extends Model
     public function PaymentHistory(){
         return $this->hasMany('App\Models\PaymentHistory','transaction_id','transaction_id');
     }
+
+    public function latestPayment(){
+        return $this->hasOne('App\Models\PaymentHistory','transaction_id','transaction_id')
+                    ->select('id','transaction_id', 'payment_date', 'created_at');
+    }
 }

@@ -48,5 +48,9 @@ class PrsPaymentRequest extends Model
         return $this->hasOne('App\Models\Vendor','id','vendor_id');
     }
 
+    public function latestPayment(){
+        return $this->hasOne('App\Models\PrsPaymentHistory','transaction_id','transaction_id')
+                    ->select('id','transaction_id', 'payment_date', 'created_at');
+    }
 
 }

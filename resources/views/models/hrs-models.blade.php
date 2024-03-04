@@ -56,7 +56,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleFormControlInput2">Purchase Price</label>
-                            <input type="text" class="form-control form-control-sm" name="purchase_price" value="">
+                            <input type="number" class="form-control form-control-sm" name="purchase_price" value="">
                         </div>
                     </div>
 
