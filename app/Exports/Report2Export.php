@@ -272,7 +272,12 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     foreach ($reasons as $item) {
                         if ($item['reattempt_reason'] !== null) {
                             // Append the reason to the concatenated string
-                            $concatenatedReasons .= $item['reattempt_reason'] . ' / ';
+                            if ($item['reattempt_reason'] == "Other") {
+                                // If the reason is "Other", append "Other - " followed by "otherText"
+                                $concatenatedReasons .= "Other - " . $item['otherText'] . ' / ';
+                            } else {
+                                $concatenatedReasons .= $item['reattempt_reason'] . ' / ';
+                            }
                         }
                     }
 
