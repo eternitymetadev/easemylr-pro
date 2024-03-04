@@ -1835,17 +1835,7 @@ jQuery(document).ready(function(){
                 },
             });
     });
-    // $(".consigner_prs").each(function()
-    // {
-    //     $(this).rules('add', {
-    //             required: true,
-    //             messages: {
-    //                 required: "Select Consignor."
-    //             },
-    //         });
-    // });
 
-   
     // $(".consigner_prs").each(function()
     // {
     //     $(this).rules('add', {

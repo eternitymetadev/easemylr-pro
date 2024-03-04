@@ -531,7 +531,6 @@ class PickupRunSheetController extends Controller
                 $response['errors'] = $errors;
                 return response()->json($response);
             }
-            dd("uhuhuu");
 
             // insert prs driver task items
             if (!empty($request->data)) {
@@ -1095,7 +1094,6 @@ class PickupRunSheetController extends Controller
             //     $pickup_id = $pickup_id['pickup_id'] + 1;
             // }
 
-            // dd($request->all());
             // $prssave['pickup_id'] = $pickup_id;
             if (!empty($request->vehicletype_id)) {
                 $prssave['vehicletype_id'] = $request->vehicletype_id;
@@ -1135,7 +1133,7 @@ class PickupRunSheetController extends Controller
             $response['success'] = false;
             $response['redirect_url'] = $url;
         }
-        // dd($response);
+        
         return response()->json($response);
     }
     // ================= ADD PURCHASE AMT ============= //
