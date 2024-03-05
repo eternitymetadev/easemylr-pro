@@ -1279,7 +1279,7 @@ class VendorController extends Controller
         // check drs status update
         // $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
         $currentDate = Carbon::now();
-        $ninetyDaysAgo = $currentDate->subDays(15)->toDateString();
+        $ninetyDaysAgo = $currentDate->subDays(70)->toDateString();
         $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')
         ->whereDate('updated_at', '>=', $ninetyDaysAgo)->get()->toArray();
         // echo "<pre>"; print_r($get_data_db); die;
