@@ -1304,7 +1304,7 @@ class VendorController extends Controller
 
                         $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
 
-                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', $p_type)->where('transaction_id', '70014869')->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', $p_type)->where('transaction_id', $trans_id)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
                         $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
 
