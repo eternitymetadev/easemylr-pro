@@ -1276,19 +1276,18 @@ class VendorController extends Controller
     {
         // set_time_limit(120);
         ini_set('max_execution_time', 0); // 0 = Unlimited
-        // check drs status update
-        // $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
         $currentDate = Carbon::now();
         $ninetyDaysAgo = $currentDate->subDays(70)->toDateString();
+
+        // check drs status update
         $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')
+        ->where('payment_status', 2)
         ->whereDate('updated_at', '>=', $ninetyDaysAgo)->get()->toArray();
-        // echo "<pre>"; print_r($get_data_db); die;
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
             $trans_id = $get_data_db[$i]->transaction_id;
             $p_type = $get_data_db[$i]->payment_type;
-            // $trans_id = '70014869';
 
             // $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id. '/' .$p_type ;
             $finfectUrl = 'https://finfect.biz/api/get_payment_response_drs_fully/' . $trans_id. '/' .$p_type ;
@@ -1304,7 +1303,7 @@ class VendorController extends Controller
 
                         $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
 
-                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', $p_type)->where('transaction_id', $trans_id)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->where('payment_type', $p_type)->where('transaction_id', $trans_id)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
                         $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
 
@@ -1314,23 +1313,21 @@ class VendorController extends Controller
                     } else {
                         $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 3]);
 
-                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', $p_type)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->where('payment_type', $p_type)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
                         $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
 
                         foreach ($get_drs as $drs) {
                             TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status', 2)->update(['payment_status' => 3]);
                         }
-
                     }
                 }
             }
         }
 
         // check prs status update
-        // $get_data_db = DB::table('prs_payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
-
-        $get_data_db = DB::table('prs_payment_requests')->select('transaction_id', 'payment_type')->whereDate('updated_at', '>=', $ninetyDaysAgo)->get()->toArray();
+        $get_data_db = DB::table('prs_payment_requests')->select('transaction_id', 'payment_type')
+        ->where('payment_status', 2)->whereDate('updated_at', '>=', $ninetyDaysAgo)->get()->toArray();
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
@@ -1348,7 +1345,7 @@ class VendorController extends Controller
 
                         $update_status = PrsPaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
 
-                        PrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_type', $p_type)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                        PrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->where('payment_type', $p_type)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
                         $get_prs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $trans_id)->get();
 
@@ -1358,7 +1355,7 @@ class VendorController extends Controller
                     } else {
                         $update_status = PrsPaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 3]);
 
-                        PrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_type', $p_type)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                        PrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->where('payment_type', $p_type)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
                         $get_prs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $trans_id)->get();
 
@@ -1371,8 +1368,8 @@ class VendorController extends Controller
         }
 
         // check hrs status update
-        // $get_data_db = DB::table('hrs_payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
-        $get_data_db = DB::table('hrs_payment_requests')->select('transaction_id', 'payment_type')->whereDate('updated_at', '>=', $ninetyDaysAgo)->get()->toArray();
+        $get_data_db = DB::table('hrs_payment_requests')->select('transaction_id', 'payment_type')
+        ->where('payment_status', 2)->whereDate('updated_at', '>=', $ninetyDaysAgo)->get()->toArray();
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
@@ -1390,7 +1387,7 @@ class VendorController extends Controller
 
                         $update_status = HrsPaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
 
-                        HrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_type', $p_type)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                        HrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->where('payment_type', $p_type)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
                         $get_hrs = HrsPaymentRequest::select('hrs_no')->where('transaction_id', $trans_id)->get();
 
@@ -1400,7 +1397,7 @@ class VendorController extends Controller
                     } else {
                         $update_status = HrsPaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 3]);
 
-                        HrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_type', $p_type)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                        HrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->where('payment_type', $p_type)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
                         $get_hrs = HrsPaymentRequest::select('hrs_no')->where('transaction_id', $trans_id)->get();
 
@@ -1778,7 +1775,7 @@ class VendorController extends Controller
         return Excel::download(new exportDrsWiseReport($request->startdate, $request->enddate,$request->search), 'DrsWise-PaymentReport.xlsx');
     }
 
-    public function check_paid_status_fully()
+    public function check_paid_status_fully1()
     {
         ini_set('max_execution_time', 0); // 0 = Unlimited
         // check drs=====
@@ -1822,7 +1819,7 @@ class VendorController extends Controller
         return 1;
     }
 
-    public function check_paid_status_advance()
+    public function check_paid_status_advance1()
     {
         ini_set('max_execution_time', 0); // 0 = Unlimited
         // check drs=====
