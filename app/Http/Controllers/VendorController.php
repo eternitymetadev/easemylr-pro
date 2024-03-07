@@ -1689,6 +1689,7 @@ class VendorController extends Controller
 
     public function drsWiseReport(Request $request)
     {
+        set_time_limit(120);
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
