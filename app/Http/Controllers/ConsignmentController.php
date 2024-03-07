@@ -1130,6 +1130,9 @@ class ConsignmentController extends Controller
                border-radius: 12px;
                overflow: hidden;
            }
+           .invTable th, .invTable td{
+            white-space: nowrap;
+           }
                    </style>
                <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
                </head>
@@ -1411,38 +1414,33 @@ class ConsignmentController extends Controller
                                </div>
 
                                <div class="inputfiled">
-                               <table style="width: 690px;
-                               font-size: 10px; background-color:#e0dddc40;">
-                             <tr>
-                                 <th style="width:70px ">Order ID</th>
-                                 <th style="width: 70px">Inv No</th>
-                                 <th style="width: 70px">Inv Date</th>
-                                 <th style="width:70px " >Inv Amount</th>
-                                 <th style="width:70px ">E-way No</th>
-                                 <th style="width: 70px">E-Way Date</th>
-                                 <th style="width: 60px">Quantity</th>
-                                 <th style="width:70px ">Net Weight</th>
-                                 <th style="width:70px ">Gross Weight</th>
-
-                             </tr>
-                           </table>
-                           <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >';
+                           <table class="invTable" style="border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >
+                           <tr>
+                                 <th>Order ID</th>
+                                 <th>Inv No</th>
+                                 <th>Inv Date</th>
+                                 <th>Inv Amt</th>
+                                 <th>E-way No</th> 
+                                 <th>E-Way Date</th>
+                                 <th">Qty</th>
+                                 <th>Net Wt</th>
+                                 <th>Gross Wt</th>
+                             </tr>';
             $counter = 0;
             foreach ($data['consignment_items'] as $k => $dataitem) {
                 $counter = $counter + 1;
 
-                $html .= ' <tr>
-                               <td style="width:70px ">' . $dataitem['order_id'] . '</td>
-                               <td style="width: 70px">' . $dataitem['invoice_no'] . '</td>
-                               <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
-                               <td style="width:70px ">' . $dataitem['invoice_amount'] . '</td>
-                               <td style="width: 70px">' . $dataitem['e_way_bill'] . '</td>
-                               <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
-                               <td style="width:60px "> ' . $dataitem['quantity'] . '</td>
-                               <td style="width:70px ">' . $dataitem['weight'] . ' Kgs. </td>
-                               <td style="width:70px "> ' . $dataitem['gross_weight'] . ' Kgs.</td>
-
-                               </tr>';
+            $html .= '<tr>
+                        <td style="flex: 1; max-width:21ch; overflow: hidden ">' . $dataitem['order_id'] . '</td>
+                        <td style="flex: 1; max-width:21ch; overflow: hidden ">' . $dataitem['invoice_no'] . '</td>
+                        <td style="flex: 1;">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
+                        <td style="flex: 1;">' . $dataitem['invoice_amount'] . '</td>
+                        <td style="flex: 1;">' . $dataitem['e_way_bill'] . '</td>
+                        <td style="flex: 1;">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
+                        <td style="flex: 1;"> ' . $dataitem['quantity'] . '</td>
+                        <td style="flex: 1;">' . $dataitem['weight'] . '</td>
+                        <td style="flex: 1;"> ' . $dataitem['gross_weight'] . '</td>
+                    </tr>';
             }
             $html .= '      </table>
                                <div>
