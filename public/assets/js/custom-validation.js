@@ -1161,21 +1161,21 @@ jQuery(document).ready(function () {
                     item_no +
                     '][invoice_no]" id="' +
                     item_no +
-                    '" value=""><input type="hidden" name="data[' +
+                    '" value="" required><input type="hidden" name="data[' +
                     item_no +
                     '][lr_id]" value=""></td>';
                 tds +=
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                     item_no +
-                    '][invoice_date]" onkeydown="return false"></td>';
+                    '][invoice_date]" onkeydown="return false" required></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small qnt" name="data[' +
                     item_no +
-                    '][quantity]" type="number"></td>';
-                // tds +=
-                //     '<td><input type="number" class="form-control form-small net" name="data[' +
-                //     item_no +
-                //     '][net_weight]"></td>';
+                    '][quantity]" type="number" required></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small net" name="data[' +
+                    item_no +
+                    '][net_weight]" required></td>';
                 // tds +=
                 //     '<td><input type="number" class="form-control form-small gross" name="data[' +
                 //     item_no +
