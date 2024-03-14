@@ -1113,8 +1113,8 @@ class PickupRunSheetController extends Controller
             $prssave['status'] = "1";
 
             $saveprs = PickupRunSheet::where('id', $request->prs_id)->update($prssave);
+            $url = URL::to($this->prefix . '/prs');
             if ($saveprs) {
-                $url = URL::to($this->prefix . '/prs');
                 $response['success'] = true;
                 $response['success_message'] = "PRS Updated successfully";
                 $response['error'] = false;

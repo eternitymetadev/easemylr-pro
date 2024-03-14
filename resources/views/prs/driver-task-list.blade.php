@@ -115,19 +115,19 @@
                                     rows =
                                         '<tr><td><input type="text" class="form-control form-small invc_no" name="data[' +
                                         i + '][invoice_no]" value=' + value.invoice_no +
-                                        '><input type="hidden" name="data[' + i +
+                                        ' required><input type="hidden" name="data[' + i +
                                         '][lr_id]" value=' + value.consignment_id +
                                         '></td>';
                                     rows +=
                                         '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                                         i + '][invoice_date]" value=' + value
                                         .invoice_date +
-                                        ' onkeydown="return false"></td>';
+                                        ' onkeydown="return false" required></td>';
                                     rows +=
                                         '<td><input type="number" class="form-control form-small qnt" name="data[' +
                                         i + '][quantity]" value=' + value.quantity +
-                                        '></td>';
-                                    // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value='+value.weight+'></td>';
+                                        ' required></td>';
+                                        rows += '<td><input type="number" class="form-control form-small net" name="data['+i+'][net_weight]" value='+value.weight+' required></td>';
                                     // rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value='+value.gross_weight+'></td>';
                                     rows +=
                                         '<td style="width: 165px;"><input type="file" class="form-control form-small invc_img" name="data[' +
@@ -147,15 +147,15 @@
                                 rows =
                                     '<tr><td><input type="text" class="form-control form-small invc_no" name="data[' +
                                     i +
-                                    '][invoice_no]" value=""><input type="hidden" name="data[' +
+                                    '][invoice_no]" value="" required><input type="hidden" name="data[' +
                                     i + '][lr_id]" value=""></td>';
                                 rows +=
                                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
-                                    i + '][invoice_date]" value="" onkeydown="return false"></td>';
+                                    i + '][invoice_date]" value="" onkeydown="return false" required></td>';
                                 rows +=
                                     '<td><input type="number" class="form-control form-small qnt" name="data[' +
-                                    i + '][quantity]" value=""></td>';
-                                // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
+                                    i + '][quantity]" value="" required></td>';
+                                rows += '<td><input type="number" class="form-control form-small net" name="data['+i+'][net_weight]" value="" required></td>';
                                 // rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value=""></td>';
                                 rows +=
                                     '<td style="width: 165px;"><input type="file" class="form-control form-small invc_img" name="data[' +
@@ -173,15 +173,15 @@
                         // rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value=""></td>';
                         rows =
                             '<tr><td><input type="text" class="form-control form-small invc_no" name="data[' +
-                            i + '][invoice_no]" value=""><input type="hidden" name="data[' + i +
+                            i + '][invoice_no]" value="" required><input type="hidden" name="data[' + i +
                             '][lr_id]" value=""></td>';
                         rows +=
                             '<td><input type="date" class="form-control form-small invc_date" name="data[' +
-                            i + '][invoice_date]" value="" onkeydown="return false"></td>';
+                            i + '][invoice_date]" value="" onkeydown="return false" required></td>';
                         rows +=
                             '<td><input type="number" class="form-control form-small qnt" name="data[' +
-                            i + '][quantity]" value=""></td>';
-                        // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
+                            i + '][quantity]" value="" required></td>';
+                        rows += '<td><input type="number" class="form-control form-small net" name="data['+i+'][net_weight]" value="" required></td>';
                         // rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value=""></td>';
                         rows +=
                             '<td style="width: 165px;"><input type="file" class="form-control form-small invc_img" name="data[' +
@@ -194,59 +194,53 @@
                     }
                 },
             });
+        });
 
 
-            // update prs task status
-            jQuery(document).on("click", ".update-taskstatus", function(event) {
-                event.stopPropagation();
-
-                let lr_no = jQuery(this).attr("lr-no");
-                var prstask_status = "prstask_status";
-                jQuery("#manualLR").modal("show");
-                $(".commonconfirmclick")
-                    .unbind()
-                    .click(function() {
-                        var lr_status = jQuery("#lr_status").val();
-                        var data = {
-                            lr_no: lr_no,
-                            lr_status: lr_status,
-                            updatestatus: updatestatus,
-                        };
-
-                        jQuery.ajax({
-                            url: "update-lrstatus",
-                            type: "get",
-                            cache: false,
-                            data: data,
-                            dataType: "json",
-                            headers: {
-                                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
-                                    "content"
-                                ),
-                            },
-                            processData: true,
-                            beforeSend: function() {
-                                // jQuery("input[type=submit]").attr("disabled", "disabled");
-                            },
-                            complete: function() {
-                                //jQuery("#loader-section").css('display','none');
-                            },
-
-                            success: function(response) {
-                                if (response.success) {
-                                    jQuery("#commonconfirm").modal("hide");
-                                    if (response.page == "dsr-cancel-update") {
-                                        setTimeout(() => {
-                                            window.location.href =
-                                                response.redirect_url;
-                                        }, 10);
-                                    }
-                                }
-                            },
-                        });
-                    });
+        // update prs task status
+        jQuery(document).on("click", ".update-taskstatus", function(event) {
+            event.stopPropagation();
+            let lr_no = jQuery(this).attr("lr-no");
+            var prstask_status = "prstask_status";
+            jQuery("#manualLR").modal("show");
+            $(".commonconfirmclick").unbind().click(function() {
+                var lr_status = jQuery("#lr_status").val();
+                var data = {
+                    lr_no: lr_no,
+                    lr_status: lr_status,
+                    updatestatus: updatestatus,
+                };
+                jQuery.ajax({
+                    url: "update-lrstatus",
+                    type: "get",
+                    cache: false,
+                    data: data,
+                    dataType: "json",
+                    headers: {
+                        "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
+                            "content"
+                        ),
+                    },
+                    processData: true,
+                    beforeSend: function() {
+                        // jQuery("input[type=submit]").attr("disabled", "disabled");
+                    },
+                    complete: function() {
+                        //jQuery("#loader-section").css('display','none');
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            jQuery("#commonconfirm").modal("hide");
+                            if (response.page == "dsr-cancel-update") {
+                                setTimeout(() => {
+                                    window.location.href =
+                                        response.redirect_url;
+                                }, 10);
+                            }
+                        }
+                    },
+                });
             });
-
         });
 
         $(document).on("click", ".remove-row1", function() {
