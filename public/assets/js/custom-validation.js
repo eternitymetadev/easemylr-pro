@@ -1271,7 +1271,7 @@ jQuery(document).ready(function () {
         });
     }
     //Call the calculate total function
-    $(document).on("keyup", ".qnt, .net, .gross, .frei", function () {
+    $(document).on("input keyup", ".qnt, .net, .gross, .frei", function () {
         calculate_totals();
     });
     $(document).on("wheel", ".qnt, .net, .gross, .frei", function (e) {
