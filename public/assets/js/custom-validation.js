@@ -1274,6 +1274,9 @@ jQuery(document).ready(function () {
     $(document).on("keyup", ".qnt, .net, .gross, .frei", function () {
         calculate_totals();
     });
+    $(document).on("wheel", ".qnt, .net, .gross, .frei", function (e) {
+        e.target.blur();
+    });
 
     // Calculate all totals
     function calculate_totals() {
