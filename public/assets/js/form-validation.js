@@ -1739,7 +1739,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             hub_location_id: {
-               required:true,
+               //required:true,
             }
 
         },
@@ -1822,7 +1822,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             hub_location_id: {
-               required:true,
+               //required:true,
             }
 
         },
