@@ -24,6 +24,7 @@ use App\Models\TransactionSheet;
 use App\Models\User;
 use App\Models\VehicleType;
 use App\Models\Vendor;
+use App\Models\Zone;
 use Auth;
 use Config;
 use DB;
@@ -85,7 +86,9 @@ class VendorController extends Controller
             $branchs = Location::select('id', 'name')->get();
         }
 
-        return view('vendors.create-vendor', ['prefix' => $this->prefix, 'drivers' => $drivers, 'branchs' => $branchs]);
+        $getState = Zone::distinct()->pluck('state');
+        // dd($getState);
+        return view('vendors.create-vendor', ['prefix' => $this->prefix, 'drivers' => $drivers, 'branchs' => $branchs, 'getState' => $getState]);
     }
 
     public function store(Request $request)
@@ -226,6 +229,27 @@ class VendorController extends Controller
             $response['error_message'] = $e;
             $response['success'] = false;
             $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+    }
+
+    //get district on change pickup state
+    public function getDistricts(Request $request)
+    {
+        // $getDistricts = Zone::where(['state' => $request->state_name, 'status' => '1'])->distinct()->pluck('state');
+        $getDistricts = Zone::where(['state' => $request->state_name, 'status' => '1'])
+            ->groupBy('district')
+            ->pluck('district');
+            // dd($getDistricts);
+        if ($getDistricts) {
+            $response['success'] = true;
+            $response['success_message'] = "Pickup District list fetch successfully";
+            $response['error'] = false;
+            $response['data_district'] = $getDistricts;
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch client list please try again";
+            $response['error'] = true;
         }
         return response()->json($response);
     }

@@ -128,6 +128,47 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlSelect1">Pickup State<span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-control" id="select_pickupstate" name="pickup_state" tabindex="-1">
+                                        <option selected disabled>Select</option>
+                                        @foreach($getState as $state)
+                                            <option value="{{ $state }}">{{ucwords($state)}}</option>
+                                            @endforeach                                    
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlSelect1">Pickup District<span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-control" id="pickup_district" name="pickup_district" tabindex="-1">
+                                        {{-- <option selected disabled>Select</option>
+                                        <option value="Individual">Individual </option> --}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlSelect1">Drop State<span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-control" id="select_dropstate" name="drop_state" tabindex="-1">
+                                        <option selected disabled>Select</option>
+                                        @foreach($getState as $state)
+                                            <option value="{{ $state }}">{{ucwords($state)}}</option>
+                                            @endforeach                                    
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlSelect1">Drop District<span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-control" id="drop_district" name="drop_district" tabindex="-1">
+                                        {{-- <option selected disabled>Select</option>
+                                        <option value="Individual">Individual </option> --}}
+                                    </select>
+                                </div>
+                            </div>
+
                             <h3>Vendor NEFT details</h3>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
@@ -218,6 +259,76 @@
 @section('js')
 <script>
     $(document).ready(function(){
+
+        // on change pickup state get district
+        $("#select_pickupstate").change(function (e) {
+            var state_name = $(this).val();
+            $("#pickup_district").empty();
+            $.ajax({
+                url: "/get-districts",
+                type: "get",
+                cache: false,
+                data: { state_name: state_name },
+                dataType: "json",
+                headers: {
+                    "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+                },
+                beforeSend: function () {
+                    $("#pickup_district").empty();
+                },
+                success: function (res) {
+                    console.log(res.data_district);
+                    $("#pickup_district").append(
+                        '<option value="">select All</option>'
+                    );
+                    $.each(res.data_district, function (key, value) {
+                        $("#pickup_district").append(
+                            '<option value="' +
+                                value +
+                                '">' +
+                                value +
+                                "</option>"
+                        );
+                    });
+                },
+            });
+        });
+
+        // on change drop state get drop district
+        $("#select_dropstate").change(function (e) {
+            var state_name = $(this).val();
+            $("#drop_district").empty();
+            $.ajax({
+                url: "/get-districts",
+                type: "get",
+                cache: false,
+                data: { state_name: state_name },
+                dataType: "json",
+                headers: {
+                    "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+                },
+                beforeSend: function () {
+                    $("#drop_district").empty();
+                },                
+
+                success: function (res) {
+                    console.log(res.data_district);
+                    $("#drop_district").append(
+                        '<option value="">select All</option>'
+                    );
+                    $.each(res.data_district, function (key, value) {
+                        $("#drop_district").append(
+                            '<option value="' +
+                                value +
+                                '">' +
+                                value +
+                                "</option>"
+                        );
+                    });
+                },
+
+            });
+        });
 
         $(document).on("keyup blur", "#pan_no", function () {
             var vendor_type = $("#vendor_type").val();
