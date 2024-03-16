@@ -34,8 +34,11 @@
                 <td class="show-hrs highlight-on-hover" data-id="{{$hrsRequest->transaction_id}}">
                     {{ Helper::countHrsInTransaction($hrsRequest->transaction_id) ?? "" }}
                 </td>
-                
-                <td>{{$hrsRequest->payment_type}}</td>
+                <?php $paymentType = $hrsRequest->payment_type;
+                if ($paymentType == "Fully") {
+                    $paymentType = "Full";
+                } ?>
+                <td>{{@$paymentType}}</td>
                 <td>{{ Helper::ShowDayMonthYear(@$hrsRequest->latestPayment->payment_date) ?? "" }}</td>
                 <td>{{$hrsRequest->advanced}}</td>
                 <td>{{$hrsRequest->balance}}</td>

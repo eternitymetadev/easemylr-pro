@@ -22,7 +22,7 @@
                         <th>Declaration</th>
                         <th>TDS Rate</th>
                         <th>Bank Name</th>
-                        <th>Account No.</th>
+                        <th>Account No</th>
                         <th>IFSC Code</th>
                         <th>Vendor Pan</th>
                         <th>Purchase Freight</th>
@@ -30,12 +30,12 @@
                         <th>Tds Amount</th>
                         <th>Balance Due</th>
                         <th>Advance</th>
-                        <th>Blance Amount</th>
+                        <th>Balance Amount</th>
                         <th>Payment Date</th>
-                        <th>Ref. No</th>
-                        <th>Blance Amount</th>
+                        <th>UTR No</th>
+                        <th>Balance Amount</th>
                         <th>Tds Deduct</th>
-                        <th>payment date</th>
+                        <th>Payment Date</th>
                         <th>Ref. No</th>
                     </tr>
                 </thead>

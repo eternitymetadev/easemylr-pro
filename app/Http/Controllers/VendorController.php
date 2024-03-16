@@ -232,7 +232,8 @@ class VendorController extends Controller
 
     public function paymentList(Request $request)
     {
-        set_time_limit(120);
+        // set_time_limit(120);
+        ini_set('max_execution_time', 0);
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -1436,7 +1437,8 @@ class VendorController extends Controller
 
     public function paymentReportView(Request $request)
     {
-        set_time_limit(120);
+        // set_time_limit(120);
+        ini_set('max_execution_time', 0);
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -1689,7 +1691,8 @@ class VendorController extends Controller
 
     public function drsWiseReport(Request $request)
     {
-        set_time_limit(120);
+        // set_time_limit(120);
+        ini_set('max_execution_time', 0);
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
