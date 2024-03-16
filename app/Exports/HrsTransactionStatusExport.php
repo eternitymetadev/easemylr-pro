@@ -88,7 +88,7 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
             foreach ($requestlists as $key => $requestlist){
 
                 if($requestlist->payment_status == 1){
-                    $create_payment = 'Fully Paid';
+                    $create_payment = 'Full Paid';
                 }else if($requestlist->payment_status == 2){ 
                     $create_payment = 'Processing...';
                 } else if($requestlist->payment_status == 0){
@@ -99,7 +99,7 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
                     }
                 }else{
                     if($requestlist->balance < 1){
-                        $create_payment = 'Fully Paid';
+                        $create_payment = 'Full Paid';
                     }else{ 
                         $create_payment = 'Create Payment';
                     }
@@ -120,6 +120,12 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
                 
                 $hrsTotalQty = Helper::HrsPaymentTotalQty($requestlist->transaction_id);
 
+                // payment type
+                $paymentType = $requestlist->payment_type;
+                if ($paymentType == "Fully") {
+                    $paymentType = "Full";
+                }
+
                 $arr[] = [
                     'transaction_id'  => @$requestlist->transaction_id,
                     'created_date'    => Helper::ShowDayMonthYear(@$requestlist->created_at),
@@ -130,7 +136,7 @@ class HrsTransactionStatusExport implements FromCollection, WithHeadings, Should
                     'total_boxes'     => @$hrsTotalQty['totalQuantitySum'],
                     'total_netwt'     => @$hrsTotalQty['totalNetwtSum'],
                     'total_grosswt'   => @$hrsTotalQty['totalGrosswtSum'],
-                    'payment_type'    => @$requestlist->payment_type,
+                    'payment_type'    => @$paymentType,
                     'payment_date'    => Helper::ShowDayMonthYear(@$requestlist->latestPayment->payment_date),
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,

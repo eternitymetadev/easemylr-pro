@@ -31,8 +31,11 @@
                     <td class="show-drs highlight-on-hover" data-id="{{$requestlist->transaction_id}}" >
                         {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}
                     </td>
-
-                    <td>{{$requestlist->payment_type}}</td>
+                    <?php $paymentType = $requestlist->payment_type;
+                    if ($paymentType == "Fully") {
+                        $paymentType = "Full";
+                    } ?>
+                    <td>{{@$paymentType}}</td>
                     <td>{{ Helper::ShowDayMonthYear(@$requestlist->latestPayment->payment_date) ?? "" }}</td>
 
                     <td>{{ @$requestlist->advanced ?? "-"}}</td>
@@ -41,7 +44,7 @@
 
                     {{--  create payment status --}}
                     <?php if($requestlist->payment_status == 1){?>
-                    <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
+                    <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Full
                             Paid</button></td>
                     <?php }elseif($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ ?>
                     <td><button class="btn btn-warning payment_button" value="{{$requestlist->transaction_id}}" disabled>Processing...</button></td>
@@ -55,7 +58,7 @@
                     
                     <?php }else{
                         if($requestlist->balance < 1){ ?>
-                            <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
+                            <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Full
                                 Paid</button></td>
                         <?php }else{ ?>
                         <td><button class="btn btn-warning payment_button"

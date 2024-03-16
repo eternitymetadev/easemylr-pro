@@ -31,9 +31,14 @@
                         <td>{{ @$prsRequest->Branch->name }}</td>
                         <td>{{ @$prsRequest->Branch->nick_name }}</td>
                         <td class="show-prs highlight-on-hover" data-id="{{ $prsRequest->transaction_id }}">
-                            {{ Helper::countPrsInTransaction($prsRequest->transaction_id) ?? '' }}</td>
+                            {{ Helper::countPrsInTransaction($prsRequest->transaction_id) ?? '' }}
+                        </td>
 
-                        <td>{{ $prsRequest->payment_type }}</td>
+                        <?php $paymentType = $prsRequest->payment_type;
+                        if ($paymentType == "Fully") {
+                            $paymentType = "Full";
+                        } ?>
+                        <td>{{@$paymentType}}</td>
                         <td>{{ Helper::ShowDayMonthYear(@$prsRequest->latestPayment->payment_date) ?? "" }}</td>
                         <td>{{ $prsRequest->advanced }}</td>
                         <td>{{ $prsRequest->balance }}</td>
