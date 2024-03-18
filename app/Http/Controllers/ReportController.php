@@ -737,8 +737,6 @@ class ReportController extends Controller
                         ->whereDate('consignment_date', '>=', now()->subDays(45))
                         ->first();
                         
-                    // $consignment_details = ConsignmentNote::where('status', '!=', 5)->where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
-                    
                     if (!empty($consignment_details)) {
                         $path = 'regional/Shprider Auto POD 910004.xlsx';
 
@@ -748,10 +746,7 @@ class ReportController extends Controller
                         $data = ['client_name' => $regional->name, 'current_time' => $current_time, 'formattedDate' => $formattedDate];
 
                         $user['to'] = $regional->email;
-                        $sec_emails = explode(',', $regional->secondary_email);
-                        if(!empty($sec_emails)){
-                            $user['cc'] = $sec_emails;
-                        }
+                        $sec_emails = !empty($regional->secondary_email) ? explode(',', $regional->secondary_email) : [];
                         
                         Mail::send('regional-podreport-email', $data, function ($messges) use ($user, $get_file, $sec_emails) {
                             $messges->to($user['to']);
