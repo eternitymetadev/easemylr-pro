@@ -261,5 +261,11 @@ class ImportCsvController extends Controller
         return response()->download($path);
     }
 
+    public function vendorRouteSampleDownload()
+    {
+        $path = public_path('sample/vendorroute_bulkimport.xlsx');
+        return response()->download($path);
+    }
+
 
 }
