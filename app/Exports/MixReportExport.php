@@ -63,7 +63,38 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
         if ($drswiseReports->count() > 0) {
             $i = 0;
             foreach ($drswiseReports as $key => $drswiseReport) { 
+                //add column
+                $paymentRequest = null;
+                $vendorName = '';
+                $branchName = '';
+                $advanceAmount = 0;
+                $balanceAmount = 0;
+                $totalAmount = 0;
+                $paymentStatus = '';
 
+                if ($drswiseReport->type == 'DRS') {
+                    $paymentRequest = $drswiseReport->PaymentRequest;
+                } elseif ($drswiseReport->type == 'PRS') {
+                    $paymentRequest = $drswiseReport->PrsPaymentRequest;
+                } elseif ($drswiseReport->type == 'HRS') {
+                    $paymentRequest = $drswiseReport->HrsPaymentRequest;
+                }
+
+                if ($paymentRequest) {
+                    $vendorName = $paymentRequest->VendorDetails->name ?? '';
+                    $branchName = $paymentRequest->Branch->name ?? '';
+                    $advanceAmount = $paymentRequest->advanced ?? 0;
+                    $balanceAmount = $paymentRequest->balance ?? 0;
+                    $totalAmount = $paymentRequest->total_amount ?? 0;
+
+                    switch ($paymentRequest->payment_status) {
+                        case 0: $paymentStatus = 'Failed'; break;
+                        case 1: $paymentStatus = 'Paid'; break;
+                        case 2: $paymentStatus = 'Sent to Account'; break;
+                        case 3: $paymentStatus = 'Partial Paid'; break;
+                        default: $paymentStatus = 'Unknown'; break;
+                    }
+                }
 
                 $arr[] = [
                     'type' => @$drswiseReport->type,
@@ -78,6 +109,12 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'consignee_distt' => @$drswiseReport->consignee_distt,
                     'vehicle_type' => @$drswiseReport->vehicle_type,
                     'vehicle_no' => @$drswiseReport->vehicle_no,
+                    'vendor_name' => @$vendorName,
+                    'Branch' => @$branchName,
+                    'Advance' => @$advanceAmount,
+                    'Balance' => @$balanceAmount,
+                    'Total Amount' => @$totalAmount,
+                    'Status' => @$paymentStatus,
                     
                 ];
             }
@@ -100,6 +137,12 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
             'Consignee Distt',
             'Vehicle Type',
             'Vehicle No',
+            'Vendor Name',
+            'Branch',
+            'Advance',
+            'Balance',
+            'Total Amount',
+            'Status'
 
         ];
     }
