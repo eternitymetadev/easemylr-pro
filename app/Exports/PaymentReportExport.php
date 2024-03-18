@@ -251,12 +251,12 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
             'Advance',
             'Tds Deduct',
             'Payment Date',
-            'Ref No',
+            'UTR No',
             'Total Balance',
             'Balance Amount',
             'Tds Deduct',
             'Payment Date',
-            'Ref No',
+            'UTR No',
 
         ];
     }

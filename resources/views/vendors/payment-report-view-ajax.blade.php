@@ -36,7 +36,7 @@
                         <th>Balance Amount</th>
                         <th>Tds Deduct</th>
                         <th>Payment Date</th>
-                        <th>Ref. No</th>
+                        <th>UTR No</th>
                     </tr>
                 </thead>
                 <tbody>

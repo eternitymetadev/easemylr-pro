@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\RegionalReport;
+use App\Exports\RegionalPodReport;
 use App\Exports\Report1Export;
 use App\Exports\Report2Export;
 use App\Exports\Report3Export;
@@ -715,6 +716,57 @@ class ReportController extends Controller
             }
         }
         return 'Email Sent';
+    }
+
+    // sent pod report to reginal client
+    public function regionalPodReport()
+    {
+        $regional_details = RegionalClient::all();
+
+        foreach ($regional_details as $regional) {
+            if($regional->is_podemail == 1){
+                date_default_timezone_set('Asia/Kolkata');
+                $current_time = date("h:i A");
+                $currentDate = Carbon::now();
+                // Format the date as "12-Oct-2023"
+                $formattedDate = $currentDate->format('d-M-Y');
+
+                if (!empty($regional->email)) {
+                    $consignment_details = ConsignmentNote::where('status', '!=', 5)
+                        ->where('regclient_id', $regional->id)
+                        ->whereDate('consignment_date', '>=', now()->subDays(45))
+                        ->first();
+                        
+                    // $consignment_details = ConsignmentNote::where('status', '!=', 5)->where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
+                    
+                    if (!empty($consignment_details)) {
+                        $path = 'regional/Shprider Auto POD 910004.xlsx';
+
+                        Excel::store(new RegionalPodReport($regional->id), $path, 'public');
+                        $get_file = storage_path('app/public/regional/Shprider Auto POD 910004.xlsx');
+
+                        $data = ['client_name' => $regional->name, 'current_time' => $current_time, 'formattedDate' => $formattedDate];
+
+                        $user['to'] = $regional->email;
+                        $sec_emails = explode(',', $regional->secondary_email);
+                        if(!empty($sec_emails)){
+                            $user['cc'] = $sec_emails;
+                        }
+                        
+                        Mail::send('regional-podreport-email', $data, function ($messges) use ($user, $get_file, $sec_emails) {
+                            $messges->to($user['to']);
+                            if(!empty($sec_emails)){
+                                $messges->cc($sec_emails);
+                            }
+                            $messges->subject('ShipRider Auto POD 910004');
+                            $messges->attach($get_file);
+
+                        });
+                    }
+                }
+            }
+        }
+        return 'POD Email Sent';
     }
 
     public function mixReport(Request $request)

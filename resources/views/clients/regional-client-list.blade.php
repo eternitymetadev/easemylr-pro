@@ -74,6 +74,7 @@ div.relative {
                                 <th style="display:none">Secondary Email</th>
                                 <th style="">Order Email Status</th>
                                 <th style="">MIS Report Status</th>
+                                <th style="">POD Email Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -106,6 +107,12 @@ div.relative {
                                     $mis_status = 'No';
                                  } ?>
                                 <td style="">{{$mis_status }}</td>
+                                <?php if($value->is_podemail == 1){
+                                    $pod_status = 'Yes';
+                                 }else{
+                                    $pod_status = 'No';
+                                 } ?>
+                                <td style="">{{$pod_status }}</td>
                                 <td>
                                     <a class="btn btn-primary"
                                         href="{{url($prefix.'/regclient-detail/'.Crypt::encrypt($value->id).'/edit')}}"><span><i

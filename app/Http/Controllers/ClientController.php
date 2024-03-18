@@ -506,6 +506,7 @@ class ClientController extends Controller
             $regionalupdate['is_prs_pickup'] = $request->is_prs_pickup;
             $regionalupdate['is_email_sent'] = $request->is_email_sent;
             $regionalupdate['is_misemail'] = $request->is_misemail;
+            $regionalupdate['is_podemail'] = $request->is_podemail;
             $regionalupdate['location_id'] = $request->branch_id;
 
             if($request->secondary_email){
@@ -821,6 +822,7 @@ class ClientController extends Controller
             $client['is_prs_pickup'] = $request->is_prs_pickup;
             $client['is_email_sent'] = $request->is_email_sent;
             $client['is_misemail'] = $request->is_misemail;
+            $client['is_podemail'] = $request->is_podemail;
             $client['location_id'] = $request->branch_id;
             $client['upload_gst'] = $gst_img_path_save;
             $client['upload_pan'] = $pan_img_path_save;
