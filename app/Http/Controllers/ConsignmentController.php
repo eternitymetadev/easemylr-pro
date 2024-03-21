@@ -5275,7 +5275,7 @@ class ConsignmentController extends Controller
                     ], 200);
                 }
 
-                $baseclientId = $consignmentNote->ConsignerDetail->GetRegClient->baseclient_id;
+                $baseclientId = @$consignmentNote->ConsignerDetail->GetRegClient->baseclient_id;
 
                 if ($baseclientId != 1) {
                     return response([
