@@ -66,6 +66,7 @@ Route::group([
 });
 
 Route::get('get-lrtimeline/{id}', [ConsignmentController::class,'getTimelineapi']);
+Route::get('consignment_notes/{id}', [ConsignmentController::class,'consignmentNotesApi']);
 
 
 

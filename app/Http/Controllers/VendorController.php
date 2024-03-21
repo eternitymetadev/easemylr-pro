@@ -25,6 +25,7 @@ use App\Models\User;
 use App\Models\VehicleType;
 use App\Models\Vendor;
 use App\Models\Zone;
+use App\Models\VendorAvailability;
 use Auth;
 use Config;
 use DB;
@@ -211,6 +212,15 @@ class VendorController extends Controller
             $savevendor = Vendor::create($vendorsave);
 
             if ($savevendor) {
+                if (!empty($request->data)) {
+                    $get_data = $request->data;
+                    foreach ($get_data as $key => $save_data) {
+                        $save_data['vendor_id'] = $savevendor->id;
+                        $save_data['status'] = 1;
+                        $savevendoritems = VendorAvailability::create($save_data);
+                    }
+                }
+
                 $url = $this->prefix . '/vendor-list';
                 $response['success'] = true;
                 $response['success_message'] = "Vendor Added successfully";
@@ -767,7 +777,9 @@ class VendorController extends Controller
             $branchs = Location::select('id', 'name')->get();
         }
 
-        return view('vendors.edit-vendor', ['prefix' => $this->prefix, 'getvendor' => $getvendor, 'drivers' => $drivers, 'branchs' => $branchs]);
+        $getState = Zone::distinct()->pluck('state');
+
+        return view('vendors.edit-vendor', ['prefix' => $this->prefix, 'getvendor' => $getvendor, 'drivers' => $drivers, 'branchs' => $branchs, 'getState' => $getState]);
     }
 
     public function updateVendor(Request $request)
@@ -846,9 +858,37 @@ class VendorController extends Controller
                     $vendorsave['declaration_file'] = end($imagePath);
                 }
             }
-
+// dd($request->all());
             $updateVendor = Vendor::where('id', $request->vendor_id)->update($vendorsave);
             if ($updateVendor) {
+                $updatedIds = collect($request->data)->pluck('id')->filter();
+                VendorAvailability::where('vendor_id', $request->vendor_id)
+                    ->whereNotIn('id', $updatedIds)
+                    ->delete();
+                    
+                if (!empty($request->data)) {
+                    $get_data = $request->data;
+                    foreach ($get_data as $key => $save_data) {
+                        if (isset($save_data['id'])) {
+                            $vendorAvailability = VendorAvailability::find($save_data['id']);
+                
+                            if ($vendorAvailability) {
+                                $vendorAvailability->update([
+                                    'pickup_state' => $save_data['pickup_state'],
+                                    'pickup_district' => $save_data['pickup_district'],
+                                    'vendor_id' => $request->vendor_id, 
+                                    'status' => 1,
+                                ]);
+                            }
+                        } else {
+                            // Create a new record if 'id' field is not present
+                            $save_data['vendor_id'] = $request->vendor_id;
+                            $save_data['status'] = 1;
+                            $savevendoritems = VendorAvailability::create($save_data);
+                        }
+                    }
+                }
+                
                 $url = $this->prefix . '/vendor-list';
                 $response['success'] = true;
                 $response['success_message'] = "Vendor Updated Successfully";
@@ -864,8 +904,8 @@ class VendorController extends Controller
             $response['success'] = false;
         }
         return response()->json($response);
-
     }
+
     // ==================CreatePayment Request =================
     public function createPaymentRequestVendor(Request $request)
     {

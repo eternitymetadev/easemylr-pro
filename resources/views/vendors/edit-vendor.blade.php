@@ -22,6 +22,116 @@
 }
 </style> 
 
+<style>
+    .outerContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: space-between;
+    border-radius: 18px;
+    padding: 8px;
+    gap: 1rem;
+    border: 1px solid #f1be34;
+    }
+    .outerContainer .innerContainer {
+    flex: 1 1 300px;
+    display: flex;
+    flex-flow: column;
+    gap: 8px;
+    }
+    .outerContainer .innerContainer select {
+    font-size: 14px;
+    border: none;
+    border-radius: 12px;
+    max-width: min(80%, 200px);
+    color: #f1be34;
+    }
+    .outerContainer .innerContainer .selectedDistricts {
+        flex: 1;
+    font-size: 12px;
+    background: rgba(241, 190, 52, 0.1607843137);
+    border-radius: 10px;
+    padding: 8px;
+    min-height: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: flex-start;
+    gap: 6px;
+    }
+    .outerContainer .innerContainer .selectedDistricts span {
+    outline: 1px solid;
+    border-radius: 16px;
+    padding: 0 6px;
+    min-width: 70px;
+    text-align: center;
+    color: #6e6757;
+    font-size: 12px;
+    }
+
+    #fetchedDistricts {
+    min-height: 120px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 6px;
+    }
+    #fetchedDistricts input[type=checkbox] {
+    display: none;
+    }
+    #fetchedDistricts input[type=checkbox] + label {
+    -webkit-user-select: none;
+        -moz-user-select: none;
+            user-select: none;
+    color: #f11e3e;
+    padding: 4px;
+    border-radius: 8px;
+    box-shadow: 0 0 13px -5px inset #ff9292;
+    }
+    #fetchedDistricts input[type=checkbox] + label span.check {
+    display: none;
+    }
+    #fetchedDistricts input[type=checkbox] + label span.unCheck {
+    display: inline;
+    }
+    #fetchedDistricts input[type=checkbox]:checked + label {
+    color: #49a80a;
+    box-shadow: 0 0 13px -5px inset #ceff92;
+    }
+    #fetchedDistricts input[type=checkbox]:checked + label span.check {
+    display: inline;
+    }
+    #fetchedDistricts input[type=checkbox]:checked + label span.unCheck {
+    display: none;
+    }
+
+
+    #routesContainer{
+        position: relative;
+        padding: 8px;
+        background: #83838312;
+        border-radius: 24px;
+    }
+    .addRoute, .removeRoute{
+        position: absolute;
+        bottom: -12px;
+        right: 14px;
+        cursor: pointer;
+        background: #f9b808;
+        padding: 2px 12px;
+        border-radius: 12px;
+        color: #000;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .removeRoute{
+        right: 120px;
+        background: #f96808;
+    }
+</style>
+
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
@@ -131,6 +241,85 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-row mb-0">
+                                <div class="col-md-12" id="routesContainer">
+                                    <p style="font-size: 14px; font-weight: 600; padding-left: 16px;">Routes</p>
+
+                                    {{-- <div class="outerContainer form-group col-md-12" data-routeCount="1">
+                                        <div class="innerContainer">
+                                            <select class="stateClass" name="data[1][pickup_state]">
+                                                @foreach($getState as $state)
+                                                    <option value="{{ $state }}">{{ucwords($state)}}</option>
+                                                @endforeach  
+                                            </select>
+                                            <input type="hidden" id="pick-1" name="data[1][pickup_district]" />
+                                            <div class="selectedDistricts" data-id="pick-1">
+                                            </div>
+                                        </div>
+                                        <div class="innerContainer">
+                                            <select class="stateClass" name="data[1][drop_state]">
+                                                @foreach($getState as $state)
+                                                    <option value="{{ $state }}">{{ucwords($state)}}</option>
+                                                @endforeach  
+                                            </select>
+                                            <input type="hidden" id="drop-1" name="data[1][drop_district]" />
+                                            <div class="selectedDistricts" data-id="drop-1">
+                                            </div>
+                                        </div>
+                                    </div> --}}
+
+                                    @foreach($getvendor->VendorAvailabilities as $key => $route)
+                                    <div class="outerContainer form-group col-md-12" data-routeCount="{{ $key + 1 }}">
+                                        <input type="hidden" name="data[{{ $key + 1 }}][id]"
+                                                value="{{old('id',isset($route->id)?$route->id:'')}}">
+                                        <div class="innerContainer">
+                                            <select class="stateClass" name="data[{{ $key + 1 }}][pickup_state]">
+                                                @foreach($getState as $state)
+                                                <option value="{{ $state }}" {{ $route['pickup_state'] == $state ? 'selected' : '' }}>
+                                                    {{ ucwords($state) }}</option>
+                                                @endforeach
+                                            </select>
+                                            <input type="hidden" id="pick-{{ $key + 1 }}" name="data[{{ $key + 1 }}][pickup_district]"
+                                                value="{{ $route['pickup_district'] }}" />
+                                            <div class="selectedDistricts" data-id="pick-{{ $key + 1 }}">
+                                                <!-- Display selected districts for pickup -->
+                                                @php
+                                                    $pickupDistrict = $route['pickup_district'];
+                                                    $pickupWords = explode(',', $pickupDistrict);
+                                                @endphp
+                                                @foreach($pickupWords as $word)
+                                                    <span>{{ trim($word) }}</span>
+                                                @endforeach                                                     
+                                            </div>
+                                        </div>
+                                        <div class="innerContainer">
+                                            <select class="stateClass" name="data[{{ $key + 1 }}][drop_state]">
+                                                @foreach($getState as $state)
+                                                <option value="{{ $state }}" {{ $route['drop_state'] == $state ? 'selected' : '' }}>
+                                                    {{ ucwords($state) }}</option>
+                                                @endforeach
+                                            </select>
+                                            <input type="hidden" id="drop-{{ $key + 1 }}" name="data[{{ $key + 1 }}][drop_district]"
+                                                value="{{ $route['drop_district'] }}" />
+                                            <div class="selectedDistricts" data-id="drop-{{ $key + 1 }}">
+                                                <!-- Display selected districts for drop -->
+                                                @php
+                                                    $dropDistrict = $route['drop_district'];
+                                                    $dropWords = explode(',', $dropDistrict);
+                                                @endphp
+                                                @foreach($dropWords as $word)
+                                                    <span>{{ trim($word) }}</span>
+                                                @endforeach    
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+
+                                    <span class="removeRoute">Remove Last</span>
+                                    <span class="addRoute">Add Route</span>
+                                </div>
+                            </div>
+
                             <h3>Vendor NEFT details</h3>
                             <?php $bankdetails = json_decode(old('bank_details',isset($getvendor->bank_details)?$getvendor->bank_details:''));
                                 ?>
@@ -212,6 +401,25 @@
     </div>
 </div>
 
+
+<div class="modal" id="distrcitsList" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+    aria-labelledby="failedData" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="distrcitsListLabel"></h6>
+            </div>
+            <div class="modal-body">
+                <div id="fetchedDistricts">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm" data-dismiss="modal" aria-label="Close">Close</button>
+                <button type="button" class="btn btn-sm btn-primary" id="setDistricts">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('js')
 <script>
@@ -257,79 +465,169 @@
         })
     });
 
-$('#vendor_type').change(function() {
-    $("#pan_no").val('');
-    var v_typ = $(this).val();
-    if(v_typ != ''){
-        $("#pan_no").prop('disabled', false);
-    }else{
-        $("#pan_no").prop('disabled', true);
-    }
-    var declaration = ($('input[name=decalaration_available]:checked').val());
-    if (declaration == '2') {
-        if (v_typ == 'Individual') {
-            $('#tds_rate').val('1');
-        } else if (v_typ == 'Proprietorship') {
-            $('#tds_rate').val('1');
-        } else if (v_typ == 'Company') {
-            $('#tds_rate').val('2');
-        } else if (v_typ == 'Firm') {
-            $('#tds_rate').val('2');
-        } else if (v_typ == 'HUF') {
-            $('#tds_rate').val('2');
+    $('#vendor_type').change(function() {
+        $("#pan_no").val('');
+        var v_typ = $(this).val();
+        if(v_typ != ''){
+            $("#pan_no").prop('disabled', false);
+        }else{
+            $("#pan_no").prop('disabled', true);
         }
-    } else {
-        $('#tds_rate').val('0');
-    }
-
-});
-
-////////////////////////
-$('.no_decl').on('change', function() {
-    var declaration = ($('input[name=decalaration_available]:checked').val());
-    if (declaration == 1) {
-        $('#tds_rate').val('0');
-    } else if (declaration == 2) {
-        $('#vendor_type').val('');
-        $('#tds_rate').val('');
-    }
-});
-////////////////////////
-
-$('#gst_register').on('change', function() {
-
-    var g_typ = $(this).val();
-    if (g_typ == 'Registered') {
-        $("#gst_no").prop('disabled', false);
-    } else {
-        $("#gst_no").prop('disabled', true);
-    }
-});
-//////////
-$('#account_no').blur(function() {
-
-    var acc_no = $(this).val();
-    var _token = $('input[name="_token"]').val();
-    $.ajax({
-        url: "check-account-no",
-        method: "POST",
-        data: {
-            acc_no: acc_no,
-            _token: _token
-        },
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        dataType: 'json',
-        success: function(result) {
-            if(result.success == false){
-                swal('Error',result.success_message,'error')
-                $('#account_no').val('');
+        var declaration = ($('input[name=decalaration_available]:checked').val());
+        if (declaration == '2') {
+            if (v_typ == 'Individual') {
+                $('#tds_rate').val('1');
+            } else if (v_typ == 'Proprietorship') {
+                $('#tds_rate').val('1');
+            } else if (v_typ == 'Company') {
+                $('#tds_rate').val('2');
+            } else if (v_typ == 'Firm') {
+                $('#tds_rate').val('2');
+            } else if (v_typ == 'HUF') {
+                $('#tds_rate').val('2');
             }
-
+        } else {
+            $('#tds_rate').val('0');
         }
+
+    });
+
+    ////////////////////////
+    $('.no_decl').on('change', function() {
+        var declaration = ($('input[name=decalaration_available]:checked').val());
+        if (declaration == 1) {
+            $('#tds_rate').val('0');
+        } else if (declaration == 2) {
+            $('#vendor_type').val('');
+            $('#tds_rate').val('');
+        }
+    });
+    ////////////////////////
+
+    $('#gst_register').on('change', function() {
+
+        var g_typ = $(this).val();
+        if (g_typ == 'Registered') {
+            $("#gst_no").prop('disabled', false);
+        } else {
+            $("#gst_no").prop('disabled', true);
+        }
+    });
+    //////////
+    $('#account_no').blur(function() {
+
+        var acc_no = $(this).val();
+        var _token = $('input[name="_token"]').val();
+        $.ajax({
+            url: "check-account-no",
+            method: "POST",
+            data: {
+                acc_no: acc_no,
+                _token: _token
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(result) {
+                if(result.success == false){
+                    swal('Error',result.success_message,'error')
+                    $('#account_no').val('');
+                }
+
+            }
+        })
+    });
+</script>
+
+
+<script>
+    $('.addRoute').on('click', function(){
+        let totalRoutes = +($('.outerContainer:last').attr('data-routeCount') ?? 1);
+        const routeHTML =  `
+            <div class="outerContainer form-group col-md-12" data-routeCount="${totalRoutes + 1}">
+                <div class="innerContainer">
+                    <select class="stateClass" name="data[${totalRoutes + 1}][pickup_state]">
+                        @foreach($getState as $state)
+                            <option value="{{ $state }}">{{ucwords($state)}}</option>
+                        @endforeach  
+                    </select>
+                    <input type="hidden" id="pick-${totalRoutes + 1}" name="data[${totalRoutes + 1}][pickup_district]" />
+                    <div class="selectedDistricts" data-id="pick-${totalRoutes + 1}">
+                    </div>
+                </div>
+                <div class="innerContainer">
+                    <select class="stateClass" name="data[${totalRoutes + 1}][drop_state]">
+                        @foreach($getState as $state)
+                            <option value="{{ $state }}">{{ucwords($state)}}</option>
+                        @endforeach  
+                    </select>
+                    <input type="hidden" id="drop-${totalRoutes + 1}" name="data[${totalRoutes + 1}][drop_district]"/>
+                    <div class="selectedDistricts" data-id="drop-${totalRoutes + 1}">
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $('#routesContainer').append(routeHTML);
     })
-});
+
+    $('.removeRoute').on('click', function(){
+        $('.outerContainer').last().remove();
+    })
+
+    let sectionToWork = ''
+
+    $(document).on('click', '.selectedDistricts', function(){
+        sectionToWork = $(this).data("id");
+        $('#distrcitsListLabel').html($(this).siblings('select').val());
+        $('#fetchedDistricts').html('fetching Districts')
+        $('#distrcitsList').modal('show')
+        $.ajax({
+                url: "/get-districts",
+                type: "get",
+                cache: false,
+                data: { state_name: $(this).siblings('select').val() },
+                dataType: "json",
+                headers: {
+                    "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+                },
+                success: function (res) {
+                    console.log(res.data_district);
+                    let availableDistrict = (res?.data_district ?? [])?.map((item, index)=>(
+                        `
+                        <input id="district-${index}" class="checkedDisticts" type="checkbox" value="${item}"
+                        ${$(`#${sectionToWork}`).val()?.includes(item) && 'checked'}/>
+                        <label for="district-${index}">${item?.toLowerCase()?.replace(/\b[a-z]/g, (letter) => letter.toUpperCase())} <span class="check">🟢</span><span class="unCheck">🔴</span></label>
+                        `
+                    ))
+                    $('#fetchedDistricts').html(availableDistrict)
+                },
+            });
+
+
+   
+    })
+
+
+    $(document).on('click','#setDistricts', function(){
+        let selectedDistricts1 = ``
+        $("input:checkbox.checkedDisticts:checked").each(function(){
+            selectedDistricts1 += `<span>${$(this).val()}</span>`
+        })
+        $(`#${sectionToWork}`).val($("input:checkbox.checkedDisticts:checked").map((_, checkbox) => checkbox.value).get().join(','));
+        $(`*[data-id="${sectionToWork}"]`).html(selectedDistricts1)
+        $('#distrcitsList').modal('hide')
+        sectionToWork = ''
+    })
+
+
+    $(document).on('change', 'select.stateClass', function(){
+        $(this).siblings('input').val('')
+        $(this).siblings('.selectedDistricts').html('')
+    })
+
+   
 </script>
 
 

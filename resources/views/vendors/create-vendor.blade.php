@@ -24,6 +24,118 @@
 }
 </style>
 
+
+
+<style>
+    .outerContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: space-between;
+    border-radius: 18px;
+    padding: 8px;
+    gap: 1rem;
+    border: 1px solid #f1be34;
+    }
+    .outerContainer .innerContainer {
+    flex: 1 1 300px;
+    display: flex;
+    flex-flow: column;
+    gap: 8px;
+    }
+    .outerContainer .innerContainer select {
+    font-size: 14px;
+    border: none;
+    border-radius: 12px;
+    max-width: min(80%, 200px);
+    color: #f1be34;
+    }
+    .outerContainer .innerContainer .selectedDistricts {
+        flex: 1;
+    font-size: 12px;
+    background: rgba(241, 190, 52, 0.1607843137);
+    border-radius: 10px;
+    padding: 8px;
+    min-height: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: flex-start;
+    gap: 6px;
+    }
+    .outerContainer .innerContainer .selectedDistricts span {
+    outline: 1px solid;
+    border-radius: 16px;
+    padding: 0 6px;
+    min-width: 70px;
+    text-align: center;
+    color: #6e6757;
+    font-size: 12px;
+    }
+
+    #fetchedDistricts {
+    min-height: 120px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 6px;
+    }
+    #fetchedDistricts input[type=checkbox] {
+    display: none;
+    }
+    #fetchedDistricts input[type=checkbox] + label {
+    -webkit-user-select: none;
+        -moz-user-select: none;
+            user-select: none;
+    color: #f11e3e;
+    padding: 4px;
+    border-radius: 8px;
+    box-shadow: 0 0 13px -5px inset #ff9292;
+    }
+    #fetchedDistricts input[type=checkbox] + label span.check {
+    display: none;
+    }
+    #fetchedDistricts input[type=checkbox] + label span.unCheck {
+    display: inline;
+    }
+    #fetchedDistricts input[type=checkbox]:checked + label {
+    color: #49a80a;
+    box-shadow: 0 0 13px -5px inset #ceff92;
+    }
+    #fetchedDistricts input[type=checkbox]:checked + label span.check {
+    display: inline;
+    }
+    #fetchedDistricts input[type=checkbox]:checked + label span.unCheck {
+    display: none;
+    }
+
+
+    #routesContainer{
+        position: relative;
+        padding: 8px;
+        background: #83838312;
+        border-radius: 24px;
+    }
+    .addRoute, .removeRoute{
+        position: absolute;
+        bottom: -12px;
+        right: 14px;
+        cursor: pointer;
+        background: #f9b808;
+        padding: 2px 12px;
+        border-radius: 12px;
+        color: #000;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .removeRoute{
+        right: 120px;
+        background: #f96808;
+    }
+</style>
+
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
@@ -128,7 +240,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-row mb-0">
+                            {{-- <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Pickup State<span
                                             class="text-danger">*</span></label>
@@ -143,13 +255,12 @@
                                     <label for="exampleFormControlSelect1">Pickup District<span
                                             class="text-danger">*</span></label>
                                     <select class="form-control" id="pickup_district" name="pickup_district" tabindex="-1">
-                                        {{-- <option selected disabled>Select</option>
-                                        <option value="Individual">Individual </option> --}}
+                                        
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
+                                {{-- <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Drop State<span
                                             class="text-danger">*</span></label>
                                     <select class="form-control" id="select_dropstate" name="drop_state" tabindex="-1">
@@ -163,10 +274,41 @@
                                     <label for="exampleFormControlSelect1">Drop District<span
                                             class="text-danger">*</span></label>
                                     <select class="form-control" id="drop_district" name="drop_district" tabindex="-1">
-                                        {{-- <option selected disabled>Select</option>
-                                        <option value="Individual">Individual </option> --}}
+                                        
                                     </select>
+                                </div> --}}
+
+
+                                <div class="col-md-12" id="routesContainer">
+                                    <p style="font-size: 14px; font-weight: 600; padding-left: 16px;">Routes</p>
+
+                                    <div class="outerContainer form-group col-md-12" data-routeCount="1">
+                                        <div class="innerContainer">
+                                            <select class="stateClass" name="data[1][pickup_state]">
+                                                @foreach($getState as $state)
+                                                    <option value="{{ $state }}">{{ucwords($state)}}</option>
+                                                @endforeach  
+                                            </select>
+                                            <input type="hidden" id="pick-1" name="data[1][pickup_district]" />
+                                            <div class="selectedDistricts" data-id="pick-1">
+                                            </div>
+                                        </div>
+                                        <div class="innerContainer">
+                                            <select class="stateClass" name="data[1][drop_state]">
+                                                @foreach($getState as $state)
+                                                    <option value="{{ $state }}">{{ucwords($state)}}</option>
+                                                @endforeach  
+                                            </select>
+                                            <input type="hidden" id="drop-1" name="data[1][drop_district]" />
+                                            <div class="selectedDistricts" data-id="drop-1">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <span class="removeRoute">Remove Last</span>
+                                    <span class="addRoute">Add Route</span>
                                 </div>
+                                
                             </div>
 
                             <h3>Vendor NEFT details</h3>
@@ -250,6 +392,26 @@
                         </form>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="distrcitsList" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+    aria-labelledby="failedData" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="distrcitsListLabel"></h6>
+            </div>
+            <div class="modal-body">
+                <div id="fetchedDistricts">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm" data-dismiss="modal" aria-label="Close">Close</button>
+                <button type="button" class="btn btn-sm btn-primary" id="setDistricts">Save changes</button>
             </div>
         </div>
     </div>
@@ -461,6 +623,98 @@ $('#ifsc').blur(function() {
 
 });
 ///
+</script>
+
+
+
+<script>
+    let totalRoutes = +($('.outerContainer:last').attr('data-routeCount') ?? 1);
+
+    $('.addRoute').on('click', function(){
+        const routeHTML =  `
+            <div class="outerContainer form-group col-md-12" data-routeCount="${totalRoutes + 1}">
+                <div class="innerContainer">
+                    <select class="stateClass" name="data[${totalRoutes + 1}][pickup_state]">
+                        @foreach($getState as $state)
+                            <option value="{{ $state }}">{{ucwords($state)}}</option>
+                        @endforeach  
+                    </select>
+                    <input type="hidden" id="pick-${totalRoutes + 1}" name="data[${totalRoutes + 1}][pickup_district]" />
+                    <div class="selectedDistricts" data-id="pick-${totalRoutes + 1}">
+                    </div>
+                </div>
+                <div class="innerContainer">
+                    <select class="stateClass" name="data[${totalRoutes + 1}][drop_state]">
+                        @foreach($getState as $state)
+                            <option value="{{ $state }}">{{ucwords($state)}}</option>
+                        @endforeach  
+                    </select>
+                    <input type="hidden" id="drop-${totalRoutes + 1}" name="data[${totalRoutes + 1}][drop_district]"/>
+                    <div class="selectedDistricts" data-id="drop-${totalRoutes + 1}">
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $('#routesContainer').append(routeHTML);
+    })
+
+    $('.removeRoute').on('click', function(){
+        $('.outerContainer').last().remove();
+    })
+
+    let sectionToWork = ''
+
+    $(document).on('click', '.selectedDistricts', function(){
+        sectionToWork = $(this).data("id");
+        $('#distrcitsListLabel').html($(this).siblings('select').val());
+        $('#fetchedDistricts').html('fetching Districts')
+        $('#distrcitsList').modal('show')
+        $.ajax({
+                url: "/get-districts",
+                type: "get",
+                cache: false,
+                data: { state_name: $(this).siblings('select').val() },
+                dataType: "json",
+                headers: {
+                    "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+                },
+                success: function (res) {
+                    console.log(res.data_district);
+                    let availableDistrict = (res?.data_district ?? [])?.map((item, index)=>(
+                        `
+                        <input id="district-${index}" class="checkedDisticts" type="checkbox" value="${item}"
+                        ${$(`#${sectionToWork}`).val()?.includes(item) && 'checked'}/>
+                        <label for="district-${index}">${item?.toLowerCase()?.replace(/\b[a-z]/g, (letter) => letter.toUpperCase())} <span class="check">🟢</span><span class="unCheck">🔴</span></label>
+                        `
+                    ))
+                    $('#fetchedDistricts').html(availableDistrict)
+                },
+            });
+
+
+   
+    })
+
+
+    $(document).on('click','#setDistricts', function(){
+        let selectedDistricts1 = ``
+        $("input:checkbox.checkedDisticts:checked").each(function(){
+            selectedDistricts1 += `<span>${$(this).val()}</span>`
+        })
+        $(`#${sectionToWork}`).val($("input:checkbox.checkedDisticts:checked").map((_, checkbox) => checkbox.value).get().join(','));
+        $(`*[data-id="${sectionToWork}"]`).html(selectedDistricts1)
+        $('#distrcitsList').modal('hide')
+        sectionToWork = ''
+    })
+
+
+    $(document).on('change', 'select.stateClass', function(){
+        $(this).siblings('input').val('')
+        $(this).siblings('.selectedDistricts').html('')
+    })
+
+   
 </script>
 
 

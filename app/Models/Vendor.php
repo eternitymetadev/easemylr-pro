@@ -39,4 +39,9 @@ class Vendor extends Model
     public function Branch(){
         return $this->belongsTo('App\Models\Location','branch_id');
     }
+
+    public function VendorAvailabilities()
+    {
+        return $this->hasMany('App\Models\VendorAvailability','vendor_id','id');
+    }
 }

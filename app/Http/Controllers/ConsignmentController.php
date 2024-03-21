@@ -5181,6 +5181,7 @@ class ConsignmentController extends Controller
 
     public function getTimelineapi($lr_id)
     {
+        ini_set('max_execution_time', 0);
         try {
             $get_delveryrating = EfDeliveryRating::where('lr_id', $lr_id)->first();
             $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode', 'shipto.city as shipto_city', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')
@@ -5215,6 +5216,90 @@ class ConsignmentController extends Controller
                         'status' => 'success',
                         'code' => 1,
                         'message' => 'Data fetched successfully!',
+                    ], 200);
+                } else {
+                    return response([
+                        'status' => 'error',
+                        'code' => 0,
+                        'message' => "Data not found!",
+                        'data' => "",
+                    ], 200);
+                }
+            } else {
+                return response([
+                    'status' => 'error',
+                    'code' => 0,
+                    'message' => "Data not found!",
+                    'data' => "",
+                ], 200);
+            }
+        } catch (\Exception $exception) {
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'message' => "Failed to get result, please try again. {$exception->getMessage()}",
+            ], 500);
+        }
+    }
+
+    public function consignmentNotesApi(Request $request, $lr_id)
+    {
+        ini_set('max_execution_time', 0);
+        
+        try {
+            $baseclientId = $request->header('clientid');
+            $apiKey = $request->header('apikey');
+            if($baseclientId == 1){
+                $regClients = RegionalClient::where('baseclient_id', $baseclientId)->pluck('id');
+            }else{
+                return response([
+                    'response' => 'error',
+                    'code' => 2,
+                    'message' => 'Invalid Client ID',
+                    
+                ], 200);
+            }
+            
+            $driver_app = DB::table('consignment_notes')
+            ->select('consignment_notes.id', 'consignment_notes.regclient_id', 'jobs.response_data as trail')
+            ->where('consignment_notes.id', $lr_id)
+            ->leftJoin('jobs', function ($data) {
+                $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
+                    ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
+            })
+            ->leftJoin('consigners', function ($join) use ($regClients) {
+                $join->on('consigners.regionalclient_id', '=', 'consignment_notes.regclient_id')
+                    ->whereIn('consigners.regionalclient_id', $regClients);
+            })
+            ->first();
+
+                // echo "<pre>"; print_r($driver_app); die;
+            if ($driver_app) {
+                $app_trail = json_decode($driver_app->trail, true);
+                $status = [2];
+                $trailData = array_filter($app_trail, function ($trail) use ($status) {
+                    return in_array($trail['type'], $status);
+                });
+
+                // $trailData = [];
+                // foreach ($app_trail as $trail) {
+                //     if (in_array($trail['type'], $status)) {
+                //         $trailData[] = $trail;
+                //     }
+                // }
+                $filteredTrailData = array_map(function ($trail) {
+                    $trail['event'] = $trail['status'];
+                    unset($trail['consignment_id'], $trail['type'],$trail['status']);
+                    return $trail;
+                }, $trailData);
+
+                if ($driver_app) {
+                    return response([
+                        'response' => 'success',
+                        'code' => 1,
+                        'message' => 'Data fetched successfully!',
+                        'timeline' => $filteredTrailData,
+                        
                     ], 200);
                 } else {
                     return response([
