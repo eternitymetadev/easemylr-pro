@@ -29,7 +29,7 @@
             @foreach($drswiseReports as $drswiseReport)
 
             <tr>
-            <td>{{ @$drswiseReport->type }}</td>
+                <td>{{ @$drswiseReport->type }}</td>
                 <td>{{ Helper::ShowDayMonthYear(@$drswiseReport->transaction_date )}}</td>
                 <td>{{ @$drswiseReport->transaction_id }}</td>
                 <td>{{ @$drswiseReport->drs_no }}</td> 
