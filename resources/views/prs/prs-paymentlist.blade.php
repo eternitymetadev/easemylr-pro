@@ -175,9 +175,31 @@ jQuery(function() {
 })
 
 $(document).on('click', '.add-prs-purchase-price', function() {
+    const appendHtml = `
+                <input type="hidden" class="form-control" id="prs_num" name="prs_no" value="">
+                <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                        <label for="location_name">Purchase Price</label>
+                        <input type="number" class="form-control" id="purchse" name="purchase_price" value="">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="location_name">Vehicle Type</label>
+                        <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
+                            <option value="">Select vehicle type</option>
+                            @foreach($vehicletype as $vehicle)
+                            <option value="{{$vehicle->id}}">{{$vehicle->name}}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+    `;
+    $('#purchase_amt_prs_content').html(appendHtml);
+    $('#vehicle_type').select2();
     var prs_no = $(this).val();
     $('#add_prsamount').modal('show');
     $('#prs_num').val(prs_no);
+    $('#purchse').val('');
 });
 
 $("#purchase_amt_prs").submit(function(e) {

@@ -457,9 +457,32 @@ $("#hrs_request_form").submit(function (e) {
 });
 // ====================Add Purchase Price================================== //
 $(document).on('click', '.add_purchase_price', function() {
+    const appendHtml = `
+                    <input type="hidden" class="form-control" id="hrs_num" name="hrs_no" value="">
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Purchase Price</label>
+                            <input type="number" class="form-control" id="purchse" name="purchase_price" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Vehicle Type</label>
+                            <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
+                                <option value="">Select vehicle type</option>
+                                @foreach($vehicletype as $vehicle)
+                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+    `;
+    $('#purchase_amy_hrs_content').html(appendHtml);
+    $('#vehicle_type').select2();
+
     var hrs_no = $(this).val();
     $('#add_amt').modal('show');
     $('#hrs_num').val(hrs_no);
+    $('#purchse').val('');
 });
 //////////////////Add Purchase Price////////////
 $("#purchase_amt_hrs").submit(function (e) {

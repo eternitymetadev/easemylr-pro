@@ -373,8 +373,31 @@
         });
         // ====================Add Purchase Price================================== //
         $(document).on('click', '.add_purchase_price', function() {
+
+            const appendHtml = `
+                    <input type="hidden" class="form-control" id="drs_num" name="drs_no" value="">
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Purchase Price</label>
+                            <input type="number" class="form-control" id="purchse" name="purchase_price" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Vehicle Type</label>
+                            <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
+                                <option value="" selected>Select vehicle type</option>
+                                @foreach($vehicletype as $vehicle)
+                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    `;
+    $('#purchase_amt_form_content').html(appendHtml);
+    $('#vehicle_type').select2();
             var drs_no = $(this).val();
             $('#add_amt').modal('show');
+            $('#purchse').val('');
             $('#drs_num').val(drs_no);
         });
         // ====================update Purchase Price================================== //

@@ -5277,22 +5277,26 @@ class ConsignmentController extends Controller
                 // echo "<pre>"; print_r($driver_app); die;
             if ($driver_app) {
                 $app_trail = json_decode($driver_app->trail, true);
-                $status = [2];
-                $trailData = array_filter($app_trail, function ($trail) use ($status) {
-                    return in_array($trail['type'], $status);
-                });
+                if ($app_trail && is_array($app_trail)) {
+                    $status = [2];
+                    $trailData = array_filter($app_trail, function ($trail) use ($status) {
+                        return in_array($trail['type'], $status);
+                    });
 
-                $filteredTrailData = array_map(function ($trail) {
-                    $trail['event'] = $trail['status'];
-                    unset($trail['consignment_id'], $trail['type'],$trail['status']);
-                    return $trail;
-                }, $trailData);
+                    $filteredTrailData = array_map(function ($trail) {
+                        $trail['event'] = $trail['status'];
+                        unset($trail['consignment_id'], $trail['type'],$trail['status']);
+                        return $trail;
+                    }, $trailData);
+                } else {
+                    $filteredTrailData = []; // Set an empty array if $app_trail is null or not an array
+                }
 
                 return response([
                     'response' => 'success',
                     'code' => 1,
                     'message' => 'Data fetched successfully!',
-                    'timeline' => $filteredTrailData,
+                    'activity' => $filteredTrailData,
                     
                 ], 200);
             } else {
