@@ -110,11 +110,11 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'vehicle_type' => @$drswiseReport->vehicle_type,
                     'vehicle_no' => @$drswiseReport->vehicle_no,
                     'vendor_name' => @$vendorName,
-                    'Branch' => @$branchName,
-                    'Advance' => @$advanceAmount,
-                    'Balance' => @$balanceAmount,
-                    'Total Amount' => @$totalAmount,
-                    'Status' => @$paymentStatus,
+                    'branch' => @$branchName,
+                    'advance' => @$advanceAmount,
+                    'balance' => @$balanceAmount,
+                    'total_amount' => @$totalAmount,
+                    'payment_status' => @$paymentStatus,
                     
                 ];
             }
