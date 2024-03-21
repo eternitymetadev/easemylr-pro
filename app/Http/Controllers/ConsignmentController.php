@@ -5260,22 +5260,65 @@ class ConsignmentController extends Controller
             }
 
             $regClients = RegionalClient::where('baseclient_id', $baseclientId)->pluck('id');
-            
-            $driver_app = DB::table('consignment_notes')
-            ->select('consignment_notes.id', 'consignment_notes.regclient_id', 'jobs.response_data as trail')
-            ->where('consignment_notes.id', $lr_id)
-            ->leftJoin('jobs', function ($data) {
-                $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
-                    ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
-            })
-            ->leftJoin('consigners', function ($join) use ($regClients) {
-                $join->on('consigners.regionalclient_id', '=', 'consignment_notes.regclient_id')
-                    ->whereIn('consigners.regionalclient_id', $regClients);
-            })
-            ->first();
+            // echo "<pre>"; print_r($regClients); die;
+
+            $consignmentNote = ConsignmentNote::with('ConsignerDetail.GetRegClient')
+                ->where('id', $lr_id)
+                ->first();
+
+                if (!$consignmentNote) {
+                    return response([
+                        'status' => 'error',
+                        'code' => 0,
+                        'message' => "LR you are looking for is not available or doesn't belong to you.",
+                        'data' => "",
+                    ], 200);
+                }
+
+                $baseclientId = $consignmentNote->ConsignerDetail->GetRegClient->baseclient_id;
+
+                if ($baseclientId != 1) {
+                    return response([
+                        'response' => 'error',
+                        'code' => 2,
+                        'message' => 'Invalid Client ID, please check your client ID.',
+                    ], 200);
+                }
+                
+                $driver_app = DB::table('consignment_notes')
+                    ->select('consignment_notes.id', 'consignment_notes.regclient_id', 'jobs.response_data as trail')
+                    ->where('consignment_notes.id', $lr_id)
+                    ->leftJoin('jobs', function ($data) {
+                        $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
+                            ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
+                    })
+                    ->first();
+
+                    if (!$driver_app) {
+                        return response([
+                            'status' => 'error',
+                            'code' => 0,
+                            'message' => 'Data not found!',
+                            'activity' => [],
+                        ], 200);
+                    }
+
+
+            // $driver_app = DB::table('consignment_notes')
+            // ->select('consignment_notes.id', 'consignment_notes.regclient_id', 'jobs.response_data as trail')
+            // ->where('consignment_notes.id', $lr_id)
+            // ->leftJoin('jobs', function ($data) {
+            //     $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
+            //         ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
+            // })
+            // ->leftJoin('consigners', function ($join) use ($regClients) {
+            //     $join->on('consigners.regionalclient_id', '=', 'consignment_notes.regclient_id')
+            //         ->whereIn('consigners.regionalclient_id', $regClients);
+            // })
+            // ->first();
 
                 // echo "<pre>"; print_r($driver_app); die;
-            if ($driver_app) {
+
                 $app_trail = json_decode($driver_app->trail, true);
                 if ($app_trail && is_array($app_trail)) {
                     $status = [2];
@@ -5288,25 +5331,32 @@ class ConsignmentController extends Controller
                         unset($trail['consignment_id'], $trail['type'],$trail['status']);
                         return $trail;
                     }, $trailData);
-                } else {
-                    $filteredTrailData = []; // Set an empty array if $app_trail is null or not an array
-                }
 
-                return response([
-                    'response' => 'success',
-                    'code' => 1,
-                    'message' => 'Data fetched successfully!',
-                    'activity' => $filteredTrailData,
-                    
-                ], 200);
-            } else {
-                return response([
-                    'status' => 'error',
-                    'code' => 0,
-                    'message' => "LR you are looking for is not available or doesn't belongs to you.",
-                    'data' => "",
-                ], 200);
-            }
+                    if (!empty($filteredTrailData)) {
+                        return response([
+                            'response' => 'success',
+                            'code' => 1,
+                            'message' => 'Data fetched successfully!',
+                            'activity' => $filteredTrailData,
+                        ], 200);
+                    } else {
+                        return response([
+                            'status' => 'error',
+                            'code' => 0,
+                            'message' => 'Data not found!',
+                            'activity' => [],
+                        ], 200);
+                    }
+
+                } else {
+                    return response([
+                        'status' => 'error',
+                        'code' => 0,
+                        'message' => 'Data not found!',
+                        'activity' => [],
+                    ], 200); 
+                }
+           
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
