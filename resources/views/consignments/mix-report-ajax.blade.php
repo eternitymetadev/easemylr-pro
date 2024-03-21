@@ -50,7 +50,6 @@
                     $balanceAmount = 0;
                     $totalAmount = 0;
                     $paymentStatus = '';
-
                     if ($drswiseReport->type == 'DRS') {
                         $paymentRequest = $drswiseReport->PaymentRequest;
                     } elseif ($drswiseReport->type == 'PRS') {
@@ -58,14 +57,12 @@
                     } elseif ($drswiseReport->type == 'HRS') {
                         $paymentRequest = $drswiseReport->HrsPaymentRequest;
                     }
-
                     if ($paymentRequest) {
                         $vendorName = $paymentRequest->VendorDetails->name ?? '';
                         $branchName = $paymentRequest->Branch->name ?? '';
                         $advanceAmount = $paymentRequest->advanced ?? 0;
                         $balanceAmount = $paymentRequest->balance ?? 0;
                         $totalAmount = $paymentRequest->total_amount ?? 0;
-
                         switch ($paymentRequest->payment_status) {
                             case 0: $paymentStatus = '<label class="badge badge-dark">Failed</label>'; break;
                             case 1: $paymentStatus = '<label class="badge badge-success">Paid</label>'; break;
