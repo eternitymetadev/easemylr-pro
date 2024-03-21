@@ -5181,6 +5181,7 @@ class ConsignmentController extends Controller
 
     public function getTimelineapi($lr_id)
     {
+        ini_set('max_execution_time', 0);
         try {
             $get_delveryrating = EfDeliveryRating::where('lr_id', $lr_id)->first();
             $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode', 'shipto.city as shipto_city', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')

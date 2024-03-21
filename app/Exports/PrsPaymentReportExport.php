@@ -235,11 +235,11 @@ class PrsPaymentReportExport implements FromCollection, WithHeadings, ShouldQueu
             'Advance',
             'Tds Deduct',
             'Payment Date',
-            'Ref No',
+            'UTR No',
             'Balance Amount',
             'Tds Deduct',
             'Payment Date',
-            'Ref No',
+            'UTR No',
 
         ];
     }

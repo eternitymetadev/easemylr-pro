@@ -24,4 +24,19 @@ class MixReport extends Model
         'vehicle_no',
         'branch_id'
     ];
+
+    public function PaymentRequest()
+    {
+        return $this->hasOne('App\Models\PaymentRequest','transaction_id','transaction_id');
+    }
+
+    public function PrsPaymentRequest()
+    {
+        return $this->hasOne('App\Models\PrsPaymentRequest','transaction_id','transaction_id');
+    }
+
+    public function HrsPaymentRequest()
+    {
+        return $this->hasOne('App\Models\HrsPaymentRequest','transaction_id','transaction_id');
+    }
 }
