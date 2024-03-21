@@ -5249,16 +5249,17 @@ class ConsignmentController extends Controller
         try {
             $baseclientId = $request->header('clientid');
             $apiKey = $request->header('apikey');
-            if($baseclientId == 1){
-                $regClients = RegionalClient::where('baseclient_id', $baseclientId)->pluck('id');
-            }else{
+                
+            if ($baseclientId != 1) {
                 return response([
                     'response' => 'error',
                     'code' => 2,
-                    'message' => 'Invalid Client ID',
+                    'message' => 'Invalid Client ID, please check your client ID.',
                     
                 ], 200);
             }
+
+            $regClients = RegionalClient::where('baseclient_id', $baseclientId)->pluck('id');
             
             $driver_app = DB::table('consignment_notes')
             ->select('consignment_notes.id', 'consignment_notes.regclient_id', 'jobs.response_data as trail')
@@ -5281,39 +5282,24 @@ class ConsignmentController extends Controller
                     return in_array($trail['type'], $status);
                 });
 
-                // $trailData = [];
-                // foreach ($app_trail as $trail) {
-                //     if (in_array($trail['type'], $status)) {
-                //         $trailData[] = $trail;
-                //     }
-                // }
                 $filteredTrailData = array_map(function ($trail) {
                     $trail['event'] = $trail['status'];
                     unset($trail['consignment_id'], $trail['type'],$trail['status']);
                     return $trail;
                 }, $trailData);
 
-                if ($driver_app) {
-                    return response([
-                        'response' => 'success',
-                        'code' => 1,
-                        'message' => 'Data fetched successfully!',
-                        'timeline' => $filteredTrailData,
-                        
-                    ], 200);
-                } else {
-                    return response([
-                        'status' => 'error',
-                        'code' => 0,
-                        'message' => "Data not found!",
-                        'data' => "",
-                    ], 200);
-                }
+                return response([
+                    'response' => 'success',
+                    'code' => 1,
+                    'message' => 'Data fetched successfully!',
+                    'timeline' => $filteredTrailData,
+                    
+                ], 200);
             } else {
                 return response([
                     'status' => 'error',
                     'code' => 0,
-                    'message' => "Data not found!",
+                    'message' => "LR you are looking for is not available or doesn't belongs to you.",
                     'data' => "",
                 ], 200);
             }
