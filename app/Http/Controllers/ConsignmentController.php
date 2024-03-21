@@ -5259,9 +5259,7 @@ class ConsignmentController extends Controller
                 ], 200);
             }
 
-            $regClients = RegionalClient::where('baseclient_id', $baseclientId)->pluck('id');
-            // echo "<pre>"; print_r($regClients); die;
-
+            // $regClients = RegionalClient::where('baseclient_id', $baseclientId)->pluck('id');
             $consignmentNote = ConsignmentNote::with('ConsignerDetail.GetRegClient')
                 ->where('id', $lr_id)
                 ->first();
@@ -5274,7 +5272,6 @@ class ConsignmentController extends Controller
                         'data' => "",
                     ], 200);
                 }
-
                 $baseclientId = @$consignmentNote->ConsignerDetail->GetRegClient->baseclient_id;
 
                 if ($baseclientId != 1) {
@@ -5302,21 +5299,6 @@ class ConsignmentController extends Controller
                             'activity' => [],
                         ], 200);
                     }
-
-
-            // $driver_app = DB::table('consignment_notes')
-            // ->select('consignment_notes.id', 'consignment_notes.regclient_id', 'jobs.response_data as trail')
-            // ->where('consignment_notes.id', $lr_id)
-            // ->leftJoin('jobs', function ($data) {
-            //     $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
-            //         ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
-            // })
-            // ->leftJoin('consigners', function ($join) use ($regClients) {
-            //     $join->on('consigners.regionalclient_id', '=', 'consignment_notes.regclient_id')
-            //         ->whereIn('consigners.regionalclient_id', $regClients);
-            // })
-            // ->first();
-
                 // echo "<pre>"; print_r($driver_app); die;
 
                 $app_trail = json_decode($driver_app->trail, true);
@@ -5347,7 +5329,6 @@ class ConsignmentController extends Controller
                             'activity' => [],
                         ], 200);
                     }
-
                 } else {
                     return response([
                         'status' => 'error',
@@ -5356,7 +5337,6 @@ class ConsignmentController extends Controller
                         'activity' => [],
                     ], 200); 
                 }
-           
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
