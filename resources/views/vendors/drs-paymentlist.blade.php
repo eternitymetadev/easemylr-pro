@@ -373,7 +373,7 @@
         });
         // ====================Add Purchase Price================================== //
         $(document).on('click', '.add_purchase_price', function() {
-
+            
             const appendHtml = `
                     <input type="hidden" class="form-control" id="drs_num" name="drs_no" value="">
                     <div class="form-row mb-0">
@@ -386,7 +386,8 @@
                             <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
                                 <option value="" selected>Select vehicle type</option>
                                 @foreach($vehicletype as $vehicle)
-                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
+                                <option value="{{$vehicle->id}}">
+                                    {{$vehicle->name}}
                                 </option>
                                 @endforeach
                             </select>

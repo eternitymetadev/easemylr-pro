@@ -52,10 +52,10 @@
                             {{ $list->ConsignmentDetail->purchase_price ?? '-' }}</td>
                         <?php } else {?>
                         <td><button type="button" class="btn btn-warning add_purchase_price"
-                                value="{{ $list->drs_no }}" style="margin-right:4px;">Add amount</button> </td>
+                                value="{{ $list->drs_no }}" style="margin-right:4px;" data-vehicletype="{{ @$list->ConsignmentDetail->vehicletype->id ?? '-' }}">Add Amount</button> </td>
                         <?php }?>
                         <!-- end purchase price -->
-                        <td>{{ $list->ConsignmentDetail->vehicletype->name ?? '-' }}</td>
+                        <td>{{ @$list->ConsignmentDetail->vehicletype->name ?? '-' }}</td>
                         <td>DRS-{{ $list->drs_no }}</td>
                         <td>{{ $date->format('d-m-Y') }}</td>
                         <!-- delivery Status ------>
