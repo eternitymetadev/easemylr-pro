@@ -90,7 +90,11 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Hypothecation</label>
                                     <input type="text" class="form-control" name="hypothecation" placeholder="Name of Financer | N/A">
-                                </div>    
+                                </div>
+                                <?php
+                                    $authuser = Auth::user();
+                                    if($authuser->role_id == 1){
+                                ?>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Ownership</label>
                                     <select class="form-control" name="ownership">
@@ -99,6 +103,7 @@
                                         <option value="Transporter Owned">Transporter Owned</option>
                                     </select>
                                 </div>
+                                <?php } ?>
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
