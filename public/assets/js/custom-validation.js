@@ -2280,6 +2280,7 @@ $("#allsave").submit(function (e) {
             $(".indicator-label").show();
             if (data.success == true) {
                 swal("success", "Status Updated successfully", "success");
+                $("#commonconfirm").modal('hide');
                 location.reload();
             } else if (data.error == "date_less") {
                 swal("error", data.messages, "error");
