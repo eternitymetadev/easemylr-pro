@@ -342,35 +342,54 @@
 
         /////////////
         ///// check box checked unverified lr page
-        jQuery(document).on('click', '#ckbCheckAll', function() {
-            if (this.checked) {
-                jQuery('.payment').prop('disabled', false);
-                jQuery('.chkBoxClass').each(function() {
-                    this.checked = true;
-                });
-            } else {
-                jQuery('.chkBoxClass').each(function() {
-                    this.checked = false;
-                });
-                jQuery('.payment').prop('disabled', true);
-            }
-        });
 
         jQuery(document).on('click', '.chkBoxClass', function() {
-            if ($('.chkBoxClass:checked').length == $('.chkBoxClass').length) {
-                $('#ckbCheckAll').prop('checked', true);
-                jQuery('.payment').prop('disabled', false);
+            if ($(this).prop('checked')) {
+                $('.chkBoxClass').not(this).prop('checked', false);
+                $('.payment').prop('disabled', false);
             } else {
-                var checklength = $('.chkBoxClass:checked').length;
-                if (checklength < 1) {
-                    jQuery('.payment').prop('disabled', true);
-                } else {
-                    jQuery('.payment').prop('disabled', false);
-                }
-
-                $('#ckbCheckAll').prop('checked', false);
+                $('.payment').prop('disabled', true);
             }
         });
+
+        jQuery(document).on('click', '#ckbCheckAll', function() {
+            if ($(this).prop('checked')) {
+                $('.chkBoxClass').prop('checked', false);
+                $('.payment').prop('disabled', false);
+            } else {
+                $('.payment').prop('disabled', true);
+            }
+        });
+
+        // jQuery(document).on('click', '#ckbCheckAll', function() {
+        //     if (this.checked) {
+        //         jQuery('.payment').prop('disabled', false);
+        //         jQuery('.chkBoxClass').each(function() {
+        //             this.checked = true;
+        //         });
+        //     } else {
+        //         jQuery('.chkBoxClass').each(function() {
+        //             this.checked = false;
+        //         });
+        //         jQuery('.payment').prop('disabled', true);
+        //     }
+        // });
+
+        // jQuery(document).on('click', '.chkBoxClass', function() {
+        //     if ($('.chkBoxClass:checked').length == $('.chkBoxClass').length) {
+        //         $('#ckbCheckAll').prop('checked', true);
+        //         jQuery('.payment').prop('disabled', false);
+        //     } else {
+        //         var checklength = $('.chkBoxClass:checked').length;
+        //         if (checklength < 1) {
+        //             jQuery('.payment').prop('disabled', true);
+        //         } else {
+        //             jQuery('.payment').prop('disabled', false);
+        //         }
+
+        //         $('#ckbCheckAll').prop('checked', false);
+        //     }
+        // });
         // ====================Add Purchase Price================================== //
         $(document).on('click', '.add_purchase_price', function() {
             
